@@ -12,7 +12,7 @@ namespace PolisProReminder.Data
                     var services = scope.ServiceProvider;
                     var context = services.GetRequiredService<InsuranceDbContext>();
                     context.Database.EnsureCreated();
-                    DbInitializer.Initialize(context);
+                    Seeder.Seed(context);
                 }
             }
         }

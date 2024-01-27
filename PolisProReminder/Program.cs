@@ -1,5 +1,6 @@
 using PolisProReminder.Data;
 using PolisProReminder.Entities;
+using PolisProReminder.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<InsuranceDbContext>();
+builder.Services.AddScoped<IInsurancePolicySerivce, InsurancePolicySerivce>();
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
