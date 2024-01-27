@@ -1,6 +1,6 @@
-﻿namespace PolisProReminder.Models
+﻿namespace PolisProReminder.Models.InsurancePolicy
 {
-    public class InsurerPolicyDto
+    public class PolicyInsurerDto
     {
         public int Id { get; set; }
         public string FirstName { get; set; } = null!;

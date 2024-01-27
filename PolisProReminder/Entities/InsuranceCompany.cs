@@ -4,6 +4,6 @@
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
-        public virtual List<InsurancePolicy> InsurancePolicies { get; set; } = new();
+        public virtual List<Policy> Policies { get; set; } = new();
     }
 }

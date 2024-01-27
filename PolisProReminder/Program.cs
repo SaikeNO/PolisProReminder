@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<InsuranceDbContext>();
-builder.Services.AddScoped<IInsurancePolicySerivce, InsurancePolicySerivce>();
+builder.Services.AddScoped<IInsurancePolicySerivce, PolicySerivce>();
 builder.Services.AddScoped<IInsurerService, InsurerService>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddSwaggerGen();

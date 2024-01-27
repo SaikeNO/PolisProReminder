@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PolisProReminder.Entities;
-using PolisProReminder.Models;
+using PolisProReminder.Models.Insurer;
 
 namespace PolisProReminder.Services
 {
@@ -24,9 +24,9 @@ namespace PolisProReminder.Services
         {
             var insurers = _dbContext
                 .Insurers
-                .Include(i => i.InsurancePolicies.OrderBy(p => p.EndDate))
+                .Include(i => i.Policies.OrderBy(p => p.EndDate))
                 .ThenInclude(p => p.InsuranceCompany)
-                .Include(i => i.InsurancePolicies)
+                .Include(i => i.Policies)
                 .ThenInclude(p => p.InsuranceTypes)
                 .ToList();
 

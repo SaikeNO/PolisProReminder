@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PolisProReminder.Entities;
 
@@ -11,9 +12,10 @@ using PolisProReminder.Entities;
 namespace PolisProReminder.Migrations
 {
     [DbContext(typeof(InsuranceDbContext))]
-    partial class InsuranceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240127194558_change-names")]
+    partial class changenames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,15 +26,15 @@ namespace PolisProReminder.Migrations
 
             modelBuilder.Entity("InsuranceTypePolicy", b =>
                 {
+                    b.Property<int>("InsurancePoliciesId")
+                        .HasColumnType("int");
+
                     b.Property<int>("InsuranceTypesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PoliciesId")
-                        .HasColumnType("int");
+                    b.HasKey("InsurancePoliciesId", "InsuranceTypesId");
 
-                    b.HasKey("InsuranceTypesId", "PoliciesId");
-
-                    b.HasIndex("PoliciesId");
+                    b.HasIndex("InsuranceTypesId");
 
                     b.ToTable("InsuranceTypePolicy");
                 });
@@ -151,15 +153,15 @@ namespace PolisProReminder.Migrations
 
             modelBuilder.Entity("InsuranceTypePolicy", b =>
                 {
-                    b.HasOne("PolisProReminder.Entities.InsuranceType", null)
+                    b.HasOne("PolisProReminder.Entities.Policy", null)
                         .WithMany()
-                        .HasForeignKey("InsuranceTypesId")
+                        .HasForeignKey("InsurancePoliciesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PolisProReminder.Entities.Policy", null)
+                    b.HasOne("PolisProReminder.Entities.InsuranceType", null)
                         .WithMany()
-                        .HasForeignKey("PoliciesId")
+                        .HasForeignKey("InsuranceTypesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -167,13 +169,13 @@ namespace PolisProReminder.Migrations
             modelBuilder.Entity("PolisProReminder.Entities.Policy", b =>
                 {
                     b.HasOne("PolisProReminder.Entities.InsuranceCompany", "InsuranceCompany")
-                        .WithMany("Policies")
+                        .WithMany("InsurancePolicies")
                         .HasForeignKey("InsuranceCompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PolisProReminder.Entities.Insurer", "Insurer")
-                        .WithMany("Policies")
+                        .WithMany("InsurancePolicies")
                         .HasForeignKey("InsurerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -185,12 +187,12 @@ namespace PolisProReminder.Migrations
 
             modelBuilder.Entity("PolisProReminder.Entities.InsuranceCompany", b =>
                 {
-                    b.Navigation("Policies");
+                    b.Navigation("InsurancePolicies");
                 });
 
             modelBuilder.Entity("PolisProReminder.Entities.Insurer", b =>
                 {
-                    b.Navigation("Policies");
+                    b.Navigation("InsurancePolicies");
                 });
 #pragma warning restore 612, 618
         }

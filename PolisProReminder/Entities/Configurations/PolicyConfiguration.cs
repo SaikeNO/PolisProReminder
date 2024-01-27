@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace PolisProReminder.Entities.Configurations
 {
-    public class InsurancePolicyConfiguration : IEntityTypeConfiguration<InsurancePolicy>
+    public class PolicyConfiguration : IEntityTypeConfiguration<Policy>
     {
-        public void Configure(EntityTypeBuilder<InsurancePolicy> builder)
+        public void Configure(EntityTypeBuilder<Policy> builder)
         {
             builder.ToTable("Policies");
 

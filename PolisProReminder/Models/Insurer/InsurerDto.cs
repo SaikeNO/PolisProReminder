@@ -1,4 +1,4 @@
-﻿namespace PolisProReminder.Models
+﻿namespace PolisProReminder.Models.Insurer
 {
     public class InsurerDto
     {
@@ -8,6 +8,6 @@
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
         public string? Pesel { get; set; }
-        public virtual List<InsurancePolicyInsurerDto> InsurancePolicies { get; set; } = null!;
+        public virtual List<InsurerPolicyDto> Policies { get; set; } = null!;
     }
 }

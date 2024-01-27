@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using PolisProReminder.Models;
+using PolisProReminder.Models.Insurer;
 using PolisProReminder.Services;
 
 namespace PolisProReminder.Controllers

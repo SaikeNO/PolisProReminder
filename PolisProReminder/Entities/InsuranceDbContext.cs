@@ -6,7 +6,7 @@ namespace PolisProReminder.Entities
     public class InsuranceDbContext : DbContext
     {
         public DbSet<Insurer> Insurers { get; set; } = null!;
-        public DbSet<InsurancePolicy> InsurancePolicies { get; set; } = null!;
+        public DbSet<Policy> Policies { get; set; } = null!;
         public DbSet<InsuranceCompany> InsuranceCompanies { get; set; } = null!;
         public DbSet<InsuranceType> InsuranceTypes { get; set; } = null!;
 
@@ -18,7 +18,7 @@ namespace PolisProReminder.Entities
             modelBuilder.ApplyConfiguration(new InsuranceCompanyConfiguration());
             modelBuilder.ApplyConfiguration(new InsuranceTypeConfiguration());
             modelBuilder.ApplyConfiguration(new InsurerConfiguration());
-            modelBuilder.ApplyConfiguration(new InsurancePolicyConfiguration());
+            modelBuilder.ApplyConfiguration(new PolicyConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

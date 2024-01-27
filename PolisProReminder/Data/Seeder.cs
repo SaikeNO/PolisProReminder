@@ -10,7 +10,7 @@ namespace PolisProReminder.Data
             if (dbContext.InsuranceCompanies.Any()
                 && dbContext.Insurers.Any()
                 && dbContext.InsuranceTypes.Any()
-                && dbContext.InsurancePolicies.Any())
+                && dbContext.Policies.Any())
             {
                 return;
             }
@@ -48,7 +48,7 @@ namespace PolisProReminder.Data
             var insuranceType2 = new InsuranceType { Name = "AC" };
             var insuranceType3 = new InsuranceType { Name = "na życie" };
 
-            var policy1 = new InsurancePolicy
+            var policy1 = new Policy
             {
                 InsurerId = insurer1.Id,
                 InsuranceCompany = insuranceCompany1,
@@ -61,7 +61,7 @@ namespace PolisProReminder.Data
                 Title = "Polisa samochodowa BI001FA",
             };
 
-            var policy2 = new InsurancePolicy
+            var policy2 = new Policy
             {
                 InsurerId = insurer1.Id,
                 InsuranceCompany = insuranceCompany2,
@@ -74,7 +74,7 @@ namespace PolisProReminder.Data
                 Title = "Polisa na życie",
             };
 
-            var policy3 = new InsurancePolicy
+            var policy3 = new Policy
             {
                 InsurerId = insurer2.Id,
                 InsuranceCompany = insuranceCompany2,
@@ -87,7 +87,7 @@ namespace PolisProReminder.Data
                 Title = "Polisa samochodowa BIA011HH",
             };
 
-            dbContext.InsurancePolicies.AddRange(new List<InsurancePolicy> { policy1, policy2, policy3 });
+            dbContext.Policies.AddRange(new List<Policy> { policy1, policy2, policy3 });
             dbContext.SaveChanges();
         }
     }

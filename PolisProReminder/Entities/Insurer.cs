@@ -8,6 +8,6 @@
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
         public string? Pesel { get; set; }
-        public virtual List<InsurancePolicy> InsurancePolicies { get; set; } = null!;
+        public virtual List<Policy> Policies { get; set; } = null!;
     }
 }

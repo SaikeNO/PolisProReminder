@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using PolisProReminder.Entities;
 using PolisProReminder.Models;
+using PolisProReminder.Models.InsurancePolicy;
+using PolisProReminder.Models.Insurer;
 
 namespace PolisProReminder
 {
@@ -8,14 +10,14 @@ namespace PolisProReminder
     {
         public MappingProfile()
         {
-            CreateMap<InsurancePolicy, InsurancePolicyDto>()
+            CreateMap<Policy, PolicyDto>()
                 .ForMember(p => p.InsuranceCompany, c => c.MapFrom(s => s.InsuranceCompany.Name));
 
-            CreateMap<InsurancePolicy, InsurancePolicyInsurerDto>()
+            CreateMap<Policy, Models.Insurer.InsurerPolicyDto>()
                 .ForMember(p => p.InsuranceCompany, c => c.MapFrom(s => s.InsuranceCompany.Name));
 
             CreateMap<InsuranceType, InsuranceTypeDto>();
-            CreateMap<Insurer, InsurerPolicyDto>();
+            CreateMap<Insurer, Models.InsurancePolicy.PolicyInsurerDto>();
             CreateMap<Insurer, InsurerDto>();
         }
     }
