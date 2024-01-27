@@ -1,6 +1,6 @@
 ﻿namespace PolisProReminder.Models
 {
-    public class InsurancePolicyDto
+    public class InsurancePolicyInsurerDto
     {
         public int Id { get; set; }
         public string Title { get; set; } = null!;
@@ -11,7 +11,6 @@
         public DateTime PaymentDate { get; set; }
         public bool IsPaid { get; set; }
 
-        public InsurerPolicyDto Insurer { get; set; } = null!;
         public List<InsuranceTypeDto> InsuranceTypes { get; set; } = new();
     }
 }

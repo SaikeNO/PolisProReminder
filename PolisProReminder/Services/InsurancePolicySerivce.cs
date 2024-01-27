@@ -30,7 +30,8 @@ namespace PolisProReminder.Services
                 .Include(p => p.InsuranceCompany)
                 .Include(p => p.Insurer)
                 .Include(p => p.InsuranceTypes)
-                .ToList();
+                .ToList()
+                .OrderBy(p => p.EndDate);
 
             return _mapper.Map<List<InsurancePolicyDto>>(policies);
         }

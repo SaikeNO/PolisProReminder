@@ -21,7 +21,7 @@ namespace PolisProReminder.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<InsurancePolicyDto> Get(int id)
+        public ActionResult<InsurancePolicyDto> Get([FromRoute]int id)
         {
             var policy = _insurancePolicyService.GetById(id);
             return Ok(policy);
