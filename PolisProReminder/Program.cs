@@ -1,5 +1,7 @@
+using NLog.Web;
 using PolisProReminder.Data;
 using PolisProReminder.Entities;
+using PolisProReminder.Middlewares;
 using PolisProReminder.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,10 +13,15 @@ builder.Services.AddDbContext<InsuranceDbContext>();
 builder.Services.AddScoped<IInsurancePolicySerivce, InsurancePolicySerivce>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddSwaggerGen();
+builder.Logging.ClearProviders();
+builder.Host.UseNLog();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
+app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.UseSwagger();
 app.UseSwaggerUI(c =>

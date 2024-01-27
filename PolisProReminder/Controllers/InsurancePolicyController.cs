@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PolisProReminder.Entities;
+using PolisProReminder.Models;
 using PolisProReminder.Services;
 
 namespace PolisProReminder.Controllers
@@ -14,10 +14,17 @@ namespace PolisProReminder.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<InsurancePolicy>> GetAll()
+        public ActionResult<IEnumerable<InsurancePolicyDto>> GetAll()
         {
             var policies = _insurancePolicyService.GetAll();
             return Ok(policies);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<InsurancePolicyDto> Get(int id)
+        {
+            var policy = _insurancePolicyService.GetById(id);
+            return Ok(policy);
         }
     }
 }
