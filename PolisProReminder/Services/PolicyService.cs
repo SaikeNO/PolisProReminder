@@ -6,18 +6,18 @@ using PolisProReminder.Models.InsurancePolicy;
 
 namespace PolisProReminder.Services
 {
-    public interface IInsurancePolicySerivce
+    public interface IPolicyService
     {
         IEnumerable<PolicyDto> GetAll();
         public PolicyDto GetById(int id);
     }
 
-    public class PolicySerivce : IInsurancePolicySerivce
+    public class PolicyService : IPolicyService
     {
         private readonly InsuranceDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public PolicySerivce(InsuranceDbContext dbContext, IMapper mapper)
+        public PolicyService(InsuranceDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;

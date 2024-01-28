@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using PolisProReminder.Entities;
 using PolisProReminder.Exceptions;
-using PolisProReminder.Models;
+using PolisProReminder.Models.InsuranceCompany;
 
 namespace PolisProReminder.Services
 {
@@ -9,6 +9,9 @@ namespace PolisProReminder.Services
     {
         InsuranceCompanyDto Get(int id);
         IEnumerable<InsuranceCompanyDto> GetAll();
+        InsuranceCompanyDto Create(CreateInsuranceCompanyDto dto);
+        void Delete(int id);
+        InsuranceCompanyDto Update(int id, CreateInsuranceCompanyDto dto);
     }
 
     public class InsuranceCompanyService : IInsuranceCompanyService
@@ -20,7 +23,6 @@ namespace PolisProReminder.Services
         {
             _dbContext = dbContext;
             _mapper = mapper;
-
         }
 
         public IEnumerable<InsuranceCompanyDto> GetAll()
@@ -42,6 +44,62 @@ namespace PolisProReminder.Services
                 throw new NotFoundException("Insurance Company not found");
 
             return _mapper.Map<InsuranceCompanyDto>(company);
+        }
+
+        public InsuranceCompanyDto Update(int id, CreateInsuranceCompanyDto dto)
+        {
+            var company = _dbContext
+                .InsuranceCompanies
+                .FirstOrDefault(c => c.Id == id);
+
+            if (company == null)
+                throw new NotFoundException("Insurance Company not found");
+
+            company.Name = dto.Name;
+
+            var updatedCompany = _dbContext
+                .InsuranceCompanies
+                .Update(company);
+
+            _dbContext.SaveChanges();
+
+            return _mapper.Map<InsuranceCompanyDto>(updatedCompany.Entity);
+        }
+
+        public void Delete(int id)
+        {
+            var company = _dbContext
+                .InsuranceCompanies
+                .FirstOrDefault(x => x.Id == id);
+
+            if (company == null)
+                throw new NotFoundException("Insurance Company not found");
+
+            _dbContext
+                .InsuranceCompanies
+                .Remove(company);
+
+            _dbContext.SaveChanges();
+        }
+
+        public InsuranceCompanyDto Create(CreateInsuranceCompanyDto dto)
+        {
+            var company = _dbContext
+                .InsuranceCompanies
+                .FirstOrDefault(c => c.Name == dto.Name);
+
+            if (company != null)
+                throw new AlreadyExistsException($"{company.Name} already exists");
+
+            var createCompany = _mapper.Map<InsuranceCompany>(dto);
+
+            var createdCompany = _dbContext
+                .InsuranceCompanies
+                .Add(createCompany);
+
+            _dbContext.SaveChanges();
+
+            return _mapper.Map<InsuranceCompanyDto>(createdCompany.Entity);
         }
 
     }

@@ -7,23 +7,23 @@ namespace PolisProReminder.Controllers
     [Route("api/policy")]
     public class PolicyController : ControllerBase
     {
-        private readonly IInsurancePolicySerivce _insurancePolicyService;
-        public PolicyController(IInsurancePolicySerivce insurancePolicyService)
+        private readonly IPolicyService _policyService;
+        public PolicyController(IPolicyService policyService)
         {
-            _insurancePolicyService = insurancePolicyService;
+            _policyService = policyService;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<PolicyDto>> GetAll()
         {
-            var policies = _insurancePolicyService.GetAll();
+            var policies = _policyService.GetAll();
             return Ok(policies);
         }
 
         [HttpGet("{id}")]
         public ActionResult<PolicyDto> Get([FromRoute]int id)
         {
-            var policy = _insurancePolicyService.GetById(id);
+            var policy = _policyService.GetById(id);
             return Ok(policy);
         }
     }

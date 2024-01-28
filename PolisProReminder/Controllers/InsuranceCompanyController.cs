@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PolisProReminder.Models;
+using PolisProReminder.Models.InsuranceCompany;
 using PolisProReminder.Services;
 
 namespace PolisProReminder.Controllers
@@ -12,6 +12,36 @@ namespace PolisProReminder.Controllers
         public InsuranceCompanyController(IInsuranceCompanyService insuranceCompanyService)
         {
             _insuranceCompanyService = insuranceCompanyService;
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult<InsuranceCompanyDto> Update([FromBody] CreateInsuranceCompanyDto dto, [FromRoute] int id)
+        {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var company = _insuranceCompanyService.Update(id, dto);
+
+            return Ok(company);
+        }
+
+        [HttpPost]
+        public ActionResult<InsuranceCompanyDto> CreateInsuranceCompany([FromBody] CreateInsuranceCompanyDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var company = _insuranceCompanyService.Create(dto);
+
+            return Ok(company);
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete([FromRoute] int id)
+        {
+            _insuranceCompanyService.Delete(id);
+
+            return Ok();
         }
 
         [HttpGet]

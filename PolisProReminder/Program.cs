@@ -2,7 +2,6 @@ using NLog.Web;
 using PolisProReminder.Data;
 using PolisProReminder.Entities;
 using PolisProReminder.Middlewares;
-using PolisProReminder.Models;
 using PolisProReminder.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<InsuranceDbContext>();
-builder.Services.AddScoped<IInsurancePolicySerivce, PolicySerivce>();
+builder.Services.AddScoped<IPolicyService, PolicyService>();
 builder.Services.AddScoped<IInsurerService, InsurerService>();
 builder.Services.AddScoped<IInsuranceCompanyService, InsuranceCompanyService>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);

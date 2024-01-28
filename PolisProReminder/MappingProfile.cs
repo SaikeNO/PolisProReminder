@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PolisProReminder.Entities;
 using PolisProReminder.Models;
+using PolisProReminder.Models.InsuranceCompany;
 using PolisProReminder.Models.InsurancePolicy;
 using PolisProReminder.Models.Insurer;
 
@@ -22,6 +23,7 @@ namespace PolisProReminder
             CreateMap<Insurer, InsurerDto>();
 
             CreateMap<CreateInsurerDto, Insurer>();
+            CreateMap<CreateInsuranceCompanyDto, InsuranceCompany>();
         }
     }
 }
