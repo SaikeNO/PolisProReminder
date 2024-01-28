@@ -11,7 +11,8 @@ namespace PolisProReminder.Services
         IEnumerable<InsurerDto> GetAll();
         InsurerDto GetById(int id);
         int CreateInsurer(CreateInsurerDto dto);
-
+        void DeleteInsurer(int id);
+        void Update(int id, CreateInsurerDto dto);
     }
 
     public class InsurerService : IInsurerService
@@ -22,6 +23,36 @@ namespace PolisProReminder.Services
         {
             _dbContext = dbContext;
             _mapper = mapper;
+        }
+
+        public void Update(int id, CreateInsurerDto dto)
+        {
+            var insurer = _dbContext
+               .Insurers
+               .FirstOrDefault(i => i.Id == id);
+
+            if (insurer == null)
+                throw new NotFoundException("Insurer does not exist");
+
+            insurer.Email = dto.Email;
+            insurer.Pesel = dto.Pesel;
+            insurer.PhoneNumber = dto.PhoneNumber;
+            insurer.FirstName = dto.FirstName;
+            insurer.LastName = dto.LastName;
+
+            _dbContext.SaveChanges();
+        }
+        public void DeleteInsurer(int id)
+        {
+            var insurer = _dbContext
+                .Insurers
+                .FirstOrDefault(i => i.Id == id);
+
+            if (insurer == null)
+                throw new NotFoundException("Insurer does not exist");
+            
+            _dbContext.Insurers.Remove(insurer);
+            _dbContext.SaveChanges();
         }
 
         public int CreateInsurer(CreateInsurerDto dto)

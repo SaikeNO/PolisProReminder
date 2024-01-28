@@ -16,13 +16,30 @@ namespace PolisProReminder.Controllers
             _mapper = mapper;
         }
 
+        [HttpPut("{id}")]
+        public ActionResult Udpate([FromBody] CreateInsurerDto dto, [FromRoute] int id) 
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            _insurerService.Update(id, dto);
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete([FromRoute] int id)
+        {
+            _insurerService.DeleteInsurer(id);
+            
+            return NoContent();
+        }
+
         [HttpPost]
         public ActionResult CreateInsurer([FromBody] CreateInsurerDto dto)
         {
             if(!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             var id = _insurerService.CreateInsurer(dto);
 
