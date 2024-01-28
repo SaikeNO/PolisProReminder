@@ -16,6 +16,19 @@ namespace PolisProReminder.Controllers
             _mapper = mapper;
         }
 
+        [HttpPost]
+        public ActionResult CreateInsurer([FromBody] CreateInsurerDto dto)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var id = _insurerService.CreateInsurer(dto);
+
+            return Created($"/api/insurer/{id}", null);
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<InsurerDto>> GetAll()
         {
@@ -24,5 +37,13 @@ namespace PolisProReminder.Controllers
             return _mapper.Map<List<InsurerDto>>(insurers);
         }
 
+
+        [HttpGet("{id}")]
+        public ActionResult<InsurerDto> GetById([FromRoute] int id)
+        {
+            var insurer = _insurerService.GetById(id);
+
+            return _mapper.Map<InsurerDto>(insurer);
+        }
     }
 }

@@ -2,6 +2,7 @@ using NLog.Web;
 using PolisProReminder.Data;
 using PolisProReminder.Entities;
 using PolisProReminder.Middlewares;
+using PolisProReminder.Models;
 using PolisProReminder.Services;
 
 var builder = WebApplication.CreateBuilder(args);

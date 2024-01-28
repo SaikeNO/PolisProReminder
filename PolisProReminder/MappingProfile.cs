@@ -13,12 +13,13 @@ namespace PolisProReminder
             CreateMap<Policy, PolicyDto>()
                 .ForMember(p => p.InsuranceCompany, c => c.MapFrom(s => s.InsuranceCompany.Name));
 
-            CreateMap<Policy, Models.Insurer.InsurerPolicyDto>()
+            CreateMap<Policy, InsurerPolicyDto>()
                 .ForMember(p => p.InsuranceCompany, c => c.MapFrom(s => s.InsuranceCompany.Name));
 
             CreateMap<InsuranceType, InsuranceTypeDto>();
-            CreateMap<Insurer, Models.InsurancePolicy.PolicyInsurerDto>();
+            CreateMap<Insurer, PolicyInsurerDto>();
             CreateMap<Insurer, InsurerDto>();
+            CreateMap<CreateInsurerDto, Insurer>();
         }
     }
 }

@@ -46,7 +46,7 @@ namespace PolisProReminder.Services
                 .FirstOrDefault(p => p.Id == id);
 
             if (policy == null)
-                throw new NotFoundException("Task not Found");
+                throw new NotFoundException("Insurance Policy not Found");
 
             return _mapper.Map<PolicyDto>(policy);
         }

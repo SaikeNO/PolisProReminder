@@ -32,6 +32,10 @@ namespace PolisProReminder.Middlewares
                     context.Response.StatusCode = 404;
                     await context.Response.WriteAsync(e.Message);
                     break;
+                case AlreadyExistsException e:
+                    context.Response.StatusCode = 409;
+                    await context.Response.WriteAsync(e.Message);
+                    break;
                 case Exception e:
                     _logger.LogError(e, e.Message);
 

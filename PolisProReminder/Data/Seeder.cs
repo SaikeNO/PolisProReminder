@@ -20,7 +20,7 @@ namespace PolisProReminder.Data
             {
                 FirstName = "Mateusz",
                 LastName = "Lengiewicz",
-                Pesel = "12345678901",
+                Pesel = "44051401458",
                 Email = "mat.len@test.com",
                 PhoneNumber = "800666209",
             };
@@ -29,12 +29,21 @@ namespace PolisProReminder.Data
             {
                 FirstName = "Jan",
                 LastName = "Kowalski",
-                Pesel = "098765432111",
+                Pesel = "77020201233",
                 Email = "janek.szparek@test.com",
                 PhoneNumber = "098666222",
             };
 
-            dbContext.Insurers.AddRange(new List<Insurer> { insurer1, insurer2 });
+            var insurer3 = new Insurer()
+            {
+                FirstName = "Janusz",
+                LastName = "Wariat",
+                Pesel = "88101006122",
+                Email = "januszex@test.com",
+                PhoneNumber = "111222333",
+            };
+
+            dbContext.Insurers.AddRange(new List<Insurer> { insurer1, insurer2, insurer3 });
             dbContext.SaveChanges();
 
             var insuranceCompany1 = new InsuranceCompany { Name = "Ergo Hestia" };
