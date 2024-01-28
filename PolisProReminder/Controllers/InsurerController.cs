@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Models.Insurer;
 using PolisProReminder.Services;
 
@@ -9,15 +8,13 @@ namespace PolisProReminder.Controllers
     public class InsurerController : ControllerBase
     {
         private readonly IInsurerService _insurerService;
-        private readonly IMapper _mapper;
-        public InsurerController(IInsurerService insurerService, IMapper mapper) 
+        public InsurerController(IInsurerService insurerService) 
         {
             _insurerService = insurerService;
-            _mapper = mapper;
         }
 
         [HttpPut("{id}")]
-        public ActionResult Udpate([FromBody] CreateInsurerDto dto, [FromRoute] int id) 
+        public ActionResult Update([FromBody] CreateInsurerDto dto, [FromRoute] int id) 
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -49,9 +46,9 @@ namespace PolisProReminder.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<InsurerDto>> GetAll()
         {
-            var insurers  = _insurerService.GetAll();
+            var insurers = _insurerService.GetAll();
 
-            return _mapper.Map<List<InsurerDto>>(insurers);
+            return Ok(insurers);
         }
 
 
@@ -60,7 +57,7 @@ namespace PolisProReminder.Controllers
         {
             var insurer = _insurerService.GetById(id);
 
-            return _mapper.Map<InsurerDto>(insurer);
+            return Ok(insurer);
         }
     }
 }

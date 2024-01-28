@@ -13,6 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<InsuranceDbContext>();
 builder.Services.AddScoped<IInsurancePolicySerivce, PolicySerivce>();
 builder.Services.AddScoped<IInsurerService, InsurerService>();
+builder.Services.AddScoped<IInsuranceCompanyService, InsuranceCompanyService>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddSwaggerGen();
 builder.Logging.ClearProviders();
