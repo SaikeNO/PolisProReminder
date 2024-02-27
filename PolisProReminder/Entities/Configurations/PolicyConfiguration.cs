@@ -12,6 +12,10 @@ namespace PolisProReminder.Entities.Configurations
             builder.Property(p => p.Title)
                 .IsRequired()
                 .HasMaxLength(60);
+
+            builder.Property(p => p.PolicyNumber)
+                .IsRequired()
+                .HasMaxLength(60);
         }
     }
 }

@@ -13,6 +13,17 @@ namespace PolisProReminder.Controllers
             _policyService = policyService;
         }
 
+        [HttpPost]
+        public ActionResult CreatePolicy([FromBody] CreatePolicyDto dto)
+        {
+            if(!ModelState.IsValid) 
+                return BadRequest(ModelState);  
+
+            var id = _policyService.CreatePolicy(dto);
+
+            return Created($"api/policy/{id}", null);
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<PolicyDto>> GetAll()
         {
