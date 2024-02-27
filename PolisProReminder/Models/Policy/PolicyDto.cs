@@ -1,6 +1,5 @@
-﻿using PolisProReminder.Models.InsuranceType;
-
-namespace PolisProReminder.Models.InsurancePolicy
+﻿
+namespace PolisProReminder.Models
 {
     public class PolicyDto
     {

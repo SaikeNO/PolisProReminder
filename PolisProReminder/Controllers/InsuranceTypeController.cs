@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PolisProReminder.Models.InsuranceType;
+using PolisProReminder.Models;
 using PolisProReminder.Services;
 
 namespace PolisProReminder.Controllers
@@ -41,7 +41,7 @@ namespace PolisProReminder.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateInsuranceType(CreateInsuranceTypeDto dto)
+        public ActionResult CreateInsuranceType([FromBody] CreateInsuranceTypeDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

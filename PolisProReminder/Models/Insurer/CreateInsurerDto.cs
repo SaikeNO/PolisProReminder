@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PolisProReminder.Models.Insurer
+namespace PolisProReminder.Models
 {
     public class CreateInsurerDto
     {

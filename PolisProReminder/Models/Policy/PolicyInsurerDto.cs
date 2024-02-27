@@ -1,4 +1,4 @@
-﻿namespace PolisProReminder.Models.InsurancePolicy
+﻿namespace PolisProReminder.Models
 {
     public class PolicyInsurerDto
     {

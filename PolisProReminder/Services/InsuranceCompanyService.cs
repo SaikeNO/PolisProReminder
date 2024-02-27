@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using PolisProReminder.Entities;
 using PolisProReminder.Exceptions;
-using PolisProReminder.Models.InsuranceCompany;
+using PolisProReminder.Models;
 
 namespace PolisProReminder.Services
 {

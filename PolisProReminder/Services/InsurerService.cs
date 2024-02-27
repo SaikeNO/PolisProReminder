@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PolisProReminder.Entities;
 using PolisProReminder.Exceptions;
-using PolisProReminder.Models.Insurer;
+using PolisProReminder.Models;
 
 namespace PolisProReminder.Services
 {
