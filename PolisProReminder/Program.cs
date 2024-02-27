@@ -16,6 +16,7 @@ builder.Services.AddDbContext<InsuranceDbContext>(options => options.UseSqlServe
 builder.Services.AddScoped<IPolicyService, PolicyService>();
 builder.Services.AddScoped<IInsurerService, InsurerService>();
 builder.Services.AddScoped<IInsuranceCompanyService, InsuranceCompanyService>();
+builder.Services.AddScoped<IInsuranceTypeService, InsuranceTypeService>();
 
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
