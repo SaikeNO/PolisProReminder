@@ -1,27 +1,36 @@
-﻿using PolisProReminder.Entities;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using PolisProReminder.Entities;
 
 namespace PolisProReminder.Data
 {
-    public static class Seeder
+    public class Seeder
     {
-        public static void Seed(InsuranceDbContext dbContext)
-        {
+        private readonly InsuranceDbContext _dbContext;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-            if (dbContext.InsuranceCompanies.Any()
-                && dbContext.Insurers.Any()
-                && dbContext.InsuranceTypes.Any()
-                && dbContext.Policies.Any()
-                && dbContext.Users.Any()
-                && dbContext.Roles.Any())
+        public Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwordHasher)
+        {
+            _dbContext = dbContext;
+            _passwordHasher = passwordHasher;
+        }
+        public void Seed()
+        {
+            if (_dbContext.InsuranceCompanies.Any()
+                && _dbContext.Insurers.Any()
+                && _dbContext.InsuranceTypes.Any()
+                && _dbContext.Policies.Any()
+                && _dbContext.Users.Any()
+                && _dbContext.Roles.Any())
             {
                 return;
             }
 
             var roleUser = new Role() { Name = "User" };
             var roleAdmin = new Role() { Name = "Admin" };
-            
-            dbContext.Roles.AddRange(new List<Role>() { roleUser, roleAdmin });
-            dbContext.SaveChanges();
+
+            _dbContext.Roles.AddRange(new List<Role>() { roleUser, roleAdmin });
+            _dbContext.SaveChanges();
             
             var user = new User()
             {
@@ -31,11 +40,12 @@ namespace PolisProReminder.Data
                 Email = "adres@email.com",
                 Role = roleAdmin,
                 RoleId = roleAdmin.Id,
-                Password = "password",
             };
-            
-            dbContext.Users.Add(user);
-            dbContext.SaveChanges();
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, "password");
+
+            _dbContext.Users.Add(user);
+            _dbContext.SaveChanges();
 
             var insurer1 = new Insurer()
             {
@@ -64,14 +74,14 @@ namespace PolisProReminder.Data
                 PhoneNumber = "111222333",
             };
 
-            dbContext.Insurers.AddRange(new List<Insurer> { insurer1, insurer2, insurer3 });
-            dbContext.SaveChanges();
+            _dbContext.Insurers.AddRange(new List<Insurer> { insurer1, insurer2, insurer3 });
+            _dbContext.SaveChanges();
 
             var insuranceCompany1 = new InsuranceCompany { Name = "Ergo Hestia" };
             var insuranceCompany2 = new InsuranceCompany { Name = "PZU" };
 
-            dbContext.InsuranceCompanies.AddRange(new List<InsuranceCompany> { insuranceCompany1, insuranceCompany2 });
-            dbContext.SaveChanges();
+            _dbContext.InsuranceCompanies.AddRange(new List<InsuranceCompany> { insuranceCompany1, insuranceCompany2 });
+            _dbContext.SaveChanges();
 
 
             var insuranceType1 = new InsuranceType { Name = "OC" };
@@ -117,8 +127,8 @@ namespace PolisProReminder.Data
                 Title = "Polisa samochodowa BIA011HH",
             };
 
-            dbContext.Policies.AddRange(new List<Policy> { policy1, policy2, policy3 });
-            dbContext.SaveChanges();
+            _dbContext.Policies.AddRange(new List<Policy> { policy1, policy2, policy3 });
+            _dbContext.SaveChanges();
         }
     }
 }

@@ -12,10 +12,6 @@ namespace PolisProReminder.Entities.Configurations
             builder.Property(p => p.Name)
                 .IsRequired()
                 .HasMaxLength(60);
-
-            builder.Property(p => p.Password)
-                .IsRequired()
-                .HasMaxLength(60);
         }
     }
 }

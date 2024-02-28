@@ -74,6 +74,9 @@ csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
 csharp_style_prefer_not_pattern = true:suggestion
 csharp_style_prefer_extended_property_pattern = true:suggestion
 
+# VSSpell001: Spell Check
+dotnet_diagnostic.VSSpell001.severity = none
+
 [*.vb]
 #### Style nazewnictwa ####
 
