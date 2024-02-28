@@ -24,8 +24,11 @@ namespace PolisProReminder
 
             CreateMap<Insurer, InsurerDto>();
 
-            CreateMap<CreateInsurerDto, Insurer>();
-            CreateMap<CreateInsuranceCompanyDto, InsuranceCompany>();
+            CreateMap<CreateInsurerDto, Insurer>()
+                .ReverseMap();
+            CreateMap<CreateInsuranceCompanyDto, InsuranceCompany>()
+                .ReverseMap();
+            
             CreateMap<CreateInsuranceTypeDto, InsuranceType>();
             CreateMap<CreatePolicyDto, Insurer>();
             CreateMap<InsuranceTypeDto, CreateInsuranceTypeDto>();

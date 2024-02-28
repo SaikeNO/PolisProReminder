@@ -1,5 +1,4 @@
-﻿using PolisProReminder.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace PolisProReminder.Models
 {
@@ -20,6 +19,7 @@ namespace PolisProReminder.Models
         public DateTime PaymentDate { get; set; }
         public bool IsPaid { get; set; }
 
+        [Required]
         public PolicyInsurerDto Insurer { get; set; } = null!;
         public List<InsuranceTypeDto> InsuranceTypes { get; set; } = null!;
     }
