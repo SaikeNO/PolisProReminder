@@ -10,11 +10,32 @@ namespace PolisProReminder.Data
             if (dbContext.InsuranceCompanies.Any()
                 && dbContext.Insurers.Any()
                 && dbContext.InsuranceTypes.Any()
-                && dbContext.Policies.Any())
+                && dbContext.Policies.Any()
+                && dbContext.Users.Any()
+                && dbContext.Roles.Any())
             {
                 return;
             }
 
+            var roleUser = new Role() { Name = "User" };
+            var roleAdmin = new Role() { Name = "Admin" };
+            
+            dbContext.Roles.AddRange(new List<Role>() { roleUser, roleAdmin });
+            dbContext.SaveChanges();
+            
+            var user = new User()
+            {
+                Name = "test",
+                FirstName = "Mateusz",
+                LastName = "Lengiewicz",
+                Email = "adres@email.com",
+                Role = roleAdmin,
+                RoleId = roleAdmin.Id,
+                Password = "password",
+            };
+            
+            dbContext.Users.Add(user);
+            dbContext.SaveChanges();
 
             var insurer1 = new Insurer()
             {

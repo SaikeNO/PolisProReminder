@@ -12,8 +12,8 @@ using PolisProReminder.Entities;
 namespace PolisProReminder.Migrations
 {
     [DbContext(typeof(InsuranceDbContext))]
-    [Migration("20240127195130_change-names2")]
-    partial class changenames2
+    [Migration("20240228193258_UserAdnRoleAdd")]
+    partial class UserAdnRoleAdd
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -97,7 +97,9 @@ namespace PolisProReminder.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Pesel")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
@@ -132,7 +134,8 @@ namespace PolisProReminder.Migrations
 
                     b.Property<string>("PolicyNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -149,6 +152,61 @@ namespace PolisProReminder.Migrations
                     b.HasIndex("InsurerId");
 
                     b.ToTable("Policies", (string)null);
+                });
+
+            modelBuilder.Entity("PolisProReminder.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("PolisProReminder.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("InsuranceTypePolicy", b =>
@@ -183,6 +241,17 @@ namespace PolisProReminder.Migrations
                     b.Navigation("InsuranceCompany");
 
                     b.Navigation("Insurer");
+                });
+
+            modelBuilder.Entity("PolisProReminder.Entities.User", b =>
+                {
+                    b.HasOne("PolisProReminder.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("PolisProReminder.Entities.InsuranceCompany", b =>

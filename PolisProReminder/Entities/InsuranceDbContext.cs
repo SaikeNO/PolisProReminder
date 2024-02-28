@@ -10,6 +10,8 @@ namespace PolisProReminder.Entities
         public DbSet<Policy> Policies { get; set; } = null!;
         public DbSet<InsuranceCompany> InsuranceCompanies { get; set; } = null!;
         public DbSet<InsuranceType> InsuranceTypes { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Role> Roles { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
