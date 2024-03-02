@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NLog.Web;
 using PolisProReminder;
+using PolisProReminder.Authorization;
 using PolisProReminder.Data;
 using PolisProReminder.Entities;
 using PolisProReminder.Middlewares;
@@ -24,8 +26,11 @@ builder.Services.AddScoped<IInsurerService, InsurerService>();
 builder.Services.AddScoped<IInsuranceCompanyService, InsuranceCompanyService>();
 builder.Services.AddScoped<IInsuranceTypeService, InsuranceTypeService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
 builder.Services.AddSingleton(authenticationSettings);
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = "Bearer";
@@ -52,7 +57,6 @@ builder.Services.AddSwaggerGen(c =>
 builder.Logging.ClearProviders();
 builder.Host.UseNLog();
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -70,11 +74,13 @@ var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
 
 seeder.Seed();
 app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseAuthentication();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.UseAuthentication();
 
-app.MapControllers();
+app.MapControllers()
+    .RequireAuthorization(new AuthorizeAttribute());
 
 app.Run();

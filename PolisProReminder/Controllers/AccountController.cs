@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PolisProReminder.Entities;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Models;
 using PolisProReminder.Services;
 
@@ -16,6 +16,7 @@ namespace PolisProReminder.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public ActionResult<string> Login([FromBody] LoginDto dto)
         {
             if(!ModelState.IsValid)

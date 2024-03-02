@@ -11,6 +11,8 @@
         public DateTime EndDate { get; set; }
         public DateTime PaymentDate { get; set; }
         public bool IsPaid { get; set; } = false;
+        public int CreatedById { get; set; }
+        public virtual User CreatedBy { get; set; } = null!;
 
         public virtual Insurer Insurer { get; set; } = null!;
         public virtual InsuranceCompany InsuranceCompany { get; set; } = null!;

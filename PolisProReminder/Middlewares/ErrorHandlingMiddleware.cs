@@ -28,6 +28,9 @@ namespace PolisProReminder.Middlewares
         {
             switch (exception)
             {
+                case ForbidException e:
+                    context.Response.StatusCode = 403;
+                    break;
                 case BadRequestException e:
                     context.Response.StatusCode = 400;
                     await context.Response.WriteAsync(e.Message);

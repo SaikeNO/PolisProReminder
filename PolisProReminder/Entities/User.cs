@@ -1,4 +1,6 @@
-﻿namespace PolisProReminder.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace PolisProReminder.Entities
 {
     public class User
     {
@@ -10,5 +12,8 @@
         public string PasswordHash { get; set; } = null!;
         public int RoleId { get; set; }
         public virtual Role Role { get; set; } = null!;
+
+        public int? SuperiorId { get; set; }
+        public virtual User? Superior { get; set; }
     }
 }

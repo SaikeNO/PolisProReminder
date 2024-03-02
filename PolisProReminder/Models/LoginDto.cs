@@ -8,7 +8,5 @@ namespace PolisProReminder.Models
         public string Name { get; set; } = null!;
         [Required]
         public string Password { get; set; } = null!;
-        [Required]
-        public string ConfirmPassword { get; set; } = null!;
     }
 }

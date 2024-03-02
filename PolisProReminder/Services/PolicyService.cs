@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using PolisProReminder.Authorization;
 using PolisProReminder.Entities;
 using PolisProReminder.Exceptions;
 using PolisProReminder.Models;
@@ -20,17 +22,21 @@ namespace PolisProReminder.Services
     {
         private readonly InsuranceDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly IUserContextService _userContextService;
         private readonly IInsuranceTypeService _typeService;
         private readonly IInsuranceCompanyService _companyService;
         private readonly IInsurerService _insurerService;
+        private readonly IAuthorizationService _authorizationService;
 
-        public PolicyService(InsuranceDbContext dbContext, IMapper mapper, IInsuranceTypeService typeService, IInsuranceCompanyService companyService, IInsurerService insurerService)
+        public PolicyService(InsuranceDbContext dbContext, IMapper mapper, IUserContextService userContextService, IInsuranceTypeService typeService, IInsuranceCompanyService companyService, IInsurerService insurerService, IAuthorizationService authorizationService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _userContextService = userContextService;
             _typeService = typeService;
             _companyService = companyService;
             _insurerService = insurerService;
+            _authorizationService = authorizationService;
         }
 
         public void DeletePolicy(int id)
@@ -47,7 +53,7 @@ namespace PolisProReminder.Services
             var policy = _dbContext.Policies.FirstOrDefault(p => p.Id == id);
             if (policy == null)
                 throw new NotFoundException("Policy does not exists");
-        
+
             policy.IsPaid = isPaid;
             _dbContext.SaveChanges();
 
@@ -64,6 +70,12 @@ namespace PolisProReminder.Services
 
             if (policy == null)
                 throw new NotFoundException("Policy does not exists");
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, policy,
+                new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+
+            if (!authorizationResult.Succeeded)
+                throw new ForbidException();
 
             foreach (var t in dto.InsuranceTypes)
             {
@@ -192,6 +204,7 @@ namespace PolisProReminder.Services
                 InsuranceTypes = types,
                 IsPaid = dto.IsPaid,
                 Title = dto.Title,
+                CreatedById = _userContextService.GetUserId,
             };
 
             _dbContext.Policies.Add(createPolicy);
@@ -208,9 +221,28 @@ namespace PolisProReminder.Services
                 .Include(p => p.Insurer)
                 .Include(p => p.InsuranceTypes)
                 .ToList()
-                .OrderBy(p => p.EndDate);
+                .Where(GetAllPredicate)
+                .OrderBy(p => p.EndDate)
+                .ToList();
 
             return _mapper.Map<List<PolicyDto>>(policies);
+        }
+
+        private bool GetAllPredicate(Policy p)
+        {
+            var user = _userContextService.User;
+            if (user.IsInRole("Admin"))
+                return true;
+
+            if (p.CreatedById == _userContextService.GetUserId)
+                return true;
+
+            var superiorId = _userContextService.GetSuperiorId;
+
+            if (superiorId is not null && p.CreatedById == superiorId)
+                return true;
+
+            return false;
         }
 
         public PolicyDto GetById(int id)

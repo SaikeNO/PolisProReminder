@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using PolisProReminder.Entities;
 
 namespace PolisProReminder.Data
@@ -27,14 +26,16 @@ namespace PolisProReminder.Data
             }
 
             var roleUser = new Role() { Name = "User" };
+            var roleAgent = new Role() { Name = "Agent" };
             var roleAdmin = new Role() { Name = "Admin" };
+            
 
-            _dbContext.Roles.AddRange(new List<Role>() { roleUser, roleAdmin });
+            _dbContext.Roles.AddRange(new List<Role>() { roleUser, roleAgent, roleAdmin });
             _dbContext.SaveChanges();
             
-            var user = new User()
+            var admin = new User()
             {
-                Name = "test",
+                Name = "admin",
                 FirstName = "Mateusz",
                 LastName = "Lengiewicz",
                 Email = "adres@email.com",
@@ -42,9 +43,57 @@ namespace PolisProReminder.Data
                 RoleId = roleAdmin.Id,
             };
 
+            admin.PasswordHash = _passwordHasher.HashPassword(admin, "password");
+
+            var agent = new User()
+            {
+                Name = "agent",
+                FirstName = "Agent1",
+                LastName = "Lengiewicz",
+                Email = "adres@email.com",
+                Role = roleAgent,
+                RoleId = roleAgent.Id,
+            };
+
+            agent.PasswordHash = _passwordHasher.HashPassword(agent, "password");
+
+            var agent2 = new User()
+            {
+                Name = "agent2",
+                FirstName = "Agent1",
+                LastName = "Lengiewicz",
+                Email = "adres@email.com",
+                Role = roleAgent,
+                RoleId = roleAgent.Id,
+            };
+
+            agent2.PasswordHash = _passwordHasher.HashPassword(agent2, "password");
+
+            var user = new User()
+            {
+                Name = "user",
+                FirstName = "Użytkownik",
+                LastName = "Lengiewicz",
+                Email = "adres@email.com",
+                Role = roleUser,
+                RoleId = roleUser.Id,
+            };
+
             user.PasswordHash = _passwordHasher.HashPassword(user, "password");
 
-            _dbContext.Users.Add(user);
+            var user2 = new User()
+            {
+                Name = "user2",
+                FirstName = "Użytkownik",
+                LastName = "Lengiewicz",
+                Email = "adres@email.com",
+                Role = roleUser,
+                RoleId = roleUser.Id,
+            };
+
+            user2.PasswordHash = _passwordHasher.HashPassword(user2, "password");
+
+            _dbContext.Users.AddRange(new List<User> { user, user2, agent, agent2, admin});
             _dbContext.SaveChanges();
 
             var insurer1 = new Insurer()
@@ -99,6 +148,7 @@ namespace PolisProReminder.Data
                 IsPaid = false,
                 PolicyNumber = "NRXY0000000089",
                 Title = "Polisa samochodowa BI001FA",
+                CreatedById = agent.Id,
             };
 
             var policy2 = new Policy
@@ -112,6 +162,8 @@ namespace PolisProReminder.Data
                 IsPaid = true,
                 PolicyNumber = "AA08691222ABBC",
                 Title = "Polisa na życie",
+                CreatedById = agent.Id,
+
             };
 
             var policy3 = new Policy
@@ -125,6 +177,8 @@ namespace PolisProReminder.Data
                 IsPaid = true,
                 PolicyNumber = "AA08691222ABBC",
                 Title = "Polisa samochodowa BIA011HH",
+                CreatedById = agent2.Id,
+
             };
 
             _dbContext.Policies.AddRange(new List<Policy> { policy1, policy2, policy3 });
