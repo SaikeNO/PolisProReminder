@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using PolisProReminder.Entities;
 using System.Security.Claims;
 
@@ -19,8 +20,9 @@ namespace PolisProReminder.Authorization
                 context.Succeed(requirement);
             }
 
-            var superiorId = int.Parse(context.User.FindFirst(c => c.Type == "SuperiorId").Value); // User
-            if (policy.CreatedById == superiorId && (
+            var superiorId = context.User.FindFirst(c => c.Type == "SuperiorId").Value; // User
+            
+            if (!superiorId.IsNullOrEmpty() && policy.CreatedById == int.Parse(superiorId) && (
                 requirement.ResourceOperation == ResourceOperation.Read || 
                 requirement.ResourceOperation == ResourceOperation.Update
                 ))
