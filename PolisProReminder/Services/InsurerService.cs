@@ -13,6 +13,8 @@ namespace PolisProReminder.Services
         int CreateInsurer(CreateInsurerDto dto);
         void DeleteInsurer(int id);
         void Update(int id, CreateInsurerDto dto);
+        public Insurer GetOrCreateIfNotExists(PolicyInsurerDto dto);
+        public Insurer UpdateOrCreateIfNotExists(PolicyInsurerDto dto);
     }
 
     public class InsurerService : IInsurerService
@@ -42,14 +44,47 @@ namespace PolisProReminder.Services
 
             _dbContext.SaveChanges();
         }
+
+        public Insurer UpdateOrCreateIfNotExists(PolicyInsurerDto dto)
+        {
+            var insurer = _mapper.Map<Insurer>(dto);
+
+            var dbInsurer = _dbContext.Insurers
+                .FirstOrDefault(i => i.Id == insurer.Id);
+
+            if (dbInsurer == null)
+            {
+                CreateInsurer(_mapper.Map<CreateInsurerDto>(insurer));
+                _dbContext.SaveChanges();
+
+                insurer = _dbContext.Insurers
+                    .FirstOrDefault(i => i.Pesel == insurer.Pesel)!;
+            }
+            else
+            {
+                dbInsurer.FirstName = insurer.FirstName;
+                dbInsurer.LastName = insurer.LastName;
+                dbInsurer.PhoneNumber = insurer.PhoneNumber;
+                dbInsurer.Email = insurer.Email;
+                dbInsurer.Pesel = insurer.Pesel;
+                _dbContext.SaveChanges();
+            }
+
+            return insurer;
+        }
+
         public void DeleteInsurer(int id)
         {
             var insurer = _dbContext
                 .Insurers
+                .Include(i => i.Policies)
                 .FirstOrDefault(i => i.Id == id);
 
             if (insurer == null)
                 throw new NotFoundException("Insurer does not exist");
+
+            if (insurer.Policies.Any())
+                throw new NotAllowedException("Insurer has policies");
             
             _dbContext.Insurers.Remove(insurer);
             _dbContext.SaveChanges();
@@ -69,6 +104,24 @@ namespace PolisProReminder.Services
             _dbContext.SaveChanges();
 
             return createInsurer.Id;
+        }
+
+        public Insurer GetOrCreateIfNotExists(PolicyInsurerDto dto)
+        {
+            var insurer = _mapper.Map<Insurer>(dto);
+
+            var dbInsurer = _dbContext.Insurers
+                .FirstOrDefault(i => i.Id == insurer.Id);
+
+            if (dbInsurer == null)
+            {
+                CreateInsurer(_mapper.Map<CreateInsurerDto>(insurer));
+                _dbContext.SaveChanges();
+                insurer = _dbContext.Insurers
+                    .FirstOrDefault(i => i.Pesel == insurer.Pesel)!;
+            }
+
+            return insurer;
         }
 
         public IEnumerable<InsurerDto> GetAll()

@@ -26,7 +26,7 @@ namespace PolisProReminder.Services
         private readonly IInsurerService _insurerService;
         private readonly IAuthorizationService _authorizationService;
 
-        public PolicyService(InsuranceDbContext dbContext, IMapper mapper, IUserContextService userContextService,  IInsurerService insurerService, IAuthorizationService authorizationService)
+        public PolicyService(InsuranceDbContext dbContext, IMapper mapper, IUserContextService userContextService, IInsurerService insurerService, IAuthorizationService authorizationService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -37,16 +37,26 @@ namespace PolisProReminder.Services
 
         public void DeletePolicy(int id) // Need to do soft delete
         {
-            var policy = _dbContext.Policies.FirstOrDefault(p => p.Id == id);
+            var policy = _dbContext.Policies
+                .FirstOrDefault(p => p.Id == id);
+
             if (policy == null)
                 throw new NotFoundException("Policy does not exists");
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, policy,
+               new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+
+            if (!authorizationResult.Succeeded)
+                throw new ForbidException();
 
             _dbContext.Policies.Remove(policy);
             _dbContext.SaveChanges();
         }
         public PolicyDto UpdateIsPaidPolicy(int id, bool isPaid)
         {
-            var policy = _dbContext.Policies.FirstOrDefault(p => p.Id == id);
+            var policy = _dbContext.Policies
+                .FirstOrDefault(p => p.Id == id);
+
             if (policy == null)
                 throw new NotFoundException("Policy does not exists");
 
@@ -80,22 +90,16 @@ namespace PolisProReminder.Services
             if (!authorizationResult.Succeeded)
                 throw new ForbidException();
 
-            var insurer = _mapper.Map<Insurer>(dto.Insurer);
+            var insurer = _insurerService.UpdateOrCreateIfNotExists(dto.Insurer);
 
-            var dbInsurer = _dbContext.Insurers.FirstOrDefault(i => i.Id == insurer.Id);
-            if (dbInsurer == null)
+            List<InsuranceType> newTypes = new();
+            foreach (var item in dto.InsuranceTypes)
             {
-                _insurerService.CreateInsurer(_mapper.Map<CreateInsurerDto>(insurer));
-                _dbContext.SaveChanges();
-                insurer = _dbContext.Insurers.FirstOrDefault(i => i.Pesel == insurer.Pesel)!;
-            }
-            else
-            {
-                dbInsurer.FirstName = insurer.FirstName;
-                dbInsurer.LastName = insurer.LastName;
-                dbInsurer.PhoneNumber = insurer.PhoneNumber;
-                dbInsurer.Email = insurer.Email;
-                dbInsurer.Pesel = insurer.Pesel;
+                var type = _dbContext.InsuranceTypes
+                    .FirstOrDefault(t => t.Id == item.Id);
+
+                if (type is not null) 
+                    newTypes.Add(type);
             }
 
             policy.PolicyNumber = dto.PolicyNumber;
@@ -106,13 +110,6 @@ namespace PolisProReminder.Services
             policy.InsurerId = insurer.Id;
             policy.IsPaid = dto.IsPaid;
             policy.Title = dto.Title;
-
-            List<InsuranceType> newTypes = new();
-            foreach (var item in dto.InsuranceTypes)
-            {
-                newTypes.Add(_dbContext.InsuranceTypes.Single(t => t.Id == item.Id));
-            }
-
             policy.InsuranceTypes.Clear();
             policy.InsuranceTypes.AddRange(newTypes);
 
@@ -130,16 +127,6 @@ namespace PolisProReminder.Services
             if (policy != null)
                 throw new AlreadyExistsException("Policy already Exists");
 
-            var insurer = _mapper.Map<Insurer>(dto.Insurer);
-
-            var dbInsurer = _dbContext.Insurers.FirstOrDefault(i => i.Id == insurer.Id);
-            if (dbInsurer == null)
-            {
-                _insurerService.CreateInsurer(_mapper.Map<CreateInsurerDto>(insurer));
-                _dbContext.SaveChanges();
-                insurer = _dbContext.Insurers.FirstOrDefault(i => i.Pesel == insurer.Pesel)!;
-            }
-
             int creatingUserId = _userContextService.GetUserId;
 
             if (_userContextService.User.IsInRole("User") && _userContextService.GetSuperiorId is not null)
@@ -154,7 +141,7 @@ namespace PolisProReminder.Services
                 StartDate = dto.StartDate,
                 EndDate = dto.EndDate,
                 PaymentDate = dto.PaymentDate,
-                InsurerId = insurer.Id,
+                InsurerId = _insurerService.GetOrCreateIfNotExists(dto.Insurer).Id,
                 InsuranceTypes = _mapper.Map<List<InsuranceType>>(dto.InsuranceTypes),
                 IsPaid = dto.IsPaid,
                 Title = dto.Title,
