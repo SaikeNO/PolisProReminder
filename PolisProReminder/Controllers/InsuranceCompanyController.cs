@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Models;
 using PolisProReminder.Services;
 
@@ -15,9 +16,10 @@ namespace PolisProReminder.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Agent")]
         public ActionResult<InsuranceCompanyDto> Update([FromBody] CreateInsuranceCompanyDto dto, [FromRoute] int id)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var company = _insuranceCompanyService.Update(id, dto);
@@ -26,6 +28,7 @@ namespace PolisProReminder.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Agent")]
         public ActionResult<InsuranceCompanyDto> CreateInsuranceCompany([FromBody] CreateInsuranceCompanyDto dto)
         {
             if (!ModelState.IsValid)
@@ -37,6 +40,7 @@ namespace PolisProReminder.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin, Agent")]
         public ActionResult Delete([FromRoute] int id)
         {
             _insuranceCompanyService.Delete(id);
