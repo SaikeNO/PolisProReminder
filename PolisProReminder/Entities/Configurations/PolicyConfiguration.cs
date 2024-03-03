@@ -16,6 +16,10 @@ namespace PolisProReminder.Entities.Configurations
             builder.Property(p => p.PolicyNumber)
                 .IsRequired()
                 .HasMaxLength(60);
+
+            builder.HasOne(p => p.InsuranceCompany)
+                .WithMany(c => c.Policies)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }
