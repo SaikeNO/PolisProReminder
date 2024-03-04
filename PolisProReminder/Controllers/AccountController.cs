@@ -19,11 +19,11 @@ namespace PolisProReminder.Controllers
         [AllowAnonymous]
         public ActionResult<string> Login([FromBody] LoginDto dto)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var token = _accountService.GenerateJwt(dto);
-            return Ok(token);
+            return Ok(new TokenDto() { Token = token });
         }
     }
 }
