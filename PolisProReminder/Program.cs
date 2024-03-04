@@ -56,7 +56,12 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Logging.ClearProviders();
 builder.Host.UseNLog();
-
+builder.Services.AddCors(options => options.AddPolicy("frontend",
+    policy =>
+    {
+        policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+    }
+));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -77,7 +82,7 @@ app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseAuthentication();
 
 app.UseHttpsRedirection();
-
+app.UseCors("frontend");
 app.UseAuthorization();
 
 app.MapControllers()
