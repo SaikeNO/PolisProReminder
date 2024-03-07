@@ -13,18 +13,24 @@ namespace PolisProReminder.Services
     public interface IAccountService
     {
         public string GenerateJwt(LoginDto dto);
+        public void ResetPassword(ResetPasswordDto dto);
     }
     public class AccountService : IAccountService
     {
         private readonly InsuranceDbContext _dbContext;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
+        private readonly IUserContextService _userContextService;
 
-        public AccountService(InsuranceDbContext dbContext, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings)
+        public AccountService(InsuranceDbContext dbContext,
+            IPasswordHasher<User> passwordHasher,
+            AuthenticationSettings authenticationSettings,
+            IUserContextService userContextService)
         {
             _dbContext = dbContext;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
+            _userContextService = userContextService;
         }
         public string GenerateJwt(LoginDto dto)
         {
@@ -61,6 +67,19 @@ namespace PolisProReminder.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             return tokenHandler.WriteToken(token);
 
+        }
+
+        public void ResetPassword(ResetPasswordDto dto)
+        {
+
+            var user = _dbContext.Users
+                .FirstOrDefault(u => u.Id == _userContextService.GetUserId);
+
+            if (user == null)
+                throw new NotFoundException("User does not exist");
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
+            _dbContext.SaveChanges();
         }
     }
 }

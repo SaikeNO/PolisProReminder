@@ -25,5 +25,16 @@ namespace PolisProReminder.Controllers
             var token = _accountService.GenerateJwt(dto);
             return Ok(new TokenDto() { Token = token });
         }
+
+        [HttpPost("resetPassword")]
+        public ActionResult ResetPassword([FromBody] ResetPasswordDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            _accountService.ResetPassword(dto);
+
+            return NoContent();
+        }
     }
 }
