@@ -25,9 +25,9 @@ namespace PolisProReminder.Data
                 return;
             }
 
-            var roleUser = new Role() { Name = "User" };
-            var roleAgent = new Role() { Name = "Agent" };
-            var roleAdmin = new Role() { Name = "Admin" };
+            var roleUser = new Role() { Name = "USER" };
+            var roleAgent = new Role() { Name = "AGNET" };
+            var roleAdmin = new Role() { Name = "ADMIN" };
             
 
             _dbContext.Roles.AddRange(new List<Role>() { roleUser, roleAgent, roleAdmin });

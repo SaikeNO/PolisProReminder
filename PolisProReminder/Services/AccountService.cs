@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PolisProReminder.Entities;
@@ -12,27 +13,30 @@ namespace PolisProReminder.Services
 {
     public interface IAccountService
     {
-        public string GenerateJwt(LoginDto dto);
+        public LoginResponseDto Login(LoginDto dto);
         public void ResetPassword(ResetPasswordDto dto);
     }
     public class AccountService : IAccountService
     {
         private readonly InsuranceDbContext _dbContext;
+        private readonly IMapper _mapper;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IUserContextService _userContextService;
 
         public AccountService(InsuranceDbContext dbContext,
+            IMapper mapper,
             IPasswordHasher<User> passwordHasher,
             AuthenticationSettings authenticationSettings,
             IUserContextService userContextService)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
             _userContextService = userContextService;
         }
-        public string GenerateJwt(LoginDto dto)
+        public LoginResponseDto Login(LoginDto dto)
         {
             var user = _dbContext.Users
                 .Include(u => u.Role)
@@ -65,7 +69,12 @@ namespace PolisProReminder.Services
                 signingCredentials: cred);
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            return tokenHandler.WriteToken(token);
+
+            return new LoginResponseDto()
+            {
+                Token = tokenHandler.WriteToken(token),
+                User = _mapper.Map<UserDto>(user)
+            };
 
         }
 

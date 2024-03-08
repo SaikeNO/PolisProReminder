@@ -17,13 +17,12 @@ namespace PolisProReminder.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public ActionResult<string> Login([FromBody] LoginDto dto)
+        public ActionResult<LoginResponseDto> Login([FromBody] LoginDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var token = _accountService.GenerateJwt(dto);
-            return Ok(new TokenDto() { Token = token });
+            return Ok(_accountService.Login(dto));
         }
 
         [HttpPost("resetPassword")]
