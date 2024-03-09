@@ -69,6 +69,18 @@ CREATE TABLE [Policies] (
 GO
 
 
+CREATE TABLE [RefreshToken] (
+    [Id] int NOT NULL IDENTITY,
+    [Token] nvarchar(max) NOT NULL,
+    [Created] datetime2 NOT NULL,
+    [Expires] datetime2 NOT NULL,
+    [UserId] int NOT NULL,
+    CONSTRAINT [PK_RefreshToken] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_RefreshToken_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+);
+GO
+
+
 CREATE TABLE [InsuranceTypePolicy] (
     [InsuranceTypesId] int NOT NULL,
     [PoliciesId] int NOT NULL,
@@ -92,6 +104,10 @@ GO
 
 
 CREATE INDEX [IX_Policies_InsurerId] ON [Policies] ([InsurerId]);
+GO
+
+
+CREATE UNIQUE INDEX [IX_RefreshToken_UserId] ON [RefreshToken] ([UserId]);
 GO
 
 
