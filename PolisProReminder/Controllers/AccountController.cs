@@ -26,9 +26,10 @@ namespace PolisProReminder.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public ActionResult<TokenDto> RefreshToken()
+        [AllowAnonymous]
+        public ActionResult<TokenDto> RefreshToken([FromBody] TokenDto dto )
         {
-            return Ok(_accountService.RefreshToken());
+            return Ok(_accountService.RefreshToken(dto.Token));
         }
 
         [HttpPost("reset-password")]

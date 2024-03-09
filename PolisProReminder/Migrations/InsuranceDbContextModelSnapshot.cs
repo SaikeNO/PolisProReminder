@@ -34,7 +34,7 @@ namespace PolisProReminder.Migrations
 
                     b.HasIndex("PoliciesId");
 
-                    b.ToTable("InsuranceTypePolicy");
+                    b.ToTable("InsuranceTypePolicy", (string)null);
                 });
 
             modelBuilder.Entity("PolisProReminder.Entities.InsuranceCompany", b =>
@@ -183,7 +183,7 @@ namespace PolisProReminder.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("RefreshToken");
+                    b.ToTable("RefreshToken", (string)null);
                 });
 
             modelBuilder.Entity("PolisProReminder.Entities.Role", b =>
@@ -200,7 +200,7 @@ namespace PolisProReminder.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("PolisProReminder.Entities.User", b =>
@@ -243,7 +243,7 @@ namespace PolisProReminder.Migrations
 
                     b.HasIndex("SuperiorId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("InsuranceTypePolicy", b =>

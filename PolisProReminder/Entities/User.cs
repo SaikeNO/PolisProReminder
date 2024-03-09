@@ -9,7 +9,7 @@ public class User
     public string Email { get; set; } = null!;
     public string PasswordHash { get; set; } = null!;
 
-    public RefreshToken RefreshToken { get; set; } = null!;
+    public RefreshToken? RefreshToken { get; set; }
 
     public int RoleId { get; set; }
     public virtual Role Role { get; set; } = null!;

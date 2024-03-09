@@ -16,7 +16,7 @@ public interface IAccountService
 {
     public LoginResponseDto Login(LoginDto dto);
     public void ResetPassword(ResetPasswordDto dto);
-    public TokenDto RefreshToken();
+    public TokenDto RefreshToken(string token);
 }
 public class AccountService : IAccountService
 {
@@ -68,19 +68,25 @@ public class AccountService : IAccountService
 
     }
 
-    public TokenDto RefreshToken()
+    public TokenDto RefreshToken(string expiredToken)
     {
+        var principal = GetPrincipalFromExpiredToken(expiredToken);
+        var userId = principal?.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId is null)
+            throw new UnauthorizedException("Invalid Access Token");
+
         var user = _dbContext.Users
             .Include(u => u.Role)
             .Include(u => u.RefreshToken)
-            .FirstOrDefault(u => u.Id == _userContextService.GetUserId);
+            .FirstOrDefault(u => u.Id == int.Parse(userId));
 
         if (user is null)
             throw new NotFoundException("User does not exist");
 
-        var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+        var refreshToken = _httpContextAccessor?.HttpContext?.Request.Cookies["refreshToken"];
 
-        if (!user.RefreshToken.Token.Equals(refreshToken))
+        if (user.RefreshToken is null || !user.RefreshToken.Token.Equals(refreshToken))
             throw new UnauthorizedException("Invalid Refresh Token");
         if (user.RefreshToken.Expires < DateTime.Now)
             throw new UnauthorizedException("Token expired");
@@ -104,17 +110,6 @@ public class AccountService : IAccountService
         _dbContext.SaveChanges();
     }
 
-    private RefreshToken GenerateRefreshToken()
-    {
-        var refreshToken = new RefreshToken()
-        {
-            Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-            Expires = DateTime.Now.AddDays(_authenticationSettings.RefreshTokenExpireDays)
-        };
-
-        return refreshToken;
-    }
-
     private void SetRefreshToken(RefreshToken newRefreshToken, User user)
     {
         var cookieOptions = new CookieOptions
@@ -123,7 +118,7 @@ public class AccountService : IAccountService
             Expires = newRefreshToken.Expires,
         };
 
-        _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+        _httpContextAccessor.HttpContext?.Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
 
 
         if (user.RefreshToken is null)
@@ -138,6 +133,29 @@ public class AccountService : IAccountService
         }
 
         _dbContext.SaveChanges();
+    }
+
+    private ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
+    {
+        var validation = new TokenValidationParameters
+        {
+            ValidIssuer = _authenticationSettings.JwtIssuer,
+            ValidAudience = _authenticationSettings.JwtIssuer,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey)),
+            ValidateLifetime = false
+        };
+
+        return new JwtSecurityTokenHandler().ValidateToken(token, validation, out _);
+    }
+    private RefreshToken GenerateRefreshToken()
+    {
+        var refreshToken = new RefreshToken()
+        {
+            Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+            Expires = DateTime.Now.AddDays(_authenticationSettings.RefreshTokenExpireDays)
+        };
+
+        return refreshToken;
     }
 
     private string GenerateJwtToken(User user)
