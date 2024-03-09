@@ -5,9 +5,9 @@ namespace PolisProReminder.Services
 {
     public interface IUserContextService
     {
-        int GetUserId { get; }
+        int? GetUserId { get; }
         int? GetSuperiorId { get; }
-        ClaimsPrincipal User { get; }
+        ClaimsPrincipal? User { get; }
     }
 
     public class UserContextService : IUserContextService
@@ -19,15 +19,22 @@ namespace PolisProReminder.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public ClaimsPrincipal User => _httpContextAccessor.HttpContext?.User;
-        public int GetUserId => int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+        public ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
+        public int? GetUserId
+        {
+            get
+            {
+                string? id = User?.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                return id is null ? null : int.Parse(id);
+            }
+        }
         public int? GetSuperiorId
         {
             get
             {
-                var superiorId = User.FindFirst(c => c.Type == "SuperiorId").Value;
-                if (superiorId.IsNullOrEmpty()) return null;
-                return int.Parse(superiorId);
+                var superiorId = User?.FindFirst(c => c.Type == "SuperiorId")?.Value;
+                return superiorId.IsNullOrEmpty() ? null : int.Parse(superiorId!);
             }
         }
     }

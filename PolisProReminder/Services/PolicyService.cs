@@ -43,7 +43,7 @@ namespace PolisProReminder.Services
             if (policy == null)
                 throw new NotFoundException("Policy does not exists");
 
-            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, policy,
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User!, policy,
                new ResourceOperationRequirement(ResourceOperation.Update)).Result;
 
             if (!authorizationResult.Succeeded)
@@ -60,7 +60,7 @@ namespace PolisProReminder.Services
             if (policy == null)
                 throw new NotFoundException("Policy does not exists");
 
-            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, policy,
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User!, policy,
                 new ResourceOperationRequirement(ResourceOperation.Update)).Result;
 
             if (!authorizationResult.Succeeded)
@@ -84,7 +84,7 @@ namespace PolisProReminder.Services
             if (policy == null)
                 throw new NotFoundException("Policy does not exists");
 
-            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, policy,
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User!, policy,
                 new ResourceOperationRequirement(ResourceOperation.Update)).Result;
 
             if (!authorizationResult.Succeeded)
@@ -98,7 +98,7 @@ namespace PolisProReminder.Services
                 var type = _dbContext.InsuranceTypes
                     .FirstOrDefault(t => t.Id == item.Id);
 
-                if (type is not null) 
+                if (type is not null)
                     newTypes.Add(type);
             }
 
@@ -127,9 +127,11 @@ namespace PolisProReminder.Services
             if (policy != null)
                 throw new AlreadyExistsException("Policy already Exists");
 
-            int creatingUserId = _userContextService.GetUserId;
+            var creatingUserId = _userContextService.GetUserId;
 
-            if (_userContextService.User.IsInRole("User") && _userContextService.GetSuperiorId is not null)
+            if (_userContextService.User is not null &&
+                _userContextService.User.IsInRole("User") &&
+                _userContextService.GetSuperiorId is not null)
             {
                 creatingUserId = (int)_userContextService.GetSuperiorId;
             }
@@ -145,7 +147,7 @@ namespace PolisProReminder.Services
                 InsuranceTypes = _mapper.Map<List<InsuranceType>>(dto.InsuranceTypes),
                 IsPaid = dto.IsPaid,
                 Title = dto.Title,
-                CreatedById = creatingUserId,
+                CreatedById = (int)creatingUserId!,
             };
 
             _dbContext.Policies.Add(createPolicy);
@@ -181,7 +183,7 @@ namespace PolisProReminder.Services
             if (policy == null)
                 throw new NotFoundException("Insurance Policy not Found");
 
-            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, policy,
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User!, policy,
                 new ResourceOperationRequirement(ResourceOperation.Read)).Result;
 
             if (!authorizationResult.Succeeded)
@@ -193,7 +195,7 @@ namespace PolisProReminder.Services
         private bool GetPredicate(Policy p)
         {
             var user = _userContextService.User;
-            if (user.IsInRole("Admin"))
+            if (user is not null && user.IsInRole("Admin"))
                 return true;
 
             if (p.CreatedById == _userContextService.GetUserId)
