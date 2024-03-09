@@ -28,6 +28,10 @@ namespace PolisProReminder.Middlewares
         {
             switch (exception)
             {
+                case UnauthorizedException e:
+                    context.Response.StatusCode = 401;
+                    await context.Response.WriteAsync(e.Message);
+                    break;
                 case NotAllowedException e:
                     context.Response.StatusCode = 405;
                     await context.Response.WriteAsync(e.Message);

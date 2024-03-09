@@ -25,7 +25,13 @@ namespace PolisProReminder.Controllers
             return Ok(_accountService.Login(dto));
         }
 
-        [HttpPost("resetPassword")]
+        [HttpPost("refresh-token")]
+        public ActionResult<TokenDto> RefreshToken()
+        {
+            return Ok(_accountService.RefreshToken());
+        }
+
+        [HttpPost("reset-password")]
         public ActionResult ResetPassword([FromBody] ResetPasswordDto dto)
         {
             if (!ModelState.IsValid)
