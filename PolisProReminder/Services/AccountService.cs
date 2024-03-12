@@ -116,6 +116,9 @@ public class AccountService : IAccountService
         {
             HttpOnly = true,
             Expires = newRefreshToken.Expires,
+            IsEssential = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
         };
 
         _httpContextAccessor.HttpContext?.Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
