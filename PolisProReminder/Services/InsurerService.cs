@@ -4,154 +4,144 @@ using PolisProReminder.Entities;
 using PolisProReminder.Exceptions;
 using PolisProReminder.Models;
 
-namespace PolisProReminder.Services
+namespace PolisProReminder.Services;
+
+public interface IInsurerService
 {
-    public interface IInsurerService
+    Task<int> CreateInsurer(CreateInsurerDto dto);
+    Task DeleteInsurer(int id);
+    Task<IEnumerable<InsurerDto>> GetAll();
+    Task<InsurerDto> GetById(int id);
+    Task<Insurer> GetOrCreateIfNotExists(PolicyInsurerDto dto);
+    Task Update(int id, CreateInsurerDto dto);
+    Task<Insurer> UpdateOrCreateIfNotExists(PolicyInsurerDto dto);
+}
+
+public class InsurerService(InsuranceDbContext dbContext, IMapper mapper) : IInsurerService
+{
+    public async Task Update(int id, CreateInsurerDto dto)
     {
-        IEnumerable<InsurerDto> GetAll();
-        InsurerDto GetById(int id);
-        int CreateInsurer(CreateInsurerDto dto);
-        void DeleteInsurer(int id);
-        void Update(int id, CreateInsurerDto dto);
-        public Insurer GetOrCreateIfNotExists(PolicyInsurerDto dto);
-        public Insurer UpdateOrCreateIfNotExists(PolicyInsurerDto dto);
+        var insurer = await dbContext
+           .Insurers
+           .FirstOrDefaultAsync(i => i.Id == id);
+
+        if (insurer == null)
+            throw new NotFoundException("Insurer does not exist");
+
+        insurer.Email = dto.Email;
+        insurer.Pesel = dto.Pesel;
+        insurer.PhoneNumber = dto.PhoneNumber;
+        insurer.FirstName = dto.FirstName;
+        insurer.LastName = dto.LastName;
+
+        await dbContext.SaveChangesAsync();
     }
 
-    public class InsurerService : IInsurerService
+    public async Task<Insurer> UpdateOrCreateIfNotExists(PolicyInsurerDto dto)
     {
-        private readonly InsuranceDbContext _dbContext;
-        private readonly IMapper _mapper;
-        public InsurerService(InsuranceDbContext dbContext, IMapper mapper)
+        var insurer = mapper.Map<Insurer>(dto);
+
+        var dbInsurer = await dbContext.Insurers
+            .FirstOrDefaultAsync(i => i.Id == insurer.Id);
+
+        if (dbInsurer == null)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            CreateInsurer(mapper.Map<CreateInsurerDto>(insurer));
+
+            insurer = await dbContext.Insurers
+                .FirstOrDefaultAsync(i => i.Pesel == insurer.Pesel)!;
+        }
+        else
+        {
+            dbInsurer.FirstName = insurer.FirstName;
+            dbInsurer.LastName = insurer.LastName;
+            dbInsurer.PhoneNumber = insurer.PhoneNumber;
+            dbInsurer.Email = insurer.Email;
+            dbInsurer.Pesel = insurer.Pesel;
+            await dbContext.SaveChangesAsync();
         }
 
-        public void Update(int id, CreateInsurerDto dto)
-        {
-            var insurer = _dbContext
-               .Insurers
-               .FirstOrDefault(i => i.Id == id);
-
-            if (insurer == null)
-                throw new NotFoundException("Insurer does not exist");
-
-            insurer.Email = dto.Email;
-            insurer.Pesel = dto.Pesel;
-            insurer.PhoneNumber = dto.PhoneNumber;
-            insurer.FirstName = dto.FirstName;
-            insurer.LastName = dto.LastName;
-
-            _dbContext.SaveChanges();
-        }
-
-        public Insurer UpdateOrCreateIfNotExists(PolicyInsurerDto dto)
-        {
-            var insurer = _mapper.Map<Insurer>(dto);
-
-            var dbInsurer = _dbContext.Insurers
-                .FirstOrDefault(i => i.Id == insurer.Id);
-
-            if (dbInsurer == null)
-            {
-                CreateInsurer(_mapper.Map<CreateInsurerDto>(insurer));
-                _dbContext.SaveChanges();
-
-                insurer = _dbContext.Insurers
-                    .FirstOrDefault(i => i.Pesel == insurer.Pesel)!;
-            }
-            else
-            {
-                dbInsurer.FirstName = insurer.FirstName;
-                dbInsurer.LastName = insurer.LastName;
-                dbInsurer.PhoneNumber = insurer.PhoneNumber;
-                dbInsurer.Email = insurer.Email;
-                dbInsurer.Pesel = insurer.Pesel;
-                _dbContext.SaveChanges();
-            }
-
-            return insurer;
-        }
-
-        public void DeleteInsurer(int id)
-        {
-            var insurer = _dbContext
-                .Insurers
-                .Include(i => i.Policies)
-                .FirstOrDefault(i => i.Id == id);
-
-            if (insurer == null)
-                throw new NotFoundException("Insurer does not exist");
-
-            if (insurer.Policies.Any())
-                throw new NotAllowedException("Insurer has policies");
-            
-            _dbContext.Insurers.Remove(insurer);
-            _dbContext.SaveChanges();
-        }
-
-        public int CreateInsurer(CreateInsurerDto dto)
-        {
-            var insurer = _dbContext
-                .Insurers
-                .FirstOrDefault(i => i.Pesel == dto.Pesel);
-
-            if (insurer != null)
-                throw new AlreadyExistsException("Insurer already exists");
-
-            var createInsurer = _mapper.Map<Insurer>(dto);
-            _dbContext.Insurers.Add(createInsurer);
-            _dbContext.SaveChanges();
-
-            return createInsurer.Id;
-        }
-
-        public Insurer GetOrCreateIfNotExists(PolicyInsurerDto dto)
-        {
-            var insurer = _mapper.Map<Insurer>(dto);
-
-            var dbInsurer = _dbContext.Insurers
-                .FirstOrDefault(i => i.Id == insurer.Id);
-
-            if (dbInsurer == null)
-            {
-                CreateInsurer(_mapper.Map<CreateInsurerDto>(insurer));
-                _dbContext.SaveChanges();
-                insurer = _dbContext.Insurers
-                    .FirstOrDefault(i => i.Pesel == insurer.Pesel)!;
-            }
-
-            return insurer;
-        }
-
-        public IEnumerable<InsurerDto> GetAll()
-        {
-            var insurers = _dbContext
-                .Insurers
-                .Include(i => i.Policies.OrderBy(p => p.EndDate))
-                .ThenInclude(p => p.InsuranceCompany)
-                .Include(i => i.Policies)
-                .ThenInclude(p => p.InsuranceTypes)
-                .ToList();
-
-            return _mapper.Map<List<InsurerDto>>(insurers);
-        }
-
-        public InsurerDto GetById(int id)
-        {
-            var insurer = _dbContext
-                .Insurers
-                .Include(i => i.Policies.OrderBy(p => p.EndDate))
-                .ThenInclude(p => p.InsuranceCompany)
-                .Include(i => i.Policies)
-                .ThenInclude(p => p.InsuranceTypes)
-                .FirstOrDefault(i => i.Id == id);
-
-            if (insurer == null)
-                throw new NotFoundException("Insurer not found");
-
-            return _mapper.Map<InsurerDto>(insurer);
-        }
-
+        return insurer;
     }
+
+    public async Task DeleteInsurer(int id)
+    {
+        var insurer = await dbContext
+            .Insurers
+            .Include(i => i.Policies)
+            .FirstOrDefaultAsync(i => i.Id == id);
+
+        if (insurer == null)
+            throw new NotFoundException("Insurer does not exist");
+
+        if (insurer.Policies.Any())
+            throw new NotAllowedException("Insurer has policies");
+
+        dbContext.Insurers.Remove(insurer);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<int> CreateInsurer(CreateInsurerDto dto)
+    {
+        var insurer = await dbContext
+            .Insurers
+            .FirstOrDefaultAsync(i => i.Pesel == dto.Pesel);
+
+        if (insurer != null)
+            throw new AlreadyExistsException("Insurer already exists");
+
+        var createInsurer = mapper.Map<Insurer>(dto);
+        await dbContext.Insurers.AddAsync(createInsurer);
+        await dbContext.SaveChangesAsync();
+
+        return createInsurer.Id;
+    }
+
+    public async Task<Insurer> GetOrCreateIfNotExists(PolicyInsurerDto dto)
+    {
+        var insurer = mapper.Map<Insurer>(dto);
+
+        var dbInsurer = dbContext.Insurers
+            .FirstOrDefaultAsync(i => i.Id == insurer.Id);
+
+        if (dbInsurer == null)
+        {
+            await CreateInsurer(mapper.Map<CreateInsurerDto>(insurer));
+            await dbContext.SaveChangesAsync();
+            insurer = await dbContext.Insurers
+                .FirstOrDefaultAsync(i => i.Pesel == insurer.Pesel)!;
+        }
+
+        return insurer;
+    }
+
+    public async Task<IEnumerable<InsurerDto>> GetAll()
+    {
+        var insurers = await dbContext
+            .Insurers
+            .Include(i => i.Policies.OrderBy(p => p.EndDate))
+            .ThenInclude(p => p.InsuranceCompany)
+            .Include(i => i.Policies)
+            .ThenInclude(p => p.InsuranceTypes)
+            .ToListAsync();
+
+        return mapper.Map<List<InsurerDto>>(insurers);
+    }
+
+    public async Task<InsurerDto> GetById(int id)
+    {
+        var insurer = await dbContext
+            .Insurers
+            .Include(i => i.Policies.OrderBy(p => p.EndDate))
+            .ThenInclude(p => p.InsuranceCompany)
+            .Include(i => i.Policies)
+            .ThenInclude(p => p.InsuranceTypes)
+            .FirstOrDefaultAsync(i => i.Id == id);
+
+        if (insurer == null)
+            throw new NotFoundException("Insurer not found");
+
+        return mapper.Map<InsurerDto>(insurer);
+    }
+
 }

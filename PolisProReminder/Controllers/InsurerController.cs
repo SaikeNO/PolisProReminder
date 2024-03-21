@@ -2,62 +2,55 @@
 using PolisProReminder.Models;
 using PolisProReminder.Services;
 
-namespace PolisProReminder.Controllers
+namespace PolisProReminder.Controllers;
+
+[Route("api/[controller]")]
+public class InsurerController(IInsurerService insurerService) : ControllerBase
 {
-    [Route("api/insurer")]
-    public class InsurerController : ControllerBase
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update([FromBody] CreateInsurerDto dto, [FromRoute] int id) 
     {
-        private readonly IInsurerService _insurerService;
-        public InsurerController(IInsurerService insurerService) 
-        {
-            _insurerService = insurerService;
-        }
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-        [HttpPut("{id}")]
-        public ActionResult Update([FromBody] CreateInsurerDto dto, [FromRoute] int id) 
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        await insurerService.Update(id, dto);
 
-            _insurerService.Update(id, dto);
+        return Ok();
+    }
 
-            return Ok();
-        }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        await insurerService.DeleteInsurer(id);
+        
+        return NoContent();
+    }
 
-        [HttpDelete("{id}")]
-        public ActionResult Delete([FromRoute] int id)
-        {
-            _insurerService.DeleteInsurer(id);
-            
-            return NoContent();
-        }
+    [HttpPost]
+    public async Task<IActionResult> CreateInsurer([FromBody] CreateInsurerDto dto)
+    {
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-        [HttpPost]
-        public ActionResult CreateInsurer([FromBody] CreateInsurerDto dto)
-        {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
+        var id = await insurerService.CreateInsurer(dto);
 
-            var id = _insurerService.CreateInsurer(dto);
+        return Created($"/api/insurer/{id}", null);
+    }
 
-            return Created($"/api/insurer/{id}", null);
-        }
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var insurers = await insurerService.GetAll();
 
-        [HttpGet]
-        public ActionResult<IEnumerable<InsurerDto>> GetAll()
-        {
-            var insurers = _insurerService.GetAll();
-
-            return Ok(insurers);
-        }
+        return Ok(insurers);
+    }
 
 
-        [HttpGet("{id}")]
-        public ActionResult<InsurerDto> GetById([FromRoute] int id)
-        {
-            var insurer = _insurerService.GetById(id);
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById([FromRoute] int id)
+    {
+        var insurer = await insurerService.GetById(id);
 
-            return Ok(insurer);
-        }
+        return Ok(insurer);
     }
 }
