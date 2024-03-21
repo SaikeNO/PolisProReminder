@@ -3,44 +3,41 @@ using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Models;
 using PolisProReminder.Services;
 
-namespace PolisProReminder.Controllers
+namespace PolisProReminder.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class AccountController(IAccountService accountService) : ControllerBase
 {
-    [Route("api/account")]
-    [ApiController]
-    public class AccountController : ControllerBase
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
-        private readonly IAccountService _accountService;
-        public AccountController(IAccountService accountService)
-        {
-            _accountService = accountService;
-        }
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-        [HttpPost("login")]
-        [AllowAnonymous]
-        public ActionResult<LoginResponseDto> Login([FromBody] LoginDto dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        var loginResponse = await accountService.Login(dto);
 
-            return Ok(_accountService.Login(dto));
-        }
+        return Ok(loginResponse);
+    }
 
-        [HttpPost("refresh-token")]
-        [AllowAnonymous]
-        public ActionResult<TokenDto> RefreshToken([FromBody] TokenDto dto )
-        {
-            return Ok(_accountService.RefreshToken(dto.Token));
-        }
+    [HttpPost("refresh-token")]
+    [AllowAnonymous]
+    public async Task<IActionResult> RefreshToken([FromBody] TokenDto dto )
+    {
+        var response = await accountService.RefreshToken(dto.Token);
+        
+        return Ok(response);
+    }
 
-        [HttpPost("reset-password")]
-        public ActionResult ResetPassword([FromBody] ResetPasswordDto dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-            _accountService.ResetPassword(dto);
+        await accountService.ResetPassword(dto);
 
-            return NoContent();
-        }
+        return NoContent();
     }
 }

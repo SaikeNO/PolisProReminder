@@ -14,61 +14,45 @@ namespace PolisProReminder.Services;
 
 public interface IAccountService
 {
-    public LoginResponseDto Login(LoginDto dto);
-    public void ResetPassword(ResetPasswordDto dto);
-    public TokenDto RefreshToken(string token);
+    Task<LoginResponseDto> Login(LoginDto dto);
+    Task<TokenDto> RefreshToken(string expiredToken);
+    Task ResetPassword(ResetPasswordDto dto);
 }
-public class AccountService : IAccountService
+
+public class AccountService(InsuranceDbContext dbContext,
+    IMapper mapper,
+    IPasswordHasher<User> passwordHasher,
+    AuthenticationSettings authenticationSettings,
+    IUserContextService userContextService,
+    IHttpContextAccessor httpContextAccessor) : IAccountService
 {
-    private readonly InsuranceDbContext _dbContext;
-    private readonly IMapper _mapper;
-    private readonly IPasswordHasher<User> _passwordHasher;
-    private readonly AuthenticationSettings _authenticationSettings;
-    private readonly IUserContextService _userContextService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public AccountService(InsuranceDbContext dbContext,
-        IMapper mapper,
-        IPasswordHasher<User> passwordHasher,
-        AuthenticationSettings authenticationSettings,
-        IUserContextService userContextService,
-        IHttpContextAccessor httpContextAccessor)
+    public async Task<LoginResponseDto> Login(LoginDto dto)
     {
-        _dbContext = dbContext;
-        _mapper = mapper;
-        _passwordHasher = passwordHasher;
-        _authenticationSettings = authenticationSettings;
-        _userContextService = userContextService;
-        _httpContextAccessor = httpContextAccessor;
-
-    }
-    public LoginResponseDto Login(LoginDto dto)
-    {
-        var user = _dbContext.Users
+        var user = await dbContext.Users
             .Include(u => u.Role)
             .Include(u => u.RefreshToken)
-            .FirstOrDefault(u => u.Name == dto.Name);
+            .FirstOrDefaultAsync(u => u.Name == dto.Name);
 
         if (user is null)
             throw new BadRequestException("Invalid name or password");
 
-        var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
+        var result = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
 
         if (result == PasswordVerificationResult.Failed)
             throw new BadRequestException("Invalid name or password");
 
         var refreshToken = GenerateRefreshToken();
-        SetRefreshToken(refreshToken, user);
+        await SetRefreshToken(refreshToken, user);
 
         return new LoginResponseDto()
         {
             Token = GenerateJwtToken(user),
-            User = _mapper.Map<UserDto>(user)
+            User = mapper.Map<UserDto>(user)
         };
 
     }
 
-    public TokenDto RefreshToken(string expiredToken)
+    public async Task<TokenDto> RefreshToken(string expiredToken)
     {
         var principal = GetPrincipalFromExpiredToken(expiredToken);
         var userId = principal?.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -76,15 +60,15 @@ public class AccountService : IAccountService
         if (userId is null)
             throw new UnauthorizedException("Invalid Access Token");
 
-        var user = _dbContext.Users
+        var user = await dbContext.Users
             .Include(u => u.Role)
             .Include(u => u.RefreshToken)
-            .FirstOrDefault(u => u.Id == int.Parse(userId));
+            .FirstOrDefaultAsync(u => u.Id == int.Parse(userId));
 
         if (user is null)
             throw new NotFoundException("User does not exist");
 
-        var refreshToken = _httpContextAccessor?.HttpContext?.Request.Cookies["refreshToken"];
+        var refreshToken = httpContextAccessor?.HttpContext?.Request.Cookies["refreshToken"];
 
         if (user.RefreshToken is null || !user.RefreshToken.Token.Equals(refreshToken))
             throw new UnauthorizedException("Invalid Refresh Token");
@@ -93,24 +77,24 @@ public class AccountService : IAccountService
 
         string token = GenerateJwtToken(user);
         var newRefreshToken = GenerateRefreshToken();
-        SetRefreshToken(newRefreshToken, user);
+        await SetRefreshToken(newRefreshToken, user);
 
         return new TokenDto() { Token = token };
     }
 
-    public void ResetPassword(ResetPasswordDto dto)
+    public async Task ResetPassword(ResetPasswordDto dto)
     {
-        var user = _dbContext.Users
-            .FirstOrDefault(u => u.Id == _userContextService.GetUserId);
+        var user = await dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == userContextService.GetUserId);
 
         if (user == null)
             throw new NotFoundException("User does not exist");
 
-        user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
-        _dbContext.SaveChanges();
+        user.PasswordHash = passwordHasher.HashPassword(user, dto.Password);
+        await dbContext.SaveChangesAsync();
     }
 
-    private void SetRefreshToken(RefreshToken newRefreshToken, User user)
+    private async Task SetRefreshToken(RefreshToken newRefreshToken, User user)
     {
         var cookieOptions = new CookieOptions
         {
@@ -121,7 +105,7 @@ public class AccountService : IAccountService
             SameSite = SameSiteMode.None,
         };
 
-        _httpContextAccessor.HttpContext?.Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+        httpContextAccessor.HttpContext?.Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
 
 
         if (user.RefreshToken is null)
@@ -135,16 +119,16 @@ public class AccountService : IAccountService
             user.RefreshToken.Expires = newRefreshToken.Expires;
         }
 
-        _dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
     }
 
     private ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
     {
         var validation = new TokenValidationParameters
         {
-            ValidIssuer = _authenticationSettings.JwtIssuer,
-            ValidAudience = _authenticationSettings.JwtIssuer,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey)),
+            ValidIssuer = authenticationSettings.JwtIssuer,
+            ValidAudience = authenticationSettings.JwtIssuer,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
             ValidateLifetime = false
         };
 
@@ -155,7 +139,7 @@ public class AccountService : IAccountService
         var refreshToken = new RefreshToken()
         {
             Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-            Expires = DateTime.Now.AddDays(_authenticationSettings.RefreshTokenExpireDays)
+            Expires = DateTime.Now.AddDays(authenticationSettings.RefreshTokenExpireDays)
         };
 
         return refreshToken;
@@ -165,18 +149,18 @@ public class AccountService : IAccountService
     {
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
-            new Claim(ClaimTypes.Role, $"{user.Role.Name}"),
-            new Claim("SuperiorId", $"{user.SuperiorId}")
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+            new(ClaimTypes.Role, $"{user.Role.Name}"),
+            new("SuperiorId", $"{user.SuperiorId}")
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey));
         var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var expires = DateTime.Now.AddHours(_authenticationSettings.JwtExpireHours);
+        var expires = DateTime.Now.AddHours(authenticationSettings.JwtExpireHours);
 
-        var token = new JwtSecurityToken(_authenticationSettings.JwtIssuer,
-            _authenticationSettings.JwtIssuer,
+        var token = new JwtSecurityToken(authenticationSettings.JwtIssuer,
+            authenticationSettings.JwtIssuer,
             claims,
             expires: expires,
             signingCredentials: cred);
