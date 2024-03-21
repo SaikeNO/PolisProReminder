@@ -3,64 +3,56 @@ using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Models;
 using PolisProReminder.Services;
 
-namespace PolisProReminder.Controllers
+namespace PolisProReminder.Controllers;
+
+[Route("api/[controller]")]
+public class InsuranceCompanyController(IInsuranceCompanyService insuranceCompanyService) : ControllerBase
 {
-    [Route("api/company")]
-    public class InsuranceCompanyController : ControllerBase
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin, Agent")]
+    public async Task<IActionResult> Update([FromBody] CreateInsuranceCompanyDto dto, [FromRoute] int id)
     {
-        private readonly IInsuranceCompanyService _insuranceCompanyService;
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-        public InsuranceCompanyController(IInsuranceCompanyService insuranceCompanyService)
-        {
-            _insuranceCompanyService = insuranceCompanyService;
-        }
+        var company = await insuranceCompanyService.Update(id, dto);
 
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin, Agent")]
-        public ActionResult<InsuranceCompanyDto> Update([FromBody] CreateInsuranceCompanyDto dto, [FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        return Ok(company);
+    }
 
-            var company = _insuranceCompanyService.Update(id, dto);
+    [HttpPost]
+    [Authorize(Roles = "Admin, Agent")]
+    public async Task<IActionResult> CreateInsuranceCompany([FromBody] CreateInsuranceCompanyDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-            return Ok(company);
-        }
+        var company = await insuranceCompanyService.Create(dto);
 
-        [HttpPost]
-        [Authorize(Roles = "Admin, Agent")]
-        public ActionResult<InsuranceCompanyDto> CreateInsuranceCompany([FromBody] CreateInsuranceCompanyDto dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        return Ok(company);
+    }
 
-            var company = _insuranceCompanyService.Create(dto);
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin, Agent")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        await insuranceCompanyService.Delete(id);
 
-            return Ok(company);
-        }
+        return NoContent();
+    }
 
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin, Agent")]
-        public ActionResult Delete([FromRoute] int id)
-        {
-            _insuranceCompanyService.Delete(id);
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var companies = await insuranceCompanyService.GetAll();
 
-            return Ok();
-        }
+        return Ok(companies);
+    }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<InsuranceCompanyDto>> GetAll()
-        {
-            var companies = _insuranceCompanyService.GetAll();
-
-            return Ok(companies);
-        }
-
-        [HttpGet("{id}")]
-        public ActionResult<InsuranceCompanyDto> Get([FromRoute] int id)
-        {
-            var company = _insuranceCompanyService.Get(id);
-            return Ok(company);
-        }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get([FromRoute] int id)
+    {
+        var company = await insuranceCompanyService.Get(id);
+        return Ok(company);
     }
 }
