@@ -1,90 +1,82 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using PolisProReminder.Entities;
 using PolisProReminder.Exceptions;
 using PolisProReminder.Models;
 
-namespace PolisProReminder.Services
+namespace PolisProReminder.Services;
+
+public interface IInsuranceTypeService
 {
-    public interface IInsuranceTypeService
+    Task<int> CreateInsuranceType(CreateInsuranceTypeDto dto);
+    Task DeleteInsuranceType(int id);
+    Task<IEnumerable<InsuranceTypeDto>> GetAll();
+    Task<InsuranceTypeDto> GetById(int id);
+    Task Update(int id, CreateInsuranceTypeDto dto);
+}
+
+public class InsuranceTypeService(InsuranceDbContext dbContext, IMapper mapper) : IInsuranceTypeService
+{
+    public async Task Update(int id, CreateInsuranceTypeDto dto)
     {
-        int CreateInsuranceType(CreateInsuranceTypeDto dto);
-        void DeleteInsuranceType(int id);
-        IEnumerable<InsuranceTypeDto> GetAll();
-        InsuranceTypeDto GetById(int id);
-        void Update(int id, CreateInsuranceTypeDto dto);
+        var type = await dbContext
+           .InsuranceTypes
+           .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (type == null)
+            throw new NotFoundException("Insurance Type does not exist");
+
+        type.Name = dto.Name;
+
+        await dbContext.SaveChangesAsync();
+    }
+    public async Task DeleteInsuranceType(int id)
+    {
+        var type = await dbContext
+           .InsuranceTypes
+           .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (type == null)
+            throw new NotFoundException("Insurance Type does not exist");
+
+        dbContext.InsuranceTypes.Remove(type);
+        await dbContext.SaveChangesAsync();
     }
 
-    public class InsuranceTypeService : IInsuranceTypeService
+    public async Task<int> CreateInsuranceType(CreateInsuranceTypeDto dto)
     {
-        private readonly InsuranceDbContext _dbContext;
-        private readonly IMapper _mapper;
-        public InsuranceTypeService(InsuranceDbContext dbContext, IMapper mapper)
-        {
-            _dbContext = dbContext;
-            _mapper = mapper;
-        }
+        var type = await dbContext
+            .InsuranceTypes
+            .FirstOrDefaultAsync(t => t.Name == dto.Name);
 
-        public void Update(int id, CreateInsuranceTypeDto dto)
-        {
-            var type = _dbContext
-               .InsuranceTypes
-               .FirstOrDefault(t => t.Id == id);
+        if (type != null)
+            throw new AlreadyExistsException("Insurance Type already exists");
 
-            if (type == null)
-                throw new NotFoundException("Insurance Type does not exist");
+        var createType = mapper.Map<InsuranceType>(dto);
+        await dbContext.InsuranceTypes.AddAsync(createType);
+        await dbContext.SaveChangesAsync();
 
-            type.Name = dto.Name;
+        return createType.Id;
+    }
 
-            _dbContext.SaveChanges();
-        }
-        public void DeleteInsuranceType(int id)
-        {
-            var type = _dbContext
-               .InsuranceTypes
-               .FirstOrDefault(t => t.Id == id);
+    public async Task<IEnumerable<InsuranceTypeDto>> GetAll()
+    {
+        var types = await dbContext
+            .InsuranceTypes
+            .ToListAsync();
 
-            if (type == null)
-                throw new NotFoundException("Insurance Type does not exist");
+        return mapper.Map<List<InsuranceTypeDto>>(types);
+    }
 
-            _dbContext.InsuranceTypes.Remove(type);
-            _dbContext.SaveChanges();
-        }
+    public async Task<InsuranceTypeDto> GetById(int id)
+    {
+        var type = await dbContext
+            .InsuranceTypes
+            .FirstOrDefaultAsync(i => i.Id == id);
 
-        public int CreateInsuranceType(CreateInsuranceTypeDto dto)
-        {
-            var type = _dbContext
-                .InsuranceTypes
-                .FirstOrDefault(t => t.Name == dto.Name);
+        if (type == null)
+            throw new NotFoundException("Insurance Type not found");
 
-            if (type != null)
-                throw new AlreadyExistsException("Insurance Type already exists");
-
-            var createType = _mapper.Map<InsuranceType>(dto);
-            _dbContext.InsuranceTypes.Add(createType);
-            _dbContext.SaveChanges();
-
-            return createType.Id;
-        }
-
-        public IEnumerable<InsuranceTypeDto> GetAll()
-        {
-            var types = _dbContext
-                .InsuranceTypes
-                .ToList();
-
-            return _mapper.Map<List<InsuranceTypeDto>>(types);
-        }
-
-        public InsuranceTypeDto GetById(int id)
-        {
-            var type = _dbContext
-                .InsuranceTypes
-                .FirstOrDefault(i => i.Id == id);
-
-            if (type == null)
-                throw new NotFoundException("Insurance Type not found");
-
-            return _mapper.Map<InsuranceTypeDto>(type);
-        }
+        return mapper.Map<InsuranceTypeDto>(type);
     }
 }

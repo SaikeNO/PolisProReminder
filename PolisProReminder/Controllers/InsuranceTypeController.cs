@@ -2,62 +2,55 @@
 using PolisProReminder.Models;
 using PolisProReminder.Services;
 
-namespace PolisProReminder.Controllers
+namespace PolisProReminder.Controllers;
+
+[Route("api/[controller]")]
+public class InsuranceTypeController(IInsuranceTypeService insuranceTypeService) : ControllerBase
 {
-    [Route("api/type")]
-    public class InsuranceTypeController : ControllerBase
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update([FromBody] CreateInsuranceTypeDto dto, [FromRoute] int id)
     {
-        private readonly IInsuranceTypeService _insuranceTypeService;
-        public InsuranceTypeController(IInsuranceTypeService insuranceTypeService)
-        {
-            _insuranceTypeService = insuranceTypeService;
-        }
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-        [HttpPut("{id}")]
-        public ActionResult Update([FromBody] CreateInsuranceTypeDto dto, [FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        await insuranceTypeService.Update(id, dto);
 
-            _insuranceTypeService.Update(id, dto);
+        return Ok();
 
-            return Ok();
+    }
 
-        }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        await insuranceTypeService.DeleteInsuranceType(id);
+        return NoContent();
+    }
 
-        [HttpDelete("{id}")]
-        public ActionResult Delete([FromRoute] int id)
-        {
-            _insuranceTypeService.DeleteInsuranceType(id);
-            return NoContent();
-        }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById([FromRoute] int id)
+    {
+        var type = await insuranceTypeService.GetById(id);
 
-        [HttpGet("{id}")]
-        public ActionResult<InsuranceTypeDto> GetById([FromRoute] int id)
-        {
-            var type = _insuranceTypeService.GetById(id);
+        return Ok(type);
+    }
 
-            return Ok(type);
-        }
+    [HttpPost]
+    public async Task<IActionResult> CreateInsuranceType([FromBody] CreateInsuranceTypeDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-        [HttpPost]
-        public ActionResult CreateInsuranceType([FromBody] CreateInsuranceTypeDto dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        var id = await insuranceTypeService.CreateInsuranceType(dto);
 
-            var id = _insuranceTypeService.CreateInsuranceType(dto);
-
-            return Created($"/api/type/{id}", null);
-        }
+        return Created($"/api/type/{id}", null);
+    }
 
 
-        [HttpGet]
-        public ActionResult<InsuranceTypeDto> Get()
-        {
-            var types = _insuranceTypeService.GetAll();
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        var types = await insuranceTypeService.GetAll();
 
-            return Ok(types);
-        }
+        return Ok(types);
     }
 }
