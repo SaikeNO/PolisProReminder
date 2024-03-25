@@ -83,7 +83,7 @@ if (app.Environment.IsDevelopment())
 var scope = app.Services.CreateScope();
 var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
 
-seeder.Seed();
+await seeder.Seed();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseAuthentication();
 

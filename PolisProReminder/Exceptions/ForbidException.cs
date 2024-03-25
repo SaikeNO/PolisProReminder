@@ -1,6 +1,5 @@
-﻿namespace PolisProReminder.Exceptions
+﻿namespace PolisProReminder.Exceptions;
+
+public class ForbidException : Exception
 {
-    public class ForbidException : Exception
-    {
-    }
 }

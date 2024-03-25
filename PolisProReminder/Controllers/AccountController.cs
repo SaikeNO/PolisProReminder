@@ -23,10 +23,10 @@ public class AccountController(IAccountService accountService) : ControllerBase
 
     [HttpPost("refresh-token")]
     [AllowAnonymous]
-    public async Task<IActionResult> RefreshToken([FromBody] TokenDto dto )
+    public async Task<IActionResult> RefreshToken([FromBody] TokenDto dto)
     {
         var response = await accountService.RefreshToken(dto.Token);
-        
+
         return Ok(response);
     }
 

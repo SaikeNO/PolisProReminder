@@ -1,6 +1,5 @@
 ﻿namespace PolisProReminder.Exceptions;
 
-public class UnauthorizedException : Exception
+public class UnauthorizedException(string message) : Exception(message)
 {
-    public UnauthorizedException(string message) : base(message) { }
 }

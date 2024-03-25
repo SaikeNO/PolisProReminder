@@ -1,9 +1,5 @@
-﻿namespace PolisProReminder.Exceptions
+﻿namespace PolisProReminder.Exceptions;
+
+public class AlreadyExistsException(string errMessage) : Exception(errMessage)
 {
-    public class AlreadyExistsException : Exception
-    {
-        public AlreadyExistsException(string errMessage) : base(errMessage)
-        {
-        }
-    }
 }

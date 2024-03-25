@@ -1,9 +1,8 @@
-﻿namespace PolisProReminder.Entities
+﻿namespace PolisProReminder.Entities;
+
+public class InsuranceType
 {
-    public class InsuranceType
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = null!;
-        public List<Policy> Policies { get; set; } = new();
-    }
+    public int Id { get; set; }
+    public string Name { get; set; } = null!;
+    public List<Policy> Policies { get; set; } = new();
 }

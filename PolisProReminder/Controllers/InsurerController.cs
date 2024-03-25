@@ -8,7 +8,7 @@ namespace PolisProReminder.Controllers;
 public class InsurerController(IInsurerService insurerService) : ControllerBase
 {
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromBody] CreateInsurerDto dto, [FromRoute] int id) 
+    public async Task<IActionResult> Update([FromBody] CreateInsurerDto dto, [FromRoute] int id)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -22,14 +22,14 @@ public class InsurerController(IInsurerService insurerService) : ControllerBase
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         await insurerService.DeleteInsurer(id);
-        
+
         return NoContent();
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateInsurer([FromBody] CreateInsurerDto dto)
     {
-        if(!ModelState.IsValid)
+        if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         var id = await insurerService.CreateInsurer(dto);

@@ -4,63 +4,56 @@ using PolisProReminder.Services;
 
 namespace PolisProReminder.Controllers
 {
-    [Route("api/policy")]
-    public class PolicyController : ControllerBase
+    [Route("api/[controller]")]
+    public class PolicyController(IPolicyService policyService) : ControllerBase
     {
-        private readonly IPolicyService _policyService;
-        public PolicyController(IPolicyService policyService)
-        {
-            _policyService = policyService;
-        }
-
         [HttpPut("{id}")]
-        public ActionResult<PolicyDto> UpdatePolicy([FromRoute] int id, [FromBody] CreatePolicyDto dto)
+        public async Task<IActionResult> UpdatePolicy([FromRoute] int id, [FromBody] CreatePolicyDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var policy = _policyService.UpdatePolicy(id, dto);
+            var policy = await policyService.UpdatePolicy(id, dto);
 
             return Ok(policy);
-
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeletePolicy([FromRoute] int id)
+        public async Task<IActionResult> DeletePolicy([FromRoute] int id)
         {
-            _policyService.DeletePolicy(id);
+            await policyService.DeletePolicy(id);
             return NoContent();
         }
 
         [HttpPatch("{id}")]
-        public ActionResult<PolicyDto> UpdateIsPaid([FromRoute] int id, [FromBody] bool isPaid)
+        public async Task<IActionResult> UpdateIsPaid([FromRoute] int id, [FromBody] bool isPaid)
         {
-            var policy = _policyService.UpdateIsPaidPolicy(id, isPaid);
+            var policy = await policyService.UpdateIsPaidPolicy(id, isPaid);
             return Ok(policy);
         }
 
         [HttpPost]
-        public ActionResult CreatePolicy([FromBody] CreatePolicyDto dto)
+        public async Task<IActionResult> CreatePolicy([FromBody] CreatePolicyDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var id = _policyService.CreatePolicy(dto);
+            var id = await policyService.CreatePolicy(dto);
 
             return Created($"api/policy/{id}", null);
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<PolicyDto>> GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var policies = _policyService.GetAll();
+            var policies = await policyService.GetAll();
             return Ok(policies);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<PolicyDto> Get([FromRoute] int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
-            var policy = _policyService.GetById(id);
+            var policy = await policyService.GetById(id);
             return Ok(policy);
         }
     }

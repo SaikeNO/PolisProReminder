@@ -1,10 +1,5 @@
-﻿namespace PolisProReminder.Exceptions
-{
-    public class NotAllowedException : Exception
-    {
-        public NotAllowedException(string message) : base(message)
-        {
+﻿namespace PolisProReminder.Exceptions;
 
-        }
-    }
+public class NotAllowedException(string message) : Exception(message)
+{
 }

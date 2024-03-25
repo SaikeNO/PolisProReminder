@@ -1,21 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace PolisProReminder.Authorization
-{
-    public enum ResourceOperation
-    {
-        Create,
-        Read,
-        Update,
-        Delete
-    }
-    public class ResourceOperationRequirement : IAuthorizationRequirement
-    {
-        public ResourceOperationRequirement(ResourceOperation resourceOperation)
-        {
-            ResourceOperation = resourceOperation;
-        }
+namespace PolisProReminder.Authorization;
 
-        public ResourceOperation ResourceOperation { get; }
-    }
+public enum ResourceOperation
+{
+    Create,
+    Read,
+    Update,
+    Delete
+}
+public class ResourceOperationRequirement(ResourceOperation resourceOperation) : IAuthorizationRequirement
+{
+    public ResourceOperation ResourceOperation { get; } = resourceOperation;
 }

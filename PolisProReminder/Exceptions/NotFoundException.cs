@@ -1,8 +1,5 @@
-﻿namespace PolisProReminder.Exceptions
+﻿namespace PolisProReminder.Exceptions;
+
+public class NotFoundException(string errMessage) : Exception(errMessage)
 {
-    public class NotFoundException : Exception
-    {
-        public NotFoundException(string errMessage) : base(errMessage)
-        { }
-    }
 }

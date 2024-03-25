@@ -1,8 +1,7 @@
-﻿namespace PolisProReminder.Models
+﻿namespace PolisProReminder.Models;
+
+public class LoginResponseDto
 {
-    public class LoginResponseDto
-    {
-        public string Token { get; set; } = null!;
-        public UserDto User { get; set; } = null!;
-    }
+    public string Token { get; set; } = null!;
+    public UserDto User { get; set; } = null!;
 }

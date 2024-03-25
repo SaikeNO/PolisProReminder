@@ -1,16 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace PolisProReminder.Entities.Configurations
+namespace PolisProReminder.Entities.Configurations;
+
+public class InsuranceCompanyConfiguration : IEntityTypeConfiguration<InsuranceCompany>
 {
-    public class InsuranceCompanyConfiguration : IEntityTypeConfiguration<InsuranceCompany>
+    public void Configure(EntityTypeBuilder<InsuranceCompany> builder)
     {
-        public void Configure(EntityTypeBuilder<InsuranceCompany> builder)
-        {
-            builder.ToTable("InsuranceCompanies");
-            builder.Property(c => c.Name)
-               .IsRequired()
-               .HasMaxLength(60);
-        }
+        builder.ToTable("InsuranceCompanies");
+        builder.Property(c => c.Name)
+           .IsRequired()
+           .HasMaxLength(60);
     }
 }
