@@ -11,10 +11,10 @@ public class MappingProfile : Profile
         CreateMap<User, UserDto>()
             .ForMember(u => u.Role, r=> r.MapFrom(a => a.Role.Name));
         CreateMap<Policy, PolicyDto>()
-            .ForMember(p => p.InsuranceCompany, c => c.MapFrom(s => s.InsuranceCompany.Name));
+            .ForMember(p => p.InsuranceCompany, c => c.MapFrom(s => s.InsuranceCompany.ShortName));
 
         CreateMap<Policy, InsurerPolicyDto>()
-            .ForMember(p => p.InsuranceCompany, c => c.MapFrom(s => s.InsuranceCompany.Name));
+            .ForMember(p => p.InsuranceCompany, c => c.MapFrom(s => s.InsuranceCompany.ShortName));
 
         CreateMap<InsuranceCompany, InsuranceCompanyDto>()
             .ReverseMap();

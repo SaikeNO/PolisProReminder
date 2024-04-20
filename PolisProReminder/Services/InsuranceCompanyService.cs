@@ -48,6 +48,7 @@ public class InsuranceCompanyService(InsuranceDbContext dbContext, IMapper mappe
             throw new NotFoundException("Insurance Company not found");
 
         company.Name = dto.Name;
+        company.ShortName = dto.ShortName;
 
         await dbContext.SaveChangesAsync();
 

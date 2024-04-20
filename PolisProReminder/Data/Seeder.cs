@@ -18,13 +18,13 @@ public class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> password
         }
 
         var roleUser = new Role() { Name = "USER" };
-        var roleAgent = new Role() { Name = "AGNET" };
+        var roleAgent = new Role() { Name = "AGENT" };
         var roleAdmin = new Role() { Name = "ADMIN" };
-        
+
 
         await dbContext.Roles.AddRangeAsync([roleUser, roleAgent, roleAdmin]);
         await dbContext.SaveChangesAsync();
-        
+
         var admin = new User()
         {
             Name = "admin",
@@ -118,8 +118,16 @@ public class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> password
         await dbContext.Insurers.AddRangeAsync([insurer1, insurer2, insurer3]);
         await dbContext.SaveChangesAsync();
 
-        var insuranceCompany1 = new InsuranceCompany { Name = "Ergo Hestia" };
-        var insuranceCompany2 = new InsuranceCompany { Name = "PZU" };
+        var insuranceCompany1 = new InsuranceCompany
+        {
+            Name = "Sopockie Towarzystwo Ubezpieczeń ERGO Hestia",
+            ShortName = "ERGO Hestia"
+        };
+        var insuranceCompany2 = new InsuranceCompany
+        {
+            Name = "Powszechny Zakład Ubezpieczeń",
+            ShortName = "PZU"
+        };
 
         await dbContext.InsuranceCompanies.AddRangeAsync([insuranceCompany1, insuranceCompany2]);
         await dbContext.SaveChangesAsync();
