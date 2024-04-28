@@ -13,6 +13,7 @@ public interface IPolicyService
     Task<int> CreatePolicy(CreatePolicyDto dto);
     Task DeletePolicy(int id);
     Task<IEnumerable<PolicyDto>> GetAll();
+    Task<IEnumerable<InsurerPolicyDto>> GetInsurerPolicies(int id);
     Task<PolicyDto> GetById(int id);
     Task<PolicyDto> UpdateIsPaidPolicy(int id, bool isPaid);
     Task<PolicyDto> UpdatePolicy(int id, CreatePolicyDto dto);
@@ -177,6 +178,21 @@ public class PolicyService(InsuranceDbContext dbContext, IMapper mapper, IUserCo
             throw new ForbidException();
 
         return mapper.Map<PolicyDto>(policy);
+    }
+
+    public async Task<IEnumerable<InsurerPolicyDto>> GetInsurerPolicies(int id)
+    {
+        var policies = (await dbContext
+            .Policies
+            .Include(p => p.InsuranceCompany)
+            .Include(p => p.Insurer)
+            .Include(p => p.InsuranceTypes)
+            .ToListAsync())
+            .Where(p => p.Insurer.Id == id)
+            .OrderBy(p => p.EndDate)
+            .ToList();
+
+        return mapper.Map<List<InsurerPolicyDto>>(policies);
     }
 
     private bool GetPredicate(Policy p)

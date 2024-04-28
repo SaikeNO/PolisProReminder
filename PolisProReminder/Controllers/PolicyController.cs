@@ -56,5 +56,12 @@ namespace PolisProReminder.Controllers
             var policy = await policyService.GetById(id);
             return Ok(policy);
         }
+
+        [HttpGet("Insurer/{id}")]
+        public async Task<IActionResult> GetInsurerPolicies([FromRoute] int id)
+        {
+            var policy = await policyService.GetInsurerPolicies(id);
+            return Ok(policy);
+        }
     }
 }
