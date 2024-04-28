@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Models;
+using PolisProReminder.Queries.GetAllPolicies;
 using PolisProReminder.Services;
 
 namespace PolisProReminder.Controllers
 {
     [Route("api/[controller]")]
-    public class PolicyController(IPolicyService policyService) : ControllerBase
+    public class PolicyController(IPolicyService policyService, IMediator mediator) : ControllerBase
     {
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePolicy([FromRoute] int id, [FromBody] CreatePolicyDto dto)
@@ -44,9 +46,9 @@ namespace PolisProReminder.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] GetAllPoliciesQuery query)
         {
-            var policies = await policyService.GetAll();
+            var policies = await mediator.Send(query);
             return Ok(policies);
         }
 

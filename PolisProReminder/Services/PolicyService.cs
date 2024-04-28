@@ -12,7 +12,6 @@ public interface IPolicyService
 {
     Task<int> CreatePolicy(CreatePolicyDto dto);
     Task DeletePolicy(int id);
-    Task<IEnumerable<PolicyDto>> GetAll();
     Task<IEnumerable<InsurerPolicyDto>> GetInsurerPolicies(int id);
     Task<PolicyDto> GetById(int id);
     Task<PolicyDto> UpdateIsPaidPolicy(int id, bool isPaid);
@@ -142,21 +141,6 @@ public class PolicyService(InsuranceDbContext dbContext, IMapper mapper, IUserCo
         await dbContext.SaveChangesAsync();
 
         return createPolicy.Id;
-    }
-
-    public async Task<IEnumerable<PolicyDto>> GetAll()
-    {
-        var policies = (await dbContext
-            .Policies
-            .Include(p => p.InsuranceCompany)
-            .Include(p => p.Insurer)
-            .Include(p => p.InsuranceTypes)
-            .ToListAsync())
-            .Where(GetPredicate)
-            .OrderBy(p => p.EndDate)
-            .ToList();
-
-        return mapper.Map<List<PolicyDto>>(policies);
     }
 
     public async Task<PolicyDto> GetById(int id)
