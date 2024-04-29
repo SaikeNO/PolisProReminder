@@ -7,7 +7,7 @@ public class PageResult<T>
         Items = items;
         TotalItemsCount = totalCount;
         TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-        ItemsFrom = pageSize * (pageIndex - 1) + 1;
+        ItemsFrom = pageSize * pageIndex + 1;
         ItemsTo = ItemsFrom + pageSize - 1;
     }
     public IEnumerable<T> Items { get; set; }

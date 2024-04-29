@@ -25,15 +25,15 @@ public class GetAllPoliciesHandler(InsuranceDbContext dbContext, IMapper mapper,
 
         var totalCount = await baseQuery.CountAsync();
 
-        if (request.SortBy != null)
+        if (request.SortBy != null && request.SortDirection != SortDirection.None)
         {
             var columnsSelector = new Dictionary<string, Expression<Func<Policy, object>>>
             {
-                { nameof(PolicyDto.Title), p => p.Title },
-                { nameof(PolicyDto.PolicyNumber), p => p.PolicyNumber },
-                { nameof(PolicyDto.EndDate), p => p.EndDate },
-                { nameof(PolicyDto.StartDate), p => p.StartDate },
-                { nameof(PolicyDto.PaymentDate), p => p.PaymentDate }
+                { nameof(PolicyDto.Title).ToLower(), p => p.Title },
+                { nameof(PolicyDto.PolicyNumber).ToLower(), p => p.PolicyNumber },
+                { nameof(PolicyDto.EndDate).ToLower(), p => p.EndDate },
+                { nameof(PolicyDto.StartDate).ToLower(), p => p.StartDate },
+                { nameof(PolicyDto.PaymentDate).ToLower(), p => p.PaymentDate }
             };
 
             var selectedColumn = columnsSelector[request.SortBy];
@@ -44,11 +44,11 @@ public class GetAllPoliciesHandler(InsuranceDbContext dbContext, IMapper mapper,
         }
 
         var policies = (await baseQuery
-            .Skip(request.PageSize * (request.PageIndex - 1))
+            .Skip(request.PageSize * (request.PageIndex))
             .Take(request.PageSize)
-            .ToListAsync())
-            .Where(GetPredicate)
-            .ToList();
+            .ToListAsync());
+            //.Where(GetPredicate)
+            //.ToList();
 
         var policiesDtos = mapper.Map<List<PolicyDto>>(policies);
 
