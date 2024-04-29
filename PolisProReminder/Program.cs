@@ -11,6 +11,8 @@ using PolisProReminder.Entities;
 using PolisProReminder.Middlewares;
 using PolisProReminder.Services;
 using System.Text;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Database");
@@ -20,6 +22,8 @@ builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly).AddFluentValidationAutoValidation();
+
 builder.Services.AddDbContext<InsuranceDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddScoped<IPolicyService, PolicyService>();
 builder.Services.AddScoped<IInsurerService, InsurerService>();
@@ -29,8 +33,6 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
-
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
 builder.Services.AddSingleton(authenticationSettings);
 builder.Services.AddHttpContextAccessor();
@@ -53,6 +55,9 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<Seeder>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "PolisPro Reminder API", Version = "v1" });
@@ -63,14 +68,17 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey
     });
 });
-builder.Logging.ClearProviders();
-builder.Host.UseNLog();
+//builder.Logging.ClearProviders();
+//builder.Host.UseNLog();
 builder.Services.AddCors(options => options.AddPolicy("frontend",
     policy =>
     {
         policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
     }
 ));
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
