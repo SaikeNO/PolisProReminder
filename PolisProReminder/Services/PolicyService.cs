@@ -75,24 +75,24 @@ public class PolicyService(InsuranceDbContext dbContext, IMapper mapper, IUserCo
         if (!authorizationResult.Succeeded)
             throw new ForbidException();
 
-        var insurer = await insurerService.UpdateOrCreateIfNotExists(dto.Insurer);
+        //var insurer = await insurerService.UpdateOrCreateIfNotExists(dto.Insurer);
 
         List<InsuranceType> newTypes = [];
-        foreach (var item in dto.InsuranceTypes)
+        foreach (var typeId in dto.InsuranceTypeIds)
         {
             var type = await dbContext.InsuranceTypes
-                .FirstOrDefaultAsync(t => t.Id == item.Id);
+                .FirstOrDefaultAsync(t => t.Id == typeId);
 
             if (type is not null)
                 newTypes.Add(type);
         }
 
         policy.PolicyNumber = dto.PolicyNumber;
-        policy.InsuranceCompanyId = dto.InsuranceCompany.Id;
+        policy.InsuranceCompanyId = dto.InsuranceCompanyId;
         policy.StartDate = dto.StartDate;
         policy.EndDate = dto.EndDate;
         policy.PaymentDate = dto.PaymentDate;
-        policy.InsurerId = insurer.Id;
+        policy.InsurerId = dto.InsurerId;
         policy.IsPaid = dto.IsPaid;
         policy.Title = dto.Title;
         policy.InsuranceTypes.Clear();
@@ -121,17 +121,22 @@ public class PolicyService(InsuranceDbContext dbContext, IMapper mapper, IUserCo
             creatingUserId = (int)userContextService.GetSuperiorId;
         }
 
-        var insurer = await insurerService.GetOrCreateIfNotExists(dto.Insurer);
+        //var insurer = await insurerService.GetOrCreateIfNotExists(dto.Insurer);
+
+        var types = await dbContext.InsuranceTypes
+            .Where(t => dto.InsuranceTypeIds.Contains(t.Id))
+            .ToListAsync();
+
 
         var createPolicy = new Policy
         {
             PolicyNumber = dto.PolicyNumber,
-            InsuranceCompanyId = dto.InsuranceCompany.Id,
+            InsuranceCompanyId = dto.InsuranceCompanyId,
             StartDate = dto.StartDate,
             EndDate = dto.EndDate,
             PaymentDate = dto.PaymentDate,
-            InsurerId = insurer.Id,
-            InsuranceTypes = mapper.Map<List<InsuranceType>>(dto.InsuranceTypes),
+            InsurerId = dto.InsurerId,
+            InsuranceTypes = types,
             IsPaid = dto.IsPaid,
             Title = dto.Title,
             CreatedById = (int)creatingUserId!,

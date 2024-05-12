@@ -13,13 +13,13 @@ public class CreatePolicyDto
     public string PolicyNumber { get; set; } = null!;
 
     [Required]
-    public InsuranceCompanyDto InsuranceCompany { get; set; } = null!;
+    public int InsuranceCompanyId { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public DateTime PaymentDate { get; set; }
     public bool IsPaid { get; set; }
 
     [Required]
-    public PolicyInsurerDto Insurer { get; set; } = null!;
-    public List<InsuranceTypeDto> InsuranceTypes { get; set; } = null!;
+    public int InsurerId { get; set; }
+    public int[] InsuranceTypeIds { get; set; } = [];
 }

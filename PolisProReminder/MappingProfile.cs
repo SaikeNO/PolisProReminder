@@ -10,8 +10,7 @@ public class MappingProfile : Profile
     {
         CreateMap<User, UserDto>()
             .ForMember(u => u.Role, r=> r.MapFrom(a => a.Role.Name));
-        CreateMap<Policy, PolicyDto>()
-            .ForMember(p => p.InsuranceCompany, c => c.MapFrom(s => s.InsuranceCompany.ShortName));
+        CreateMap<Policy, PolicyDto>();
 
         CreateMap<Policy, InsurerPolicyDto>()
             .ForMember(p => p.InsuranceCompany, c => c.MapFrom(s => s.InsuranceCompany.ShortName));
