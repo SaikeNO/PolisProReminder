@@ -11,4 +11,5 @@ public class GetAllPoliciesQuery : IRequest<PageResult<PolicyDto>>
     public int PageSize { get; set; }
     public string? SortBy { get; set; }
     public SortDirection SortDirection { get; set; }
+    public int? TypeId { get; set; }
 }

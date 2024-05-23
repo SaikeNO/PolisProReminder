@@ -31,7 +31,6 @@ public class MappingProfile : Profile
             .ReverseMap();
         
         CreateMap<CreateInsuranceTypeDto, InsuranceType>();
-        CreateMap<CreatePolicyDto, Insurer>();
         CreateMap<InsuranceTypeDto, CreateInsuranceTypeDto>();
     }
 }

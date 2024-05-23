@@ -20,8 +20,9 @@ public class GetAllPoliciesHandler(InsuranceDbContext dbContext, IMapper mapper,
             .Include(p => p.InsuranceCompany)
             .Include(p => p.Insurer)
             .Include(p => p.InsuranceTypes)
-            .Where(p => searchPhraseLower == null || p.Title.ToLower().Contains(searchPhraseLower)
-                                                    || p.PolicyNumber.ToLower().Contains(searchPhraseLower));
+            .Where(p => (searchPhraseLower == null || p.Title.ToLower().Contains(searchPhraseLower)
+                                                    || p.PolicyNumber.ToLower().Contains(searchPhraseLower)) 
+                         && (request.TypeId == null || p.InsuranceTypes.Any(t => t.Id == request.TypeId)));
 
         var totalCount = await baseQuery.CountAsync();
 
