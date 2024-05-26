@@ -28,9 +28,9 @@ public class InsurerService(InsuranceDbContext dbContext, IMapper mapper) : IIns
         if (insurer == null)
             throw new NotFoundException("Insurer does not exist");
 
-        var checkPesel = await dbContext.Insurers.FirstOrDefaultAsync(i => i.Pesel == dto.Pesel);
+        var checkPesel = await dbContext.Insurers.FirstOrDefaultAsync(i => i.Pesel == dto.Pesel && i.Id != id);
 
-        if(checkPesel != null)
+        if (checkPesel != null)
             throw new AlreadyExistsException("Klient o podanym numerze PESEL już istnieje");
 
         insurer.Email = dto.Email;
