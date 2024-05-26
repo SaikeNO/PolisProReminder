@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Models;
+using PolisProReminder.Queries.GetAllPolicies;
+using PolisProReminder.Queries.GetInsurers;
 using PolisProReminder.Services;
 
 namespace PolisProReminder.Controllers;
 
 [Route("api/[controller]")]
-public class InsurerController(IInsurerService insurerService) : ControllerBase
+public class InsurerController(IInsurerService insurerService, IMediator mediator) : ControllerBase
 {
     [HttpPut("{id}")]
     public async Task<IActionResult> Update([FromBody] CreateInsurerDto dto, [FromRoute] int id)
@@ -42,6 +45,13 @@ public class InsurerController(IInsurerService insurerService) : ControllerBase
     {
         var insurers = await insurerService.GetAll();
 
+        return Ok(insurers);
+    }
+
+    [HttpGet("getPaginated")]
+    public async Task<IActionResult> GetPaginated([FromQuery] GetInsurersQuery query)
+    {
+        var insurers = await mediator.Send(query);
         return Ok(insurers);
     }
 

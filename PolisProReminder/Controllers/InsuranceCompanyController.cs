@@ -9,7 +9,6 @@ namespace PolisProReminder.Controllers;
 public class InsuranceCompanyController(IInsuranceCompanyService insuranceCompanyService) : ControllerBase
 {
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin, Agent")]
     public async Task<IActionResult> Update([FromBody] CreateInsuranceCompanyDto dto, [FromRoute] int id)
     {
         if (!ModelState.IsValid)
@@ -21,7 +20,6 @@ public class InsuranceCompanyController(IInsuranceCompanyService insuranceCompan
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin, Agent")]
     public async Task<IActionResult> CreateInsuranceCompany([FromBody] CreateInsuranceCompanyDto dto)
     {
         if (!ModelState.IsValid)
@@ -33,7 +31,6 @@ public class InsuranceCompanyController(IInsuranceCompanyService insuranceCompan
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin, Agent")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         await insuranceCompanyService.Delete(id);
