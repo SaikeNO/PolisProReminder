@@ -20,7 +20,7 @@ public interface IPolicyService
 
 public class PolicyService(InsuranceDbContext dbContext, IMapper mapper, IUserContextService userContextService, IInsurerService insurerService, IAuthorizationService authorizationService) : IPolicyService
 {
-    public async Task DeletePolicy(int id) // Need to do soft delete
+    public async Task DeletePolicy(int id)
     {
         var policy = await dbContext.Policies
             .FirstOrDefaultAsync(p => p.Id == id);
@@ -34,7 +34,7 @@ public class PolicyService(InsuranceDbContext dbContext, IMapper mapper, IUserCo
         if (!authorizationResult.Succeeded)
             throw new ForbidException();
 
-        dbContext.Policies.Remove(policy);
+        policy.IsDeleted = true;
         await dbContext.SaveChangesAsync();
     }
     public async Task<PolicyDto> UpdateIsPaidPolicy(int id, bool isPaid)
