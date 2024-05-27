@@ -13,6 +13,7 @@ using PolisProReminder.Services;
 using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using PolisProReminder.Schedulers;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Database");
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
+builder.Services.AddHostedService<ArchivePoliciesService>();
 
 builder.Services.AddSingleton(authenticationSettings);
 builder.Services.AddHttpContextAccessor();
