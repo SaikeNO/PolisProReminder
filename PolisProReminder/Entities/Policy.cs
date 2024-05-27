@@ -11,6 +11,8 @@ public class Policy
     public DateTime EndDate { get; set; }
     public DateTime PaymentDate { get; set; }
     public bool IsPaid { get; set; } = false;
+    public bool IsDeleted { get; set; } = false;
+    public bool IsArchived { get; set; } = false;
     public int CreatedById { get; set; }
     public virtual User CreatedBy { get; set; } = null!;
 
