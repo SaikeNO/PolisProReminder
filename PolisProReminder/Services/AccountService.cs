@@ -87,10 +87,14 @@ public class AccountService(InsuranceDbContext dbContext,
         var user = await dbContext.Users
             .FirstOrDefaultAsync(u => u.Id == userContextService.GetUserId);
 
-        if (user == null)
-            throw new NotFoundException("User does not exist");
+        _ = user ?? throw new NotFoundException("User does not exist");
 
-        user.PasswordHash = passwordHasher.HashPassword(user, dto.Password);
+        var result = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.OldPassword);
+
+        if (result == PasswordVerificationResult.Failed)
+            throw new BadRequestException("Niepoprawne dane");
+
+        user.PasswordHash = passwordHasher.HashPassword(user, dto.NewPassword);
         await dbContext.SaveChangesAsync();
     }
 

@@ -5,8 +5,10 @@ namespace PolisProReminder.Models;
 public class ResetPasswordDto
 {
     [Required]
-    public string Password { get; set; } = null!;
+    public string OldPassword { get; set; } = null!;
     [Required]
-    [Compare("Password")]
+    public string NewPassword { get; set; } = null!;
+    [Required]
+    [Compare("NewPassword")]
     public string ConfirmPassword { get; set; } = null!;
 }
