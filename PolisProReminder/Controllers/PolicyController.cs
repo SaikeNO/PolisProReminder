@@ -52,6 +52,13 @@ namespace PolisProReminder.Controllers
             return Ok(policies);
         }
 
+        [HttpGet("Latest")]
+        public async Task<IActionResult> GetLatest([FromQuery] int count)
+        {
+            var policies = await policyService.GetLatestPolicies(count);
+            return Ok(policies);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {

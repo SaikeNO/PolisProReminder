@@ -16,6 +16,7 @@ public interface IPolicyService
     Task<PolicyDto> GetById(int id);
     Task<PolicyDto> UpdateIsPaidPolicy(int id, bool isPaid);
     Task<PolicyDto> UpdatePolicy(int id, CreatePolicyDto dto);
+    Task<IEnumerable<PolicyDto>> GetLatestPolicies(int count);
 }
 
 public class PolicyService(InsuranceDbContext dbContext, IMapper mapper, IUserContextService userContextService, IInsurerService insurerService, IAuthorizationService authorizationService) : IPolicyService
@@ -167,6 +168,26 @@ public class PolicyService(InsuranceDbContext dbContext, IMapper mapper, IUserCo
             throw new ForbidException();
 
         return mapper.Map<PolicyDto>(policy);
+    }
+
+    public async Task<IEnumerable<PolicyDto>> GetLatestPolicies(int count)
+    {
+        var policies = await dbContext
+            .Policies
+            .Include(p => p.InsuranceCompany)
+            .Include(p => p.Insurer)
+            .Include(p => p.InsuranceTypes)
+            .OrderBy(p => p.EndDate)
+            .Take(count)
+            .ToListAsync();
+
+        //var authorizationResult = authorizationService.AuthorizeAsync(userContextService.User!, policies,
+        //    new ResourceOperationRequirement(ResourceOperation.Read)).Result;
+
+        //if (!authorizationResult.Succeeded)
+        //    throw new ForbidException();
+
+        return mapper.Map<IEnumerable<PolicyDto>>(policies);
     }
 
     public async Task<IEnumerable<InsurerPolicyDto>> GetInsurerPolicies(int id)
