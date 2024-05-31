@@ -1,4 +1,4 @@
-﻿using PolisProReminder.Exceptions;
+﻿using PolisProReminder.Domain.Exceptions;
 
 namespace PolisProReminder.Middlewares;
 
@@ -47,7 +47,7 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
                 logger.LogError(e, e.Message);
 
                 context.Response.StatusCode = 500;
-                await context.Response.WriteAsync("Something went wrong");
+                await context.Response.WriteAsync("Coś poszło nie tak");
                 break;
         }
     }
