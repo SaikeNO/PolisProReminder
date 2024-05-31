@@ -1,8 +1,7 @@
-﻿namespace PolisProReminder.Entities;
-
+﻿namespace PolisProReminder.Domain.Entities;
 public class Insurer
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string FirstName { get; set; } = null!;
     public string? LastName { get; set; }
     public string? PhoneNumber { get; set; }
