@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using PolisProReminder.Entities;
+﻿using PolisProReminder.Domain.Entities;
+using PolisProReminder.Infrastructure.Persistance;
 
-namespace PolisProReminder.Data;
+namespace PolisProReminder.Infrastructure.Seeders;
 
-public class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwordHasher)
+internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwordHasher) : ISeeder
 {
     public async Task Seed()
     {
