@@ -7,7 +7,7 @@ using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.Policies;
 
-internal class PoliciesService(IPolicyRepository policyRepository, IInsuranceTypeRepository insuranceTypeRepository, IMapper mapper, ILogger logger) : IPoliciesService
+internal class PoliciesService(IPoliciesRepository policyRepository, IInsuranceTypesRepository insuranceTypeRepository, IMapper mapper, ILogger logger) : IPoliciesService
 {
     public async Task Delete(Guid id)
     {

@@ -1,8 +1,9 @@
 ﻿using MediatR;
-using PolisProReminder.Common;
-using PolisProReminder.Models;
+using PolisProReminder.Application.Common;
+using PolisProReminder.Application.Policies.Dtos;
+using PolisProReminder.Domain.Constants;
 
-namespace PolisProReminder.Queries.GetAllPolicies;
+namespace PolisProReminder.Application.Policies.Queries.GetAllPolicies;
 
 public class GetAllPoliciesQuery : IRequest<PageResult<PolicyDto>>
 {
@@ -11,5 +12,5 @@ public class GetAllPoliciesQuery : IRequest<PageResult<PolicyDto>>
     public int PageSize { get; set; }
     public string? SortBy { get; set; }
     public SortDirection SortDirection { get; set; }
-    public int? TypeId { get; set; }
+    public Guid? TypeId { get; set; }
 }

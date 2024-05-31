@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PolisProReminder.Domain.Constants;
+using System.ComponentModel.DataAnnotations;
 
 namespace PolisProReminder.Application.Insurers.Dtos;
 

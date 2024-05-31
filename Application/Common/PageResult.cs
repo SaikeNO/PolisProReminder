@@ -1,4 +1,4 @@
-﻿namespace PolisProReminder.Common;
+﻿namespace PolisProReminder.Application.Common;
 
 public class PageResult<T>
 {

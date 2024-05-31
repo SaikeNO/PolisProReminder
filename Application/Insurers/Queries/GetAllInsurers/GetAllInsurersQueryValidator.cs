@@ -1,20 +1,19 @@
 ﻿using FluentValidation;
-using PolisProReminder.Models;
+using PolisProReminder.Application.Insurers.Dtos;
 
-namespace PolisProReminder.Queries.GetAllPolicies;
+namespace PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
 
-public class GetAllPoliciesQueryValidator : AbstractValidator<GetAllPoliciesQuery>
+public class GetAllInsurersQueryValidator : AbstractValidator<GetAllInsurersQuery>
 {
     private readonly int[] allowPageSizes = [5, 10, 15, 30];
     private readonly string[] allowedSortByColumnNames = [
-        nameof(PolicyDto.Title),
-        nameof(PolicyDto.PolicyNumber),
-        nameof(PolicyDto.EndDate),
-        nameof(PolicyDto.StartDate),
-        nameof(PolicyDto.PaymentDate)
+        nameof(InsurerDto.FirstName),
+        nameof(InsurerDto.LastName),
+        nameof(InsurerDto.Email),
+        nameof(InsurerDto.Pesel),
     ];
 
-    public GetAllPoliciesQueryValidator()
+    public GetAllInsurersQueryValidator()
     {
         RuleFor(p => p.PageIndex)
             .GreaterThanOrEqualTo(1);
