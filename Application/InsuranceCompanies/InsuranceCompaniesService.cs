@@ -6,79 +6,57 @@ using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.InsuranceCompanies;
 
-internal class InsuranceCompaniesService(IInsuranceCompanyRepository repository, ILogger logger)
+internal class InsuranceCompaniesService(IInsuranceCompanyRepository insuranceCompanyRepository, IMapper mapper, ILogger logger) : IInsuranceCompaniesService
 {
     public async Task<IEnumerable<InsuranceCompanyDto>> GetAll()
     {
-        var companies = await dbContext
-            .InsuranceCompanies
-            .ToListAsync();
+        var companies = await insuranceCompanyRepository.GetAll();
 
         return mapper.Map<List<InsuranceCompanyDto>>(companies);
     }
 
-    public async Task<InsuranceCompanyDto> Get(int id)
+    public async Task<InsuranceCompanyDto?> GetById(Guid id)
     {
-        var company = await dbContext
-            .InsuranceCompanies
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var company = await insuranceCompanyRepository.GetById(id);
 
-        if (company == null)
-            throw new NotFoundException("Insurance Company not found");
-
-        return mapper.Map<InsuranceCompanyDto>(company);
+        return mapper.Map<InsuranceCompanyDto?>(company);
     }
 
-    public async Task<InsuranceCompanyDto> Update(int id, CreateInsuranceCompanyDto dto)
+    public async Task<bool> Update(Guid id, CreateInsuranceCompanyDto dto)
     {
-        var company = await dbContext
-            .InsuranceCompanies
-            .FirstOrDefaultAsync(c => c.Id == id);
+        var company = await insuranceCompanyRepository.GetById(id);
 
         if (company == null)
-            throw new NotFoundException("Insurance Company not found");
+            return false;
 
         company.Name = dto.Name;
         company.ShortName = dto.ShortName;
 
-        await dbContext.SaveChangesAsync();
+        await insuranceCompanyRepository.SaveChanges();
 
-        return mapper.Map<InsuranceCompanyDto>(company);
+        return true;
     }
 
-    public async Task Delete(int id)
+    public async Task<bool> Delete(Guid id)
     {
-        var company = await dbContext
-            .InsuranceCompanies
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var company = await insuranceCompanyRepository.GetById(id);
 
         if (company == null)
-            throw new NotFoundException("Insurance Company not found");
+            return false;
 
-        dbContext
-            .InsuranceCompanies
-            .Remove(company);
+        await insuranceCompanyRepository.Delete(company);
+        await insuranceCompanyRepository.SaveChanges();
 
-        await dbContext.SaveChangesAsync();
+        return true;
     }
 
-    public async Task<InsuranceCompanyDto> Create(CreateInsuranceCompanyDto dto)
+    public async Task<Guid> Create(CreateInsuranceCompanyDto dto)
     {
-        var company = await dbContext
-            .InsuranceCompanies
-            .FirstOrDefaultAsync(c => c.Name == dto.Name);
+        var company = mapper.Map<InsuranceCompany>(dto);
 
-        if (company != null)
-            throw new AlreadyExistsException($"{company.Name} already exists");
+        var companyId = await insuranceCompanyRepository.Create(company);
+        await insuranceCompanyRepository.SaveChanges();
 
-        var createCompany = mapper.Map<InsuranceCompany>(dto);
-
-        var createdCompany = await dbContext
-        .InsuranceCompanies
-        .AddAsync(createCompany);
-
-        await dbContext.SaveChangesAsync();
-
-        return mapper.Map<InsuranceCompanyDto>(createdCompany.Entity);
+        return companyId;
     }
 }

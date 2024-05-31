@@ -9,10 +9,10 @@ public static class ServiceCollectionExtension
 {
     public static void AddApplication(this IServiceCollection services)
     {
-        services.AddScoped<IPolicyService, PoliciesService>();
-        services.AddScoped<IInsurerService, InsurersService>();
-        services.AddScoped<IInsuranceCompanyService, InsuranceCompaniesService>();
-        services.AddScoped<IInsuranceTypeService, InsuranceTypesService>();
+        services.AddScoped<IPoliciesService, PoliciesService>();
+        services.AddScoped<IInsurersService, InsurersService>();
+        services.AddScoped<IInsuranceCompaniesService, InsuranceCompaniesService>();
+        services.AddScoped<IInsuranceTypesService, InsuranceTypesService>();
 
         services.AddAutoMapper(typeof(ServiceCollectionExtension).Assembly);
     }
