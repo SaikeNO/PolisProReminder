@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PolisProReminder.Models;
+namespace PolisProReminder.Application.Policies.Dtos;
 
 public class CreatePolicyDto
 {
