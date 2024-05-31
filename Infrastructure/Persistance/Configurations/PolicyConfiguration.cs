@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PolisProReminder.Domain.Entities;
 
-namespace PolisProReminder.Entities.Configurations;
+namespace PolisProReminder.Infrastructure.Persistance.Configurations;
 
 public class PolicyConfiguration : IEntityTypeConfiguration<Policy>
 {
