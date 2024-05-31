@@ -2,7 +2,7 @@
 
 namespace PolisProReminder.Domain.Repositories;
 
-public interface IInsuranceTypeRepository
+public interface IInsuranceTypesRepository
 {
     Task<IEnumerable<InsuranceType>> GetAll();
     Task<InsuranceType?> GetById(Guid id);

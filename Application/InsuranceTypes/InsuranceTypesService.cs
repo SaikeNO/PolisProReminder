@@ -6,7 +6,7 @@ using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.InsuranceTypes;
 
-internal class InsuranceTypesService(IInsuranceTypeRepository insuranceTypeRepository, IMapper mapper, ILogger logger) : IInsuranceTypesService
+internal class InsuranceTypesService(IInsuranceTypesRepository insuranceTypeRepository, IMapper mapper, ILogger logger) : IInsuranceTypesService
 {
     public async Task<bool> Update(Guid id, CreateInsuranceTypeDto dto)
     {

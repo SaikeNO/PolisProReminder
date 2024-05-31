@@ -6,7 +6,7 @@ using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.InsuranceCompanies;
 
-internal class InsuranceCompaniesService(IInsuranceCompanyRepository insuranceCompanyRepository, IMapper mapper, ILogger logger) : IInsuranceCompaniesService
+internal class InsuranceCompaniesService(IInsuranceCompaniesRepository insuranceCompanyRepository, IMapper mapper, ILogger logger) : IInsuranceCompaniesService
 {
     public async Task<IEnumerable<InsuranceCompanyDto>> GetAll()
     {

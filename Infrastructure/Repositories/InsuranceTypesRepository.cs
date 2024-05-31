@@ -5,7 +5,7 @@ using PolisProReminder.Infrastructure.Persistance;
 
 namespace PolisProReminder.Infrastructure.Repositories;
 
-internal class InsuranceTypeRepository(InsuranceDbContext dbContext) : IInsuranceTypeRepository
+internal class InsuranceTypesRepository(InsuranceDbContext dbContext) : IInsuranceTypesRepository
 {
     
     public async Task<IEnumerable<InsuranceType>> GetAll()

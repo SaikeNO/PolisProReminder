@@ -2,7 +2,7 @@
 
 namespace PolisProReminder.Domain.Repositories;
 
-public interface IInsuranceCompanyRepository
+public interface IInsuranceCompaniesRepository
 {
     Task<Guid> Create(InsuranceCompany entity);
     Task Delete(InsuranceCompany entity);
