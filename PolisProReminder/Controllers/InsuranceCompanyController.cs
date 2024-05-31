@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PolisProReminder.Models;
+using PolisProReminder.Application.InsuranceCompanies.Dtos;
 using PolisProReminder.Services;
 
 namespace PolisProReminder.Controllers;

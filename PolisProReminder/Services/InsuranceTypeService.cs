@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using PolisProReminder.Application.InsuranceTypes.Dtos;
 using PolisProReminder.Entities;
 using PolisProReminder.Exceptions;
-using PolisProReminder.Models;
 
 namespace PolisProReminder.Services;
 

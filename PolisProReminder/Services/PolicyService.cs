@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using PolisProReminder.Application.Insurers.Dtos;
+using PolisProReminder.Application.Policies.Dtos;
 using PolisProReminder.Authorization;
 using PolisProReminder.Entities;
 using PolisProReminder.Exceptions;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
-using PolisProReminder.Entities;
+using PolisProReminder.Domain.Entities;
 using System.Security.Claims;
 
 namespace PolisProReminder.Authorization;

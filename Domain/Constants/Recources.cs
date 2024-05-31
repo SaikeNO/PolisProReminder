@@ -1,4 +1,4 @@
-﻿namespace PolisProReminder;
+﻿namespace PolisProReminder.Domain.Constants;
 
 public static class Recources
 {

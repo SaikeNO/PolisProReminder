@@ -1,22 +1,19 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using NLog.Web;
-using PolisProReminder;
-using PolisProReminder.Authorization;
-using PolisProReminder.Data;
-using PolisProReminder.Entities;
-using PolisProReminder.Middlewares;
-using PolisProReminder.Services;
-using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using PolisProReminder.Schedulers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using PolisProReminder;
+using PolisProReminder.Application.Extensions;
+using PolisProReminder.Authorization;
+using PolisProReminder.Domain.Entities;
+using PolisProReminder.Infrastructure.Extensions;
+using PolisProReminder.Infrastructure.Seeders;
+using PolisProReminder.Middlewares;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("Database");
 var authenticationSettings = new AuthenticationSettings();
 builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 
@@ -25,16 +22,12 @@ builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 builder.Services.AddControllers();
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly).AddFluentValidationAutoValidation();
 
-builder.Services.AddDbContext<InsuranceDbContext>(options => options.UseSqlServer(connectionString));
-builder.Services.AddScoped<IPolicyService, PolicyService>();
-builder.Services.AddScoped<IInsurerService, InsurerService>();
-builder.Services.AddScoped<IInsuranceCompanyService, InsuranceCompanyService>();
-builder.Services.AddScoped<IInsuranceTypeService, InsuranceTypeService>();
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+
+
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
-builder.Services.AddHostedService<ArchivePoliciesService>();
 
 builder.Services.AddSingleton(authenticationSettings);
 builder.Services.AddHttpContextAccessor();
@@ -55,8 +48,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddScoped<Seeder>();
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 
 
@@ -70,8 +61,6 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey
     });
 });
-//builder.Logging.ClearProviders();
-//builder.Host.UseNLog();
 builder.Services.AddCors(options => options.AddPolicy("frontend",
     policy =>
     {
@@ -94,7 +83,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 var scope = app.Services.CreateScope();
-var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
+var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
 
 await seeder.Seed();
 app.UseMiddleware<ErrorHandlingMiddleware>();

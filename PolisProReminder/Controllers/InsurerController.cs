@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PolisProReminder.Models;
+using PolisProReminder.Application.Insurers.Dtos;
+using PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
 using PolisProReminder.Queries.GetAllPolicies;
-using PolisProReminder.Queries.GetInsurers;
 using PolisProReminder.Services;
 
 namespace PolisProReminder.Controllers;
@@ -49,7 +49,7 @@ public class InsurerController(IInsurerService insurerService, IMediator mediato
     }
 
     [HttpGet("getPaginated")]
-    public async Task<IActionResult> GetPaginated([FromQuery] GetInsurersQuery query)
+    public async Task<IActionResult> GetPaginated([FromQuery] GetAllInsurersQuery query)
     {
         var insurers = await mediator.Send(query);
         return Ok(insurers);

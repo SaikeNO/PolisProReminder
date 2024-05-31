@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PolisProReminder.Models;
+using PolisProReminder.Application.InsuranceTypes.Dtos;
 using PolisProReminder.Services;
 
 namespace PolisProReminder.Controllers;

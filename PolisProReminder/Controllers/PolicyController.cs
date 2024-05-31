@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PolisProReminder.Models;
+using PolisProReminder.Application.Policies.Dtos;
 using PolisProReminder.Queries.GetAllPolicies;
 using PolisProReminder.Services;
 
@@ -66,11 +66,11 @@ namespace PolisProReminder.Controllers
             return Ok(policy);
         }
 
-        [HttpGet("Insurer/{id}")]
-        public async Task<IActionResult> GetInsurerPolicies([FromRoute] int id)
-        {
-            var policy = await policyService.GetInsurerPolicies(id);
-            return Ok(policy);
-        }
+        //[HttpGet("Insurer/{id}")]
+        //public async Task<IActionResult> GetInsurerPolicies([FromRoute] int id)
+        //{
+        //    var policy = await policyService.GetInsurerPolicies(id);
+        //    return Ok(policy);
+        //}
     }
 }

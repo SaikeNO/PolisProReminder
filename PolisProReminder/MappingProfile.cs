@@ -1,5 +1,7 @@
-﻿using AutoMapper;
-using PolisProReminder.Entities;
+﻿using PolisProReminder.Application.InsuranceCompanies.Dtos;
+using PolisProReminder.Application.InsuranceTypes.Dtos;
+using PolisProReminder.Application.Insurers.Dtos;
+using PolisProReminder.Application.Policies.Dtos;
 using PolisProReminder.Models;
 
 namespace PolisProReminder;
