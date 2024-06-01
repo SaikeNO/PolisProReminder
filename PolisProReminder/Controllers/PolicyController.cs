@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Policies;
 using PolisProReminder.Application.Policies.Commands.CreatePolicy;
+using PolisProReminder.Application.Policies.Commands.DeletePolicy;
 using PolisProReminder.Application.Policies.Commands.UpdatePolicyCommand;
 using PolisProReminder.Application.Policies.Dtos;
 using PolisProReminder.Application.Policies.Queries.GetAllPolicies;
+using PolisProReminder.Application.Policies.Queries.GetPolicyById;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PolisProReminder.Controllers
 {
@@ -28,7 +31,7 @@ namespace PolisProReminder.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeletePolicy([FromRoute] Guid id)
         {
-            await policyService.Delete(id);
+            await mediator.Send(new DeletePolicyCommand(id));
             return NoContent();
         }
 
@@ -68,7 +71,7 @@ namespace PolisProReminder.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<PolicyDto>> GetById([FromRoute] Guid id)
         {
-            var policy = await policyService.GetById(id);
+            var policy = await mediator.Send(new GetPolicyByIdQuery(id));
             return Ok(policy);
         }
     }
