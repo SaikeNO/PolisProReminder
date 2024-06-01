@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
 using PolisProReminder.Application.Policies.Dtos;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
@@ -7,7 +6,7 @@ using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.Policies;
 
-internal class PoliciesService(IPoliciesRepository policyRepository, IInsuranceTypesRepository insuranceTypeRepository, IMapper mapper, ILogger logger) : IPoliciesService
+internal class PoliciesService(IPoliciesRepository policyRepository, IInsuranceTypesRepository insuranceTypeRepository, IMapper mapper) : IPoliciesService
 {
     public async Task Delete(Guid id)
     {

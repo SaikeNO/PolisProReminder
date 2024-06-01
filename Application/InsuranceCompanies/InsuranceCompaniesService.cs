@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
 using PolisProReminder.Application.InsuranceCompanies.Dtos;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
@@ -7,7 +6,7 @@ using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.InsuranceCompanies;
 
-internal class InsuranceCompaniesService(IInsuranceCompaniesRepository insuranceCompanyRepository, IMapper mapper, ILogger logger) : IInsuranceCompaniesService
+internal class InsuranceCompaniesService(IInsuranceCompaniesRepository insuranceCompanyRepository, IMapper mapper) : IInsuranceCompaniesService
 {
     public async Task<IEnumerable<InsuranceCompanyDto>> GetAll()
     {

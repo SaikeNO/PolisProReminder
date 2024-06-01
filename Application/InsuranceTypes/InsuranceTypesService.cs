@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
 using PolisProReminder.Application.InsuranceTypes.Dtos;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
@@ -7,14 +6,14 @@ using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.InsuranceTypes;
 
-internal class InsuranceTypesService(IInsuranceTypesRepository insuranceTypeRepository, IMapper mapper, ILogger logger) : IInsuranceTypesService
+internal class InsuranceTypesService(IInsuranceTypesRepository insuranceTypeRepository, IMapper mapper) : IInsuranceTypesService
 {
     public async Task Update(Guid id, CreateInsuranceTypeDto dto)
     {
         var type = await insuranceTypeRepository.GetById(id);
-        
+
         _ = type ?? throw new NotFoundException("Typ o podanym ID nie istnieje");
-        
+
         type.Name = dto.Name;
 
         await insuranceTypeRepository.SaveChanges();

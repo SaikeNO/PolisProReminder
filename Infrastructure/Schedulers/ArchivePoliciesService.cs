@@ -1,12 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using PolisProReminder.Infrastructure.Persistance;
 
 namespace PolisProReminder.Infrastructure.Schedulers;
 
-public class ArchivePoliciesService(IServiceScopeFactory scopeFactory, ILogger logger) : BackgroundService
+public class ArchivePoliciesService(IServiceScopeFactory scopeFactory) : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
 
@@ -32,7 +31,7 @@ public class ArchivePoliciesService(IServiceScopeFactory scopeFactory, ILogger l
 
                     foreach (var record in records)
                     {
-                        if (record.EndDate < DateTime.Now)
+                        if (record.EndDate < DateOnly.FromDateTime(DateTime.Now))
                         {
                             record.IsArchived = true;
                         }
@@ -41,13 +40,13 @@ public class ArchivePoliciesService(IServiceScopeFactory scopeFactory, ILogger l
                     await dbContext.SaveChangesAsync(stoppingToken);
 
                     string message = $"Zarchiwizowano polisy: {string.Join(", ", records.Select(record => record.Id).ToArray())}";
-                    logger.LogInformation(message);
+                    //logger.LogInformation(message);
 
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Wystąpił błąd podczas archiwizowania polis");
+                //logger.LogError(ex, "Wystąpił błąd podczas archiwizowania polis");
             }
         }
     }

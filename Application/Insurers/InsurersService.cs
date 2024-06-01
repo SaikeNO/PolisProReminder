@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
 using PolisProReminder.Application.Insurers.Dtos;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
@@ -7,12 +6,12 @@ using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.Insurers;
 
-internal class InsurersService(IInsurersRepository insurerRepository, IMapper mapper, ILogger logger) : IInsurersService
+internal class InsurersService(IInsurersRepository insurerRepository, IMapper mapper) : IInsurersService
 {
     public async Task Update(Guid id, CreateInsurerDto dto)
     {
         var insurer = await insurerRepository.GetById(id);
-        
+
         _ = insurer ?? throw new NotFoundException("Klient o podanym ID nie istnieje");
 
         if (await insurerRepository.GetByPeselAndId(dto.Pesel, id) != null)
