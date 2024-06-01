@@ -1,5 +1,7 @@
-﻿namespace PolisProReminder.Domain.Entities;
-public class User
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace PolisProReminder.Domain.Entities;
+public class User : IdentityUser
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;

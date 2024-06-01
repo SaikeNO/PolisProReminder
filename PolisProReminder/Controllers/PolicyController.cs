@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Policies.Dtos;
-using PolisProReminder.Queries.GetAllPolicies;
+using PolisProReminder.Application.Policies.Queries.GetAllPolicies;
 using PolisProReminder.Services;
 
 namespace PolisProReminder.Controllers

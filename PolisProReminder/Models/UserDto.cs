@@ -1,4 +1,4 @@
-﻿using PolisProReminder.Entities;
+﻿using PolisProReminder.Domain.Entities;
 
 namespace PolisProReminder.Models;
 

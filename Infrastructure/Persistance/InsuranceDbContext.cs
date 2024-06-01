@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Infrastructure.Persistance.Configurations;
 
 namespace PolisProReminder.Infrastructure.Persistance;
 
-internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) : DbContext(options)
+internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) : IdentityDbContext<User>(options)
 {
     internal DbSet<Insurer> Insurers { get; set; } = null!;
     internal DbSet<Policy> Policies { get; set; } = null!;

@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PolisProReminder.Infrastructure.Persistance;
 
 namespace PolisProReminder.Infrastructure.Schedulers;
 
-public class ArchivePoliciesService(IServiceScopeFactory scopeFactory, ILogger logger) : BackgroudService
+public class ArchivePoliciesService(IServiceScopeFactory scopeFactory, ILogger logger) : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
 

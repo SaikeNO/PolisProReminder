@@ -1,4 +1,5 @@
-﻿using PolisProReminder.Domain.Entities;
+﻿using Microsoft.AspNetCore.Identity;
+using PolisProReminder.Domain.Entities;
 using PolisProReminder.Infrastructure.Persistance;
 
 namespace PolisProReminder.Infrastructure.Seeders;

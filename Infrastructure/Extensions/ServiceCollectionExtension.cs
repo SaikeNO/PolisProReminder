@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Repositories;
 using PolisProReminder.Infrastructure.Persistance;
 using PolisProReminder.Infrastructure.Repositories;
@@ -17,6 +18,8 @@ public static class ServiceCollectionExtension
         services.AddDbContext<InsuranceDbContext>(options => options.UseSqlServer(connectionString));
         services.AddHostedService<ArchivePoliciesService>();
 
+        services.AddIdentityApiEndpoints<User>()
+            .AddEntityFrameworkStores<InsuranceDbContext>();
 
         services.AddScoped<ISeeder, Seeder>();
         services.AddScoped<IPoliciesRepository, PoliciesRepository>();

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Insurers.Dtos;
 using PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
-using PolisProReminder.Queries.GetAllPolicies;
 using PolisProReminder.Services;
 
 namespace PolisProReminder.Controllers;
