@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Policies;
+using PolisProReminder.Application.Policies.Commands.CreatePolicy;
 using PolisProReminder.Application.Policies.Dtos;
 using PolisProReminder.Application.Policies.Queries.GetAllPolicies;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PolisProReminder.Controllers
 {
@@ -42,14 +44,11 @@ namespace PolisProReminder.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreatePolicyDto dto)
+        public async Task<IActionResult> Create([FromBody] CreatePolicyCommand command)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var id = await mediator.Send(command);
 
-            var id = await policyService.Create(dto);
-
-            return Created($"api/policy/{id}", null);
+            return CreatedAtAction(nameof(GetById), new { id }, null);
         }
 
         [HttpGet]
@@ -69,7 +68,7 @@ namespace PolisProReminder.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PolicyDto>> Get([FromRoute] Guid id)
+        public async Task<ActionResult<PolicyDto>> GetById([FromRoute] Guid id)
         {
             var policy = await policyService.GetById(id);
             return Ok(policy);

@@ -59,33 +59,6 @@ internal class PoliciesService(IPoliciesRepository policyRepository, IInsuranceT
         await policyRepository.SaveChanges();
     }
 
-    public async Task<Guid> Create(CreatePolicyDto dto)
-    {
-        var policy = await policyRepository.GetByNumber(dto.PolicyNumber);
-
-        if (policy != null)
-            throw new AlreadyExistsException("Polisa o podanym numerze już istnieje");
-
-        var types = await insuranceTypeRepository.GetManyByIds(dto.InsuranceTypeIds);
-
-        var createPolicy = new Policy
-        {
-            PolicyNumber = dto.PolicyNumber,
-            InsuranceCompanyId = dto.InsuranceCompanyId,
-            StartDate = dto.StartDate,
-            EndDate = dto.EndDate,
-            PaymentDate = dto.PaymentDate,
-            InsurerId = dto.InsurerId,
-            InsuranceTypes = types.ToList(),
-            IsPaid = dto.IsPaid,
-            Title = dto.Title,
-        };
-
-        await policyRepository.Create(createPolicy);
-
-        return createPolicy.Id;
-    }
-
     public async Task<PolicyDto> GetById(Guid id)
     {
         var policy = await policyRepository.GetById(id);
