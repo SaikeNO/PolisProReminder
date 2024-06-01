@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Policies;
 using PolisProReminder.Application.Policies.Commands.CreatePolicy;
+using PolisProReminder.Application.Policies.Commands.UpdatePolicyCommand;
 using PolisProReminder.Application.Policies.Dtos;
 using PolisProReminder.Application.Policies.Queries.GetAllPolicies;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PolisProReminder.Controllers
 {
@@ -15,12 +15,10 @@ namespace PolisProReminder.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] CreatePolicyDto dto)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdatePolicyCommand command)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            await policyService.Update(id, dto);
+            command.Id = id;
+            await mediator.Send(command);
 
             return NoContent();
         }

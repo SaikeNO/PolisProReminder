@@ -1,25 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MediatR;
 
-namespace PolisProReminder.Application.Policies.Dtos;
+namespace PolisProReminder.Application.Policies.Commands.UpdatePolicyCommand;
 
-public class CreatePolicyDto
+public class UpdatePolicyCommand : IRequest
 {
-    [Required]
-    [MaxLength(60)]
+    public Guid Id { get; set; }
     public string Title { get; set; } = null!;
-
-    [Required]
-    [MaxLength(60)]
     public string PolicyNumber { get; set; } = null!;
-
-    [Required]
     public Guid InsuranceCompanyId { get; set; }
     public DateOnly StartDate { get; set; }
     public DateOnly EndDate { get; set; }
     public DateOnly PaymentDate { get; set; }
     public bool IsPaid { get; set; }
-
-    [Required]
     public Guid InsurerId { get; set; }
     public List<Guid> InsuranceTypeIds { get; set; } = [];
 }
