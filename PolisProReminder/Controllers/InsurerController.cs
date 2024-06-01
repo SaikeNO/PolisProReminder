@@ -1,17 +1,19 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PolisProReminder.Models;
-using PolisProReminder.Queries.GetAllPolicies;
-using PolisProReminder.Queries.GetInsurers;
-using PolisProReminder.Services;
+using PolisProReminder.Application.Common;
+using PolisProReminder.Application.Insurers;
+using PolisProReminder.Application.Insurers.Dtos;
+using PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
 
 namespace PolisProReminder.Controllers;
 
 [Route("api/[controller]")]
-public class InsurerController(IInsurerService insurerService, IMediator mediator) : ControllerBase
+public class InsurerController(IInsurersService insurerService, IMediator mediator) : ControllerBase
 {
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromBody] CreateInsurerDto dto, [FromRoute] int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] CreateInsurerDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -22,20 +24,22 @@ public class InsurerController(IInsurerService insurerService, IMediator mediato
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        await insurerService.DeleteInsurer(id);
+        await insurerService.Delete(id);
 
         return NoContent();
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateInsurer([FromBody] CreateInsurerDto dto)
+    public async Task<IActionResult> Create([FromBody] CreateInsurerDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var id = await insurerService.CreateInsurer(dto);
+        var id = await insurerService.Create(dto);
 
         return Created($"/api/insurer/{id}", null);
     }
@@ -49,7 +53,7 @@ public class InsurerController(IInsurerService insurerService, IMediator mediato
     }
 
     [HttpGet("getPaginated")]
-    public async Task<IActionResult> GetPaginated([FromQuery] GetInsurersQuery query)
+    public async Task<ActionResult<PageResult<InsurerDto>>> GetPaginated([FromQuery] GetAllInsurersQuery query)
     {
         var insurers = await mediator.Send(query);
         return Ok(insurers);
@@ -57,7 +61,7 @@ public class InsurerController(IInsurerService insurerService, IMediator mediato
 
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById([FromRoute] int id)
+    public async Task<ActionResult<InsurerDto?>> GetById([FromRoute] Guid id)
     {
         var insurer = await insurerService.GetById(id);
 

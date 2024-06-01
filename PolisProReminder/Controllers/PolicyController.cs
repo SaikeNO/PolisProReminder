@@ -1,75 +1,77 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PolisProReminder.Models;
-using PolisProReminder.Queries.GetAllPolicies;
-using PolisProReminder.Services;
+using PolisProReminder.Application.Common;
+using PolisProReminder.Application.Policies;
+using PolisProReminder.Application.Policies.Dtos;
+using PolisProReminder.Application.Policies.Queries.GetAllPolicies;
 
 namespace PolisProReminder.Controllers
 {
     [Route("api/[controller]")]
-    public class PolicyController(IPolicyService policyService, IMediator mediator) : ControllerBase
+    public class PolicyController(IPoliciesService policyService, IMediator mediator) : ControllerBase
     {
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePolicy([FromRoute] int id, [FromBody] CreatePolicyDto dto)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] CreatePolicyDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var policy = await policyService.UpdatePolicy(id, dto);
+            await policyService.Update(id, dto);
 
-            return Ok(policy);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePolicy([FromRoute] int id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeletePolicy([FromRoute] Guid id)
         {
-            await policyService.DeletePolicy(id);
+            await policyService.Delete(id);
             return NoContent();
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateIsPaid([FromRoute] int id, [FromBody] bool isPaid)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateIsPaid([FromRoute] Guid id, [FromBody] bool isPaid)
         {
-            var policy = await policyService.UpdateIsPaidPolicy(id, isPaid);
-            return Ok(policy);
+            await policyService.UpdateIsPaid(id, isPaid);
+            return NoContent();
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePolicy([FromBody] CreatePolicyDto dto)
+        public async Task<IActionResult> Create([FromBody] CreatePolicyDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var id = await policyService.CreatePolicy(dto);
+            var id = await policyService.Create(dto);
 
             return Created($"api/policy/{id}", null);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] GetAllPoliciesQuery query)
+        public async Task<ActionResult<PageResult<PolicyDto>>> GetAll([FromQuery] GetAllPoliciesQuery query)
         {
             var policies = await mediator.Send(query);
             return Ok(policies);
         }
 
         [HttpGet("Latest")]
-        public async Task<IActionResult> GetLatest([FromQuery] int count)
+        public async Task<ActionResult<IEnumerable<PolicyDto>>> GetLatest([FromQuery] int count)
         {
             var policies = await policyService.GetLatestPolicies(count);
             return Ok(policies);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get([FromRoute] int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<PolicyDto>> Get([FromRoute] Guid id)
         {
             var policy = await policyService.GetById(id);
-            return Ok(policy);
-        }
-
-        [HttpGet("Insurer/{id}")]
-        public async Task<IActionResult> GetInsurerPolicies([FromRoute] int id)
-        {
-            var policy = await policyService.GetInsurerPolicies(id);
             return Ok(policy);
         }
     }

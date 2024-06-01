@@ -1,37 +1,40 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using PolisProReminder.Models;
-using PolisProReminder.Services;
+﻿using Microsoft.AspNetCore.Mvc;
+using PolisProReminder.Application.InsuranceCompanies;
+using PolisProReminder.Application.InsuranceCompanies.Dtos;
 
 namespace PolisProReminder.Controllers;
 
 [Route("api/[controller]")]
-public class InsuranceCompanyController(IInsuranceCompanyService insuranceCompanyService) : ControllerBase
+public class InsuranceCompanyController(IInsuranceCompaniesService insuranceCompanyService) : ControllerBase
 {
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromBody] CreateInsuranceCompanyDto dto, [FromRoute] int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] CreateInsuranceCompanyDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var company = await insuranceCompanyService.Update(id, dto);
+        await insuranceCompanyService.Update(id, dto);
 
-        return Ok(company);
+        return NoContent();
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateInsuranceCompany([FromBody] CreateInsuranceCompanyDto dto)
+    public async Task<IActionResult> Create([FromBody] CreateInsuranceCompanyDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var company = await insuranceCompanyService.Create(dto);
+        var id = await insuranceCompanyService.Create(dto);
 
-        return Ok(company);
+        return Created($"/api/InsuranceCompany/{id}", null);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         await insuranceCompanyService.Delete(id);
 
@@ -39,7 +42,7 @@ public class InsuranceCompanyController(IInsuranceCompanyService insuranceCompan
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<ActionResult<IEnumerable<InsuranceCompanyDto>>> GetAll()
     {
         var companies = await insuranceCompanyService.GetAll();
 
@@ -47,9 +50,9 @@ public class InsuranceCompanyController(IInsuranceCompanyService insuranceCompan
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get([FromRoute] int id)
+    public async Task<ActionResult<InsuranceCompanyDto>> GetById([FromRoute] Guid id)
     {
-        var company = await insuranceCompanyService.Get(id);
+        var company = await insuranceCompanyService.GetById(id);
         return Ok(company);
     }
 }

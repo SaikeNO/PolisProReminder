@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolisProReminder", "PolisProReminder\PolisProReminder.csproj", "{D0CF58D1-E571-4D63-BBC2-53719AE5E91D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolisProReminder.API", "PolisProReminder\PolisProReminder.API.csproj", "{D0CF58D1-E571-4D63-BBC2-53719AE5E91D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolisProReminder.Domain", "Domain\PolisProReminder.Domain.csproj", "{DB13D7AF-082E-4FDE-A937-C658597F3B5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolisProReminder.Application", "Application\PolisProReminder.Application.csproj", "{317AA160-A63C-4B30-9B82-1E36AEA14B20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolisProReminder.Infrastructure", "Infrastructure\PolisProReminder.Infrastructure.csproj", "{1EAFE866-1541-40AB-BEE8-68333B63AF2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{D0CF58D1-E571-4D63-BBC2-53719AE5E91D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0CF58D1-E571-4D63-BBC2-53719AE5E91D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0CF58D1-E571-4D63-BBC2-53719AE5E91D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB13D7AF-082E-4FDE-A937-C658597F3B5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB13D7AF-082E-4FDE-A937-C658597F3B5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB13D7AF-082E-4FDE-A937-C658597F3B5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB13D7AF-082E-4FDE-A937-C658597F3B5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{317AA160-A63C-4B30-9B82-1E36AEA14B20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{317AA160-A63C-4B30-9B82-1E36AEA14B20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{317AA160-A63C-4B30-9B82-1E36AEA14B20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{317AA160-A63C-4B30-9B82-1E36AEA14B20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EAFE866-1541-40AB-BEE8-68333B63AF2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EAFE866-1541-40AB-BEE8-68333B63AF2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EAFE866-1541-40AB-BEE8-68333B63AF2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EAFE866-1541-40AB-BEE8-68333B63AF2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
