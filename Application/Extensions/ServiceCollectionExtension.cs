@@ -5,6 +5,7 @@ using PolisProReminder.Application.InsuranceCompanies;
 using PolisProReminder.Application.InsuranceTypes;
 using PolisProReminder.Application.Insurers;
 using PolisProReminder.Application.Policies;
+using PolisProReminder.Application.User;
 
 namespace PolisProReminder.Application.Extensions;
 

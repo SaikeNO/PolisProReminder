@@ -10,5 +10,6 @@ public interface IInsurersRepository
     Task<IEnumerable<Insurer>> GetAll();
     Task<Insurer?> GetById(Guid id);
     Task<(IEnumerable<Insurer>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection);
+    Task<Insurer?> GetByPeselAndId(string pesel, Guid? id);
     Task SaveChanges();
 }

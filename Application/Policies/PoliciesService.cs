@@ -60,7 +60,7 @@ internal class PoliciesService(IPoliciesRepository policyRepository, IInsuranceT
         await policyRepository.SaveChanges();
     }
 
-    public async Task<Guid> CreatePolicy(CreatePolicyDto dto)
+    public async Task<Guid> Create(CreatePolicyDto dto)
     {
         var policy = await policyRepository.GetByNumber(dto.PolicyNumber);
 

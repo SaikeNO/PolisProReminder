@@ -84,7 +84,13 @@ internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepos
         return (insurers, totalCount);
     }
 
-        public async Task Delete(Insurer entity)
+    public async Task<Insurer?> GetByPeselAndId(string pesel, Guid? id)
+    {
+        var insurer = await dbContext.Insurers.FirstOrDefaultAsync(i => i.Pesel == pesel && i.Id != id);
+        return insurer;
+    }
+
+    public async Task Delete(Insurer entity)
     {
         dbContext.Remove(entity);
         await dbContext.SaveChangesAsync();
@@ -98,5 +104,4 @@ internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepos
     }
 
     public Task SaveChanges() => dbContext.SaveChangesAsync();
-
 }

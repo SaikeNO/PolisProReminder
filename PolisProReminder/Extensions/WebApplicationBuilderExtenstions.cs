@@ -30,7 +30,7 @@ public static class WebApplicationBuilderExtenstions
                 {
                     new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference {Type = ReferenceType.SecurityScheme, Id="bearerAuth"}
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "bearerAuth" }
                     },
                     []
                 }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using PolisProReminder.Application.InsuranceCompanies.Dtos;
 using PolisProReminder.Domain.Entities;
+using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.InsuranceCompanies;
@@ -22,32 +23,26 @@ internal class InsuranceCompaniesService(IInsuranceCompaniesRepository insurance
         return mapper.Map<InsuranceCompanyDto?>(company);
     }
 
-    public async Task<bool> Update(Guid id, CreateInsuranceCompanyDto dto)
+    public async Task Update(Guid id, CreateInsuranceCompanyDto dto)
     {
         var company = await insuranceCompanyRepository.GetById(id);
 
-        if (company == null)
-            return false;
+        _ = company ?? throw new NotFoundException("Towarzystwo ubezpieczeniowe o podanym ID nie istnieje");
 
         company.Name = dto.Name;
         company.ShortName = dto.ShortName;
 
         await insuranceCompanyRepository.SaveChanges();
-
-        return true;
     }
 
-    public async Task<bool> Delete(Guid id)
+    public async Task Delete(Guid id)
     {
         var company = await insuranceCompanyRepository.GetById(id);
 
-        if (company == null)
-            return false;
+        _ = company ?? throw new NotFoundException("Towarzystwo ubezpieczeniowe o podanym ID nie istnieje");
 
         await insuranceCompanyRepository.Delete(company);
         await insuranceCompanyRepository.SaveChanges();
-
-        return true;
     }
 
     public async Task<Guid> Create(CreateInsuranceCompanyDto dto)

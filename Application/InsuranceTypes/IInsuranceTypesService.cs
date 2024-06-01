@@ -2,12 +2,12 @@
 
 namespace PolisProReminder.Application.InsuranceTypes
 {
-    internal interface IInsuranceTypesService
+    public interface IInsuranceTypesService
     {
         Task<Guid> Create(CreateInsuranceTypeDto dto);
-        Task<bool> Delete(Guid id);
+        Task Delete(Guid id);
         Task<IEnumerable<InsuranceTypeDto>> GetAll();
         Task<InsuranceTypeDto?> GetById(Guid id);
-        Task<bool> Update(Guid id, CreateInsuranceTypeDto dto);
+        Task Update(Guid id, CreateInsuranceTypeDto dto);
     }
 }

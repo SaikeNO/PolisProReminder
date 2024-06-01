@@ -2,9 +2,9 @@
 
 namespace PolisProReminder.Application.Policies
 {
-    internal interface IPoliciesService
+    public interface IPoliciesService
     {
-        Task<Guid> CreatePolicy(CreatePolicyDto dto);
+        Task<Guid> Create(CreatePolicyDto dto);
         Task Delete(Guid id);
         Task<PolicyDto> GetById(Guid id);
         Task<IEnumerable<PolicyDto>> GetLatestPolicies(int count);

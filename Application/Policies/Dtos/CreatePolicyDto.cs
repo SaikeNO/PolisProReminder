@@ -14,9 +14,9 @@ public class CreatePolicyDto
 
     [Required]
     public Guid InsuranceCompanyId { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public DateTime PaymentDate { get; set; }
+    public DateOnly StartDate { get; set; }
+    public DateOnly EndDate { get; set; }
+    public DateOnly PaymentDate { get; set; }
     public bool IsPaid { get; set; }
 
     [Required]

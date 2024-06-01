@@ -2,36 +2,32 @@
 using Microsoft.Extensions.Logging;
 using PolisProReminder.Application.InsuranceTypes.Dtos;
 using PolisProReminder.Domain.Entities;
+using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.InsuranceTypes;
 
 internal class InsuranceTypesService(IInsuranceTypesRepository insuranceTypeRepository, IMapper mapper, ILogger logger) : IInsuranceTypesService
 {
-    public async Task<bool> Update(Guid id, CreateInsuranceTypeDto dto)
+    public async Task Update(Guid id, CreateInsuranceTypeDto dto)
     {
         var type = await insuranceTypeRepository.GetById(id);
-
-        if (type == null)
-            return false;
-
+        
+        _ = type ?? throw new NotFoundException("Typ o podanym ID nie istnieje");
+        
         type.Name = dto.Name;
 
         await insuranceTypeRepository.SaveChanges();
-
-        return true;
     }
 
-    public async Task<bool> Delete(Guid id)
+    public async Task Delete(Guid id)
     {
         var type = await insuranceTypeRepository.GetById(id);
 
-        if (type == null)
-            return false;
+        _ = type ?? throw new NotFoundException("Typ o podanym ID nie istnieje");
 
         await insuranceTypeRepository.Delete(type);
         await insuranceTypeRepository.SaveChanges();
-        return true;
     }
 
     public async Task<Guid> Create(CreateInsuranceTypeDto dto)

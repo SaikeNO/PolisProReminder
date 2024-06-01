@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PolisProReminder.Application.InsuranceTypes;
 using PolisProReminder.Application.InsuranceTypes.Dtos;
-using PolisProReminder.Services;
 
 namespace PolisProReminder.Controllers;
 
 [Route("api/[controller]")]
-public class InsuranceTypeController(IInsuranceTypeService insuranceTypeService) : ControllerBase
+public class InsuranceTypeController(IInsuranceTypesService insuranceTypeService) : ControllerBase
 {
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromBody] CreateInsuranceTypeDto dto, [FromRoute] int id)
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] CreateInsuranceTypeDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -16,22 +16,15 @@ public class InsuranceTypeController(IInsuranceTypeService insuranceTypeService)
         await insuranceTypeService.Update(id, dto);
 
         return Ok();
-
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        await insuranceTypeService.DeleteInsuranceType(id);
+        await insuranceTypeService.Delete(id);
         return NoContent();
-    }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById([FromRoute] int id)
-    {
-        var type = await insuranceTypeService.GetById(id);
-
-        return Ok(type);
     }
 
     [HttpPost]
@@ -40,14 +33,21 @@ public class InsuranceTypeController(IInsuranceTypeService insuranceTypeService)
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var id = await insuranceTypeService.CreateInsuranceType(dto);
+        var id = await insuranceTypeService.Create(dto);
 
-        return Created($"/api/type/{id}", null);
+        return Created($"/api/InsuranceType/{id}", null);
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<InsuranceTypeDto?>> GetById([FromRoute] Guid id)
+    {
+        var type = await insuranceTypeService.GetById(id);
+
+        return Ok(type);
+    }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<ActionResult<IEnumerable<InsuranceTypeDto>>> GetAll()
     {
         var types = await insuranceTypeService.GetAll();
 
