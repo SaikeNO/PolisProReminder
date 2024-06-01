@@ -1,19 +1,18 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Common;
-using PolisProReminder.Application.Policies;
 using PolisProReminder.Application.Policies.Commands.CreatePolicy;
 using PolisProReminder.Application.Policies.Commands.DeletePolicy;
 using PolisProReminder.Application.Policies.Commands.UpdatePolicyCommand;
 using PolisProReminder.Application.Policies.Dtos;
 using PolisProReminder.Application.Policies.Queries.GetAllPolicies;
+using PolisProReminder.Application.Policies.Queries.GetLatestPolicies;
 using PolisProReminder.Application.Policies.Queries.GetPolicyById;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PolisProReminder.Controllers
 {
     [Route("api/[controller]")]
-    public class PolicyController(IPoliciesService policyService, IMediator mediator) : ControllerBase
+    public class PolicyController(IMediator mediator) : ControllerBase
     {
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -53,7 +52,7 @@ namespace PolisProReminder.Controllers
         [HttpGet("Latest")]
         public async Task<ActionResult<IEnumerable<PolicyDto>>> GetLatest([FromQuery] int count)
         {
-            var policies = await policyService.GetLatestPolicies(count);
+            var policies = await mediator.Send(new GetLatestPoliciesQuery(count));
             return Ok(policies);
         }
 
