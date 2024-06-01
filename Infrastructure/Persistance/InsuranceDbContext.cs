@@ -11,8 +11,6 @@ internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) 
     internal DbSet<Policy> Policies { get; set; } = null!;
     internal DbSet<InsuranceCompany> InsuranceCompanies { get; set; } = null!;
     internal DbSet<InsuranceType> InsuranceTypes { get; set; } = null!;
-    internal DbSet<User> Users { get; set; } = null!;
-    internal DbSet<Role> Roles { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

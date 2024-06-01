@@ -41,7 +41,7 @@ app.MapGroup("api/identity")
 app.UseCors("frontend");
 app.UseAuthorization();
 
-app.MapControllers()
-    .RequireAuthorization(new AuthorizeAttribute());
+app.MapControllers();
+    //.RequireAuthorization(new AuthorizeAttribute());
 
 app.Run();

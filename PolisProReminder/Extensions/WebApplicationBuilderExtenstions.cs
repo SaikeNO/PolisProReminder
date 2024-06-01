@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.OpenApi.Models;
-using PolisProReminder.Authorization;
-using PolisProReminder.Domain.Entities;
+﻿using Microsoft.OpenApi.Models;
 using PolisProReminder.Middlewares;
 
 namespace PolisProReminder.API.Extensions;
@@ -45,8 +41,6 @@ public static class WebApplicationBuilderExtenstions
             }
         ));
 
-        builder.Services.AddScoped<ErrorHandlingMiddleware>();
-        builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-        builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
+        //builder.Services.AddScoped<ErrorHandlingMiddleware>();
     }
 }

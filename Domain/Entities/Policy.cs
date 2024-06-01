@@ -12,9 +12,9 @@ public class Policy
     public DateOnly PaymentDate { get; set; }
     public bool IsPaid { get; set; } = false;
     public bool IsDeleted { get; set; } = false;
-    public bool IsArchived { get; set; } = false;
-    public string CreatedById { get; set; } = null!;
-    public virtual User CreatedBy { get; set; } = null!;
+    public bool IsArchived { get; set; } = false; // Co z tym zrobic????????????
+    public string CreatedByUserId { get; set; } = null!;
+    public string CreatedByAgentId { get; set; } = null!;
 
     public virtual Insurer Insurer { get; set; } = null!;
     public virtual InsuranceCompany? InsuranceCompany { get; set; }

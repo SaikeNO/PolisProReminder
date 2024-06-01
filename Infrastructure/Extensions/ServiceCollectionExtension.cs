@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PolisProReminder.Domain.Entities;
@@ -19,6 +20,7 @@ public static class ServiceCollectionExtension
         services.AddHostedService<ArchivePoliciesService>();
 
         services.AddIdentityApiEndpoints<User>()
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<InsuranceDbContext>();
 
         services.AddScoped<ISeeder, Seeder>();
