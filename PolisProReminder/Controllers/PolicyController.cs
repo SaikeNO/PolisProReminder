@@ -35,15 +35,6 @@ namespace PolisProReminder.Controllers
             return NoContent();
         }
 
-        [HttpPatch("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateIsPaid([FromRoute] Guid id, [FromBody] bool isPaid)
-        {
-            await policyService.UpdateIsPaid(id, isPaid);
-            return NoContent();
-        }
-
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreatePolicyCommand command)
         {
