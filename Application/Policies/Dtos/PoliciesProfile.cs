@@ -13,6 +13,5 @@ public class PoliciesProfile : Profile
         CreateMap<Policy, InsurerPolicyDto>()
             .ForMember(p => p.InsuranceCompany, c => c.MapFrom(s => s.InsuranceCompany.ShortName));
 
-        CreateMap<CreatePolicyDto, PolicyDto>();
     }
 }
