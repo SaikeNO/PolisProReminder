@@ -3,7 +3,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using PolisProReminder.Application.InsuranceCompanies;
 using PolisProReminder.Application.InsuranceTypes;
-using PolisProReminder.Application.User;
+using PolisProReminder.Application.Users;
 
 namespace PolisProReminder.Application.Extensions;
 

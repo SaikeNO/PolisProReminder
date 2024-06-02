@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Repositories;
+using PolisProReminder.Infrastructure.Authorization;
 using PolisProReminder.Infrastructure.Persistance;
 using PolisProReminder.Infrastructure.Repositories;
 using PolisProReminder.Infrastructure.Schedulers;
@@ -21,6 +22,7 @@ public static class ServiceCollectionExtension
 
         services.AddIdentityApiEndpoints<User>()
             .AddRoles<IdentityRole>()
+            .AddClaimsPrincipalFactory<InsuranceUserClaimsPrincipalFactory>()
             .AddEntityFrameworkStores<InsuranceDbContext>();
 
         services.AddScoped<ISeeder, Seeder>();
