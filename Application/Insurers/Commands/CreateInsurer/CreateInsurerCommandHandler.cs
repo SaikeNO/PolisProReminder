@@ -13,16 +13,16 @@ public class CreateInsurerCommandHandler(IInsurersRepository insurersRepository,
 {
     public async Task<Guid> Handle(CreateInsurerCommand request, CancellationToken cancellationToken)
     {
-        if (await insurersRepository.GetByPeselAndId(request.Pesel, null) != null)
-            throw new AlreadyExistsException("Klient o podanym numerze PESEL już istnieje");
-
         var currentUser = userContext.GetCurrentUser();
         _ = currentUser ?? throw new InvalidOperationException("Current User is not present");
+
+        if (await insurersRepository.GetByPeselAndId(currentUser.AgentId, request.Pesel, null) != null)
+            throw new AlreadyExistsException("Klient o podanym numerze PESEL już istnieje");
 
         var insurer = mapper.Map<Insurer>(request);
 
         insurer.CreatedByUserId = currentUser.Id;
-        insurer.CreatedByAgentId = currentUser.SuperiorId ?? currentUser.Id;
+        insurer.CreatedByAgentId = currentUser.AgentId!;
 
         await insurersRepository.Create(insurer);
 

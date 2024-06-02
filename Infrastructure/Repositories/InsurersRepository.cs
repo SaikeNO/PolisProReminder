@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+﻿using Microsoft.EntityFrameworkCore;
 using PolisProReminder.Application.Insurers.Dtos;
 using PolisProReminder.Domain.Constants;
 using PolisProReminder.Domain.Entities;
@@ -12,10 +10,11 @@ namespace PolisProReminder.Infrastructure.Repositories;
 
 internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepository
 {
-    public async Task<IEnumerable<Insurer>> GetAll()
+    public async Task<IEnumerable<Insurer>> GetAll(string agentId)
     {
         var insurers = await dbContext
             .Insurers
+            .Where(i => i.CreatedByAgentId == agentId)
             .Include(i => i.Policies)
             .ThenInclude(p => p.InsuranceCompany)
             .Include(i => i.Policies)
@@ -25,11 +24,12 @@ internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepos
         return insurers;
     }
 
-    public async Task<Insurer?> GetById(Guid id)
+    public async Task<Insurer?> GetById(string agentId, Guid id)
     {
         var insurer = await dbContext
             .Insurers
-            .Include(i => i.Policies.OrderBy(p => p.EndDate))
+            .Where(i => i.CreatedByAgentId == agentId)
+            .Include(i => i.Policies)
             .ThenInclude(p => p.InsuranceCompany)
             .Include(i => i.Policies)
             .ThenInclude(p => p.InsuranceTypes)
@@ -38,7 +38,8 @@ internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepos
         return insurer;
     }
 
-    public async Task<(IEnumerable<Insurer>, int)> GetAllMatchingAsync(string? searchPhrase,
+    public async Task<(IEnumerable<Insurer>, int)> GetAllMatchingAsync(string agentId,
+        string? searchPhrase,
         int pageSize,
         int pageNumber,
         string? sortBy,
@@ -48,6 +49,7 @@ internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepos
 
         var baseQuery = dbContext
             .Insurers
+            .Where(i => i.CreatedByAgentId == agentId)
             .Include(i => i.Policies)
             .ThenInclude(p => p.InsuranceCompany)
             .Include(i => i.Policies)
@@ -84,9 +86,12 @@ internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepos
         return (insurers, totalCount);
     }
 
-    public async Task<Insurer?> GetByPeselAndId(string pesel, Guid? id)
+    public async Task<Insurer?> GetByPeselAndId(string agentId, string pesel, Guid? id)
     {
-        var insurer = await dbContext.Insurers.FirstOrDefaultAsync(i => i.Pesel == pesel && i.Id != id);
+        var insurer = await dbContext
+            .Insurers
+            .Where(i => i.CreatedByAgentId == agentId)
+            .FirstOrDefaultAsync(i => i.Pesel == pesel && i.Id != id);
         return insurer;
     }
 

@@ -53,8 +53,6 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
                 dbContext.Insurers.AddRange(insurers);
                 await dbContext.SaveChangesAsync();
             }
-
-            
         }
     }
 
@@ -116,8 +114,8 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             NormalizedEmail = "agent1@email.com".ToUpper(),
         };
 
+        agent.AgentId = agent.Id;
         agent.PasswordHash = passwordHasher.HashPassword(agent, "password");
-
 
         var agent2 = new User()
         {
@@ -127,6 +125,7 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             NormalizedEmail = "agent2@email.com".ToUpper(),
         };
 
+        agent2.AgentId = agent2.Id;
         agent2.PasswordHash = passwordHasher.HashPassword(agent2, "password");
 
         var user = new User()
@@ -135,7 +134,7 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             LastName = "Lengiewicz",
             Email = "user1@email.com",
             NormalizedEmail = "user1@email.com".ToUpper(),
-            SuperiorId = agent.Id
+            AgentId = agent.Id
         };
 
         user.PasswordHash = passwordHasher.HashPassword(user, "password");
@@ -146,7 +145,7 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             LastName = "Lengiewicz",
             Email = "user2@email.com",
             NormalizedEmail = "user2@email.com".ToUpper(),
-            SuperiorId = agent2.Id
+            AgentId = agent2.Id
         };
 
         user2.PasswordHash = passwordHasher.HashPassword(user2, "password");

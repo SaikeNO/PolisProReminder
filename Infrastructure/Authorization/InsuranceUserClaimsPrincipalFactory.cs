@@ -14,8 +14,8 @@ public class InsuranceUserClaimsPrincipalFactory(UserManager<User> userManager,
     {
         var id = await GenerateClaimsAsync(user);
 
-        if (user.SuperiorId != null)
-            id.AddClaim(new Claim("SuperiorId", user.SuperiorId));
+        if (user.AgentId != null)
+            id.AddClaim(new Claim("AgentId", user.AgentId));
 
         return new ClaimsPrincipal(id);
     }
