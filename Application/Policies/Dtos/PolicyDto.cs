@@ -5,7 +5,7 @@ namespace PolisProReminder.Application.Policies.Dtos;
 
 public class PolicyDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string Title { get; set; } = null!;
     public string PolicyNumber { get; set; } = null!;
     public InsuranceCompanyDto InsuranceCompany { get; set; } = null!;

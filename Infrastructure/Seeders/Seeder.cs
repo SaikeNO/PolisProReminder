@@ -19,27 +19,6 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
                 await dbContext.SaveChangesAsync();
             }
 
-            if (!dbContext.InsuranceTypes.Any())
-            {
-                var types = GetInsuranceTypes();
-                dbContext.InsuranceTypes.AddRange(types);
-                await dbContext.SaveChangesAsync();
-            }
-
-            if (!dbContext.InsuranceCompanies.Any())
-            {
-                var companies = GetInsuranceCompanies();
-                dbContext.InsuranceCompanies.AddRange(companies);
-                await dbContext.SaveChangesAsync();
-            }
-
-            if (!dbContext.Insurers.Any())
-            {
-                var insurers = GetInsurers();
-                dbContext.Insurers.AddRange(insurers);
-                await dbContext.SaveChangesAsync();
-            }
-
             if (!dbContext.Users.Any())
             {
                 var users = GetUsers();
@@ -51,6 +30,27 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             {
                 var userRoles = await GetUserRoles();
                 await dbContext.UserRoles.AddRangeAsync(userRoles);
+                await dbContext.SaveChangesAsync();
+            }
+
+            if (!dbContext.InsuranceTypes.Any())
+            {
+                var types = await GetInsuranceTypes();
+                dbContext.InsuranceTypes.AddRange(types);
+                await dbContext.SaveChangesAsync();
+            }
+
+            if (!dbContext.InsuranceCompanies.Any())
+            {
+                var companies = await GetInsuranceCompanies();
+                dbContext.InsuranceCompanies.AddRange(companies);
+                await dbContext.SaveChangesAsync();
+            }
+
+            if (!dbContext.Insurers.Any())
+            {
+                var insurers = await GetInsurers();
+                dbContext.Insurers.AddRange(insurers);
                 await dbContext.SaveChangesAsync();
             }
         }
@@ -114,8 +114,8 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             NormalizedEmail = "agent1@email.com".ToUpper(),
         };
 
+        agent.AgentId = agent.Id;
         agent.PasswordHash = passwordHasher.HashPassword(agent, "password");
-
 
         var agent2 = new User()
         {
@@ -125,6 +125,7 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             NormalizedEmail = "agent2@email.com".ToUpper(),
         };
 
+        agent2.AgentId = agent2.Id;
         agent2.PasswordHash = passwordHasher.HashPassword(agent2, "password");
 
         var user = new User()
@@ -133,6 +134,7 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             LastName = "Lengiewicz",
             Email = "user1@email.com",
             NormalizedEmail = "user1@email.com".ToUpper(),
+            AgentId = agent.Id
         };
 
         user.PasswordHash = passwordHasher.HashPassword(user, "password");
@@ -143,6 +145,7 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             LastName = "Lengiewicz",
             Email = "user2@email.com",
             NormalizedEmail = "user2@email.com".ToUpper(),
+            AgentId = agent2.Id
         };
 
         user2.PasswordHash = passwordHasher.HashPassword(user2, "password");
@@ -170,37 +173,66 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
         return roles;
     }
 
-    private IEnumerable<InsuranceType> GetInsuranceTypes()
+    private async Task<IEnumerable<InsuranceType>> GetInsuranceTypes()
     {
+        var users = await dbContext.Users.ToListAsync();
         List<InsuranceType> types = [
-            new(){ Name = "OC" },
-            new(){ Name = "AC" },
-            new(){ Name = "Na życie" }
+            new()
+            {
+                Name = "OC",
+                CreatedByAgentId = users.First(u => u.Email == "agent2@email.com").Id,
+                CreatedByUserId = users.First(u => u.Email == "agent2@email.com").Id
+            },
+            new()
+            { 
+                Name = "OC", 
+                CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
+                CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id
+            },
+            new()
+            {
+                Name = "AC",
+                CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
+                CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id
+            },
+            new()
+            { 
+                Name = "Na życie",
+                CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
+                CreatedByUserId = users.First(u => u.Email == "user1@email.com").Id
+            }
             ];
 
         return types;
     }
 
-    private IEnumerable<InsuranceCompany> GetInsuranceCompanies()
+    private async Task<IEnumerable<InsuranceCompany>> GetInsuranceCompanies()
     {
+        var users = await dbContext.Users.ToListAsync();
         List<InsuranceCompany> companies = [
             new()
             {
                 Name = "Sopockie Towarzystwo Ubezpieczeń ERGO Hestia",
-                ShortName = "ERGO Hestia"
+                ShortName = "ERGO Hestia",
+                CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
+                CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id
             },
             new()
             {
                 Name = "Powszechny Zakład Ubezpieczeń",
-                ShortName = "PZU"
+                ShortName = "PZU",
+                CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
+                CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id
             },
             ];
 
         return companies;
     }
 
-    private IEnumerable<Insurer> GetInsurers()
+    private async Task<IEnumerable<Insurer>> GetInsurers()
     {
+        var users = await dbContext.Users.ToListAsync();
+
         List<Insurer> insurers = [
             new ()
             {
@@ -209,6 +241,8 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
                 Pesel = "44051401458",
                 Email = "mat.len@test.com",
                 PhoneNumber = "800666209",
+                CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
+                CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id
             },
 
             new ()
@@ -218,6 +252,8 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
                 Pesel = "77020201233",
                 Email = "janek.szparek@test.com",
                 PhoneNumber = "098666222",
+                CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
+                CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id
             },
 
             new ()
@@ -227,6 +263,8 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
                 Pesel = "88101006122",
                 Email = "januszex@test.com",
                 PhoneNumber = "111222333",
+                CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
+                CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id
             }
             ];
 

@@ -5,7 +5,7 @@ using PolisProReminder.Domain.Constants;
 
 namespace PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
 
-public class GetAllInsurersQuery : IRequest<PageResult<InsurerDto>>
+public class GetPaginatedInsurersQuery : IRequest<PageResult<InsurerDto>>
 {
     public string? SearchPhrase { get; set; }
     public int PageIndex { get; set; }

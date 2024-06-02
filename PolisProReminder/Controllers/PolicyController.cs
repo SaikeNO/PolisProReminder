@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Common;
-using PolisProReminder.Application.Policies.Dtos;
 using PolisProReminder.Application.Policies.Commands.CreatePolicy;
 using PolisProReminder.Application.Policies.Commands.DeletePolicy;
 using PolisProReminder.Application.Policies.Commands.UpdatePolicyCommand;
+using PolisProReminder.Application.Policies.Dtos;
 using PolisProReminder.Application.Policies.Queries.GetAllPolicies;
 using PolisProReminder.Application.Policies.Queries.GetLatestPolicies;
 using PolisProReminder.Application.Policies.Queries.GetPolicyById;

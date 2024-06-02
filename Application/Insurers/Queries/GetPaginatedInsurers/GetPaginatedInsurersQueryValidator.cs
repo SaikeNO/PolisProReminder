@@ -3,7 +3,7 @@ using PolisProReminder.Application.Insurers.Dtos;
 
 namespace PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
 
-public class GetAllInsurersQueryValidator : AbstractValidator<GetAllInsurersQuery>
+public class GetPaginatedInsurersQueryValidator : AbstractValidator<GetPaginatedInsurersQuery>
 {
     private readonly int[] allowPageSizes = [5, 10, 15, 30];
     private readonly string[] allowedSortByColumnNames = [
@@ -13,7 +13,7 @@ public class GetAllInsurersQueryValidator : AbstractValidator<GetAllInsurersQuer
         nameof(InsurerDto.Pesel),
     ];
 
-    public GetAllInsurersQueryValidator()
+    public GetPaginatedInsurersQueryValidator()
     {
         RuleFor(p => p.PageIndex)
             .GreaterThanOrEqualTo(1);
