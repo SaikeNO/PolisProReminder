@@ -7,9 +7,9 @@ using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Queries.GetInsurers;
 
-public class GetAllInsurersHandler(IInsurersRepository insurersRepository, IMapper mapper) : IRequestHandler<GetAllInsurersQuery, PageResult<InsurerDto>>
+public class GetPaginatedInsurersHandler(IInsurersRepository insurersRepository, IMapper mapper) : IRequestHandler<GetPaginatedInsurersQuery, PageResult<InsurerDto>>
 {
-    public async Task<PageResult<InsurerDto>> Handle(GetAllInsurersQuery request, CancellationToken cancellationToken)
+    public async Task<PageResult<InsurerDto>> Handle(GetPaginatedInsurersQuery request, CancellationToken cancellationToken)
     {
         var (insurers, totalCount) = await insurersRepository.GetAllMatchingAsync(request.SearchPhrase,
             request.PageSize,
