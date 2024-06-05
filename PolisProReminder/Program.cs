@@ -20,7 +20,6 @@ var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
 await seeder.Seed();
 
 // Configure the HTTP request pipeline.
-app.UseMiddleware<ErrorHandlingMiddleware>();
 
 
 if (app.Environment.IsDevelopment())
@@ -41,7 +40,7 @@ app.MapGroup("api/identity")
 app.UseCors("frontend");
 app.UseAuthorization();
 
+app.UseMiddleware<ErrorHandlingMiddleware>();
 app.MapControllers();
-    //.RequireAuthorization(new AuthorizeAttribute());
 
 app.Run();

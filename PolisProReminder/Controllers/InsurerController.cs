@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Insurers.Commands.CreateInsurer;
@@ -8,8 +9,9 @@ using PolisProReminder.Application.Insurers.Dtos;
 using PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
 using PolisProReminder.Application.Insurers.Queries.GetInsurerById;
 
-namespace PolisProReminder.Controllers;
+namespace PolisProReminder.API.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 public class InsurerController(IMediator mediator) : ControllerBase
 {

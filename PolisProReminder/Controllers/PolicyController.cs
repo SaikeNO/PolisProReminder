@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Policies.Commands.CreatePolicy;
@@ -9,60 +10,60 @@ using PolisProReminder.Application.Policies.Queries.GetAllPolicies;
 using PolisProReminder.Application.Policies.Queries.GetLatestPolicies;
 using PolisProReminder.Application.Policies.Queries.GetPolicyById;
 
-namespace PolisProReminder.Controllers
+namespace PolisProReminder.API.Controllers;
+
+[Authorize]
+[Route("api/[controller]")]
+public class PolicyController(IMediator mediator) : ControllerBase
 {
-    [Route("api/[controller]")]
-    public class PolicyController(IMediator mediator) : ControllerBase
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdatePolicyCommand command)
     {
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdatePolicyCommand command)
-        {
-            command.Id = id;
-            await mediator.Send(command);
+        command.Id = id;
+        await mediator.Send(command);
 
-            return NoContent();
-        }
+        return NoContent();
+    }
 
-        [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeletePolicy([FromRoute] Guid id)
-        {
-            await mediator.Send(new DeletePolicyCommand(id));
-            return NoContent();
-        }
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeletePolicy([FromRoute] Guid id)
+    {
+        await mediator.Send(new DeletePolicyCommand(id));
+        return NoContent();
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreatePolicyCommand command)
-        {
-            var id = await mediator.Send(command);
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreatePolicyCommand command)
+    {
+        var id = await mediator.Send(command);
 
-            return CreatedAtAction(nameof(GetById), new { id }, null);
-        }
+        return CreatedAtAction(nameof(GetById), new { id }, null);
+    }
 
-        [HttpGet]
-        public async Task<ActionResult<PageResult<PolicyDto>>> GetAll([FromQuery] GetAllPoliciesQuery query)
-        {
-            var policies = await mediator.Send(query);
-            return Ok(policies);
-        }
+    [HttpGet]
+    public async Task<ActionResult<PageResult<PolicyDto>>> GetAll([FromQuery] GetAllPoliciesQuery query)
+    {
+        var policies = await mediator.Send(query);
+        return Ok(policies);
+    }
 
-        [HttpGet("Latest")]
-        public async Task<ActionResult<IEnumerable<PolicyDto>>> GetLatest([FromQuery] int count)
-        {
-            var policies = await mediator.Send(new GetLatestPoliciesQuery(count));
-            return Ok(policies);
-        }
+    [HttpGet("Latest")]
+    public async Task<ActionResult<IEnumerable<PolicyDto>>> GetLatest([FromQuery] int count)
+    {
+        var policies = await mediator.Send(new GetLatestPoliciesQuery(count));
+        return Ok(policies);
+    }
 
-        [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PolicyDto>> GetById([FromRoute] Guid id)
-        {
-            var policy = await mediator.Send(new GetPolicyByIdQuery(id));
-            return Ok(policy);
-        }
+    [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PolicyDto>> GetById([FromRoute] Guid id)
+    {
+        var policy = await mediator.Send(new GetPolicyByIdQuery(id));
+        return Ok(policy);
     }
 }

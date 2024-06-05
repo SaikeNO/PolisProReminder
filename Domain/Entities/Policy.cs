@@ -12,7 +12,7 @@ public class Policy
     public DateOnly PaymentDate { get; set; }
     public bool IsPaid { get; set; } = false;
     public bool IsDeleted { get; set; } = false;
-    public bool IsArchived { get; set; } = false; // Co z tym zrobic????????????
+    public bool IsArchived { get; set; } = false;
     public string CreatedByUserId { get; set; } = null!;
     public string CreatedByAgentId { get; set; } = null!;
 
