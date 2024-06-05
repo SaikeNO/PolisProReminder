@@ -45,7 +45,7 @@ public class InsurerController(IMediator mediator) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var insurers = await mediator.Send(new GetAllInsurersCommand());
+        var insurers = await mediator.Send(new GetAllInsurersQuery());
 
         return Ok(insurers);
     }
@@ -63,7 +63,7 @@ public class InsurerController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<InsurerDto?>> GetById([FromRoute] Guid id)
     {
-        var insurer = await mediator.Send(new GetInsurerByIdCommand(id));
+        var insurer = await mediator.Send(new GetInsurerByIdQuery(id));
 
         return Ok(insurer);
     }

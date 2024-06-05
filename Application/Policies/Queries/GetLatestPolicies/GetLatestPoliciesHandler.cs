@@ -5,7 +5,7 @@ using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.Policies.Queries.GetLatestPolicies;
 
-public class GetLatestPoliciesQueryHandler(IPoliciesRepository 
+public class GetLatestPoliciesHandler(IPoliciesRepository 
     policiesRepository, IMapper mapper) : IRequestHandler<GetLatestPoliciesQuery, IEnumerable<PolicyDto>>
 {
     public async Task<IEnumerable<PolicyDto>> Handle(GetLatestPoliciesQuery request, CancellationToken cancellationToken)

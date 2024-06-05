@@ -6,12 +6,12 @@ using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
 
-public class GetAllInsurersCommandHandler(IInsurersRepository insurersRepository, 
+public class GetAllInsurersHandler(IInsurersRepository insurersRepository, 
     IMapper mapper,
     IUserContext userContext) 
-    : IRequestHandler<GetAllInsurersCommand, IEnumerable<InsurerDto>>
+    : IRequestHandler<GetAllInsurersQuery, IEnumerable<InsurerDto>>
 {
-    public async Task<IEnumerable<InsurerDto>> Handle(GetAllInsurersCommand request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<InsurerDto>> Handle(GetAllInsurersQuery request, CancellationToken cancellationToken)
     {
         var currentUser = userContext.GetCurrentUser();
         _ = currentUser ?? throw new InvalidOperationException("Current User is not present");

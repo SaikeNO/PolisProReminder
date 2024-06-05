@@ -6,7 +6,7 @@ using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.Policies.Queries.GetPolicyById;
 
-public class GetPolicyByIdQueryHandler(IPoliciesRepository policiesRepository, IMapper mapper) : IRequestHandler<GetPolicyByIdQuery, PolicyDto>
+public class GetPolicyByIdHandler(IPoliciesRepository policiesRepository, IMapper mapper) : IRequestHandler<GetPolicyByIdQuery, PolicyDto>
 {
     public async Task<PolicyDto> Handle(GetPolicyByIdQuery request, CancellationToken cancellationToken)
     {
