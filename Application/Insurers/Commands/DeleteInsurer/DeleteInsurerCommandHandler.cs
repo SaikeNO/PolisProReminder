@@ -20,6 +20,8 @@ public class DeleteInsurerCommandHandler(IInsurersRepository insurersRepository,
         if (insurer.Policies.Count != 0)
             throw new NotAllowedException("Klient posiada polisy");
 
-        await insurersRepository.Delete(insurer);
+        insurer.IsDeleted = true;
+
+        await insurersRepository.SaveChanges();
     }
 }

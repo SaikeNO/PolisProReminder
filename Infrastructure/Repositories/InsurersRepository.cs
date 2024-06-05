@@ -14,7 +14,7 @@ internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepos
     {
         var insurers = await dbContext
             .Insurers
-            .Where(i => i.CreatedByAgentId == agentId)
+            .Where(i => i.CreatedByAgentId == agentId && i.IsDeleted == false)
             .Include(i => i.Policies)
             .ThenInclude(p => p.InsuranceCompany)
             .Include(i => i.Policies)
@@ -28,7 +28,7 @@ internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepos
     {
         var insurer = await dbContext
             .Insurers
-            .Where(i => i.CreatedByAgentId == agentId)
+            .Where(i => i.CreatedByAgentId == agentId && i.IsDeleted == false)
             .Include(i => i.Policies)
             .ThenInclude(p => p.InsuranceCompany)
             .Include(i => i.Policies)
@@ -49,7 +49,7 @@ internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepos
 
         var baseQuery = dbContext
             .Insurers
-            .Where(i => i.CreatedByAgentId == agentId)
+            .Where(i => i.CreatedByAgentId == agentId && i.IsDeleted == false)
             .Include(i => i.Policies)
             .ThenInclude(p => p.InsuranceCompany)
             .Include(i => i.Policies)
@@ -90,7 +90,7 @@ internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepos
     {
         var insurer = await dbContext
             .Insurers
-            .Where(i => i.CreatedByAgentId == agentId)
+            .Where(i => i.CreatedByAgentId == agentId && i.IsDeleted == false)
             .FirstOrDefaultAsync(i => i.Pesel == pesel && i.Id != id);
         return insurer;
     }
