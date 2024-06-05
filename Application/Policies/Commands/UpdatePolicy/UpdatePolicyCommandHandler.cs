@@ -1,20 +1,25 @@
 ﻿using MediatR;
+using PolisProReminder.Application.Users;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.Policies.Commands.UpdatePolicyCommand;
 
-public class UpdatePolicyCommandHandler(IPoliciesRepository policiesRepository, 
+public class UpdatePolicyCommandHandler(IUserContext userContext,
+    IPoliciesRepository policiesRepository, 
     IInsuranceTypesRepository insuranceTypesRepository) : IRequestHandler<UpdatePolicyCommand>
 {
     public async Task Handle(UpdatePolicyCommand request, CancellationToken cancellationToken)
     {
-        var policy = await policiesRepository.GetById(request.Id);
+        var currentUser = userContext.GetCurrentUser();
+        _ = currentUser ?? throw new InvalidOperationException("Current User is not present");
+     
+        var policy = await policiesRepository.GetById(currentUser.AgentId, request.Id);
 
         _ = policy ?? throw new NotFoundException("Polisa o podanym ID nie istnieje");
 
-        if (await policiesRepository.GetByNumber(request.PolicyNumber) != null)
+        if (await policiesRepository.GetByNumber(currentUser.AgentId, request.PolicyNumber) != null)
             throw new AlreadyExistsException("Polisa o podanym numerze już istnieje");
 
         List<InsuranceType> newTypes = [];

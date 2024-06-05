@@ -24,40 +24,44 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
         return entity.Id;
     }
 
-    public async Task<IEnumerable<Policy>> GetAll()
+    public async Task<IEnumerable<Policy>> GetAll(string agentId)
     {
         var policies = await dbContext
             .Policies
             .Include(p => p.InsuranceCompany)
             .Include(p => p.Insurer)
             .Include(p => p.InsuranceTypes)
+            .Where(p => p.CreatedByAgentId == agentId)
             .ToListAsync();
 
         return policies;
     }
 
-    public async Task<Policy?> GetById(Guid id)
+    public async Task<Policy?> GetById(string agentId, Guid id)
     {
         var policy = await dbContext
             .Policies
             .Include(p => p.InsuranceCompany)
             .Include(p => p.Insurer)
             .Include(p => p.InsuranceTypes)
+            .Where(p => p.CreatedByAgentId == agentId)
             .FirstOrDefaultAsync(p => p.Id == id);
 
         return policy;
     }
 
-    public async Task<Policy?> GetByNumber(string policyNumber)
+    public async Task<Policy?> GetByNumber(string agentId, string policyNumber)
     {
         var policy = await dbContext
             .Policies
+            .Where(p => p.CreatedByAgentId == agentId)
             .FirstOrDefaultAsync(p => p.PolicyNumber == policyNumber);
 
         return policy;
     }
 
-    public async Task<(IEnumerable<Policy>, int)> GetAllMatchingAsync(string? searchPhrase,
+    public async Task<(IEnumerable<Policy>, int)> GetAllMatchingAsync(string agentId, 
+        string? searchPhrase,
         int pageSize,
         int pageNumber,
         string? sortBy,
@@ -68,6 +72,7 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
 
         var baseQuery = dbContext
             .Policies
+            .Where(p => p.CreatedByAgentId == agentId)
             .Include(p => p.InsuranceCompany)
             .Include(p => p.Insurer)
             .Include(p => p.InsuranceTypes)
@@ -107,13 +112,14 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
         return (policies, totalCount);
     }
 
-    public async Task<IEnumerable<Policy>> GetLatestPolicies(int count)
+    public async Task<IEnumerable<Policy>> GetLatestPolicies(string agentId, int count)
     {
         var policies = await dbContext
             .Policies
             .Include(p => p.InsuranceCompany)
             .Include(p => p.Insurer)
             .Include(p => p.InsuranceTypes)
+            .Where(p => p.CreatedByAgentId == agentId)
             .OrderBy(p => p.EndDate)
             .Take(count)
             .ToListAsync();
