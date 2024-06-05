@@ -3,6 +3,6 @@ using PolisProReminder.Application.Insurers.Dtos;
 
 namespace PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
 
-public class GetAllInsurersCommand : IRequest<IEnumerable<InsurerDto>>
+public class GetAllInsurersQuery : IRequest<IEnumerable<InsurerDto>>
 {
 }

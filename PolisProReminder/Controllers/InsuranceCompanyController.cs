@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.InsuranceCompanies;
 using PolisProReminder.Application.InsuranceCompanies.Dtos;
 
-namespace PolisProReminder.Controllers;
+namespace PolisProReminder.API.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 public class InsuranceCompanyController(IInsuranceCompaniesService insuranceCompanyService) : ControllerBase
 {

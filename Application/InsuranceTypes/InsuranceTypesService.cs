@@ -1,16 +1,20 @@
 ﻿using AutoMapper;
 using PolisProReminder.Application.InsuranceTypes.Dtos;
+using PolisProReminder.Application.Users;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.InsuranceTypes;
 
-internal class InsuranceTypesService(IInsuranceTypesRepository insuranceTypeRepository, IMapper mapper) : IInsuranceTypesService
+internal class InsuranceTypesService(IUserContext userContext, 
+    IInsuranceTypesRepository insuranceTypeRepository, 
+    IMapper mapper) : IInsuranceTypesService
 {
+    private readonly CurrentUser CurrentUser = userContext.GetCurrentUser() ?? throw new InvalidOperationException("Current User is not present");
     public async Task Update(Guid id, CreateInsuranceTypeDto dto)
     {
-        var type = await insuranceTypeRepository.GetById(id);
+        var type = await insuranceTypeRepository.GetById(CurrentUser.AgentId, id);
 
         _ = type ?? throw new NotFoundException("Typ o podanym ID nie istnieje");
 
@@ -21,7 +25,7 @@ internal class InsuranceTypesService(IInsuranceTypesRepository insuranceTypeRepo
 
     public async Task Delete(Guid id)
     {
-        var type = await insuranceTypeRepository.GetById(id);
+        var type = await insuranceTypeRepository.GetById(CurrentUser.AgentId, id);
 
         _ = type ?? throw new NotFoundException("Typ o podanym ID nie istnieje");
 
@@ -41,14 +45,14 @@ internal class InsuranceTypesService(IInsuranceTypesRepository insuranceTypeRepo
 
     public async Task<IEnumerable<InsuranceTypeDto>> GetAll()
     {
-        var types = await insuranceTypeRepository.GetAll();
+        var types = await insuranceTypeRepository.GetAll(CurrentUser.AgentId);
 
         return mapper.Map<List<InsuranceTypeDto>>(types);
     }
 
     public async Task<InsuranceTypeDto?> GetById(Guid id)
     {
-        var type = await insuranceTypeRepository.GetById(id);
+        var type = await insuranceTypeRepository.GetById(CurrentUser.AgentId, id);
 
         return mapper.Map<InsuranceTypeDto?>(type);
     }

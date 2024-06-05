@@ -8,28 +8,30 @@ namespace PolisProReminder.Infrastructure.Repositories;
 internal class InsuranceTypesRepository(InsuranceDbContext dbContext) : IInsuranceTypesRepository
 {
     
-    public async Task<IEnumerable<InsuranceType>> GetAll()
+    public async Task<IEnumerable<InsuranceType>> GetAll(string agentId)
     {
         var types = await dbContext
             .InsuranceTypes
+            .Where(t => t.CreatedByUserId == agentId)
             .ToListAsync();
 
         return types;
     }
 
-    public async Task<IEnumerable<InsuranceType>> GetManyByIds(IEnumerable<Guid> ids)
+    public async Task<IEnumerable<InsuranceType>> GetManyByIds(string agentId, IEnumerable<Guid> ids)
     {
         var types = await dbContext.InsuranceTypes
-            .Where(t => ids.Contains(t.Id))
+            .Where(t => t.CreatedByUserId == agentId && ids.Contains(t.Id))
             .ToListAsync();
 
         return types;
     }
 
-    public async Task<InsuranceType?> GetById(Guid id)
+    public async Task<InsuranceType?> GetById(string agentId, Guid id)
     {
         var type = await dbContext
             .InsuranceTypes
+            .Where(t => t.CreatedByUserId == agentId)
             .FirstOrDefaultAsync(i => i.Id == id);
 
         return type;

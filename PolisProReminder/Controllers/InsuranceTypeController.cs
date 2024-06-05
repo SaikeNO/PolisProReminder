@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.InsuranceTypes;
 using PolisProReminder.Application.InsuranceTypes.Dtos;
 
-namespace PolisProReminder.Controllers;
+namespace PolisProReminder.API.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 public class InsuranceTypeController(IInsuranceTypesService insuranceTypeService) : ControllerBase
 {
@@ -35,7 +37,7 @@ public class InsuranceTypeController(IInsuranceTypesService insuranceTypeService
 
         var id = await insuranceTypeService.Create(dto);
 
-        return Created($"/api/InsuranceType/{id}", null);
+        return CreatedAtAction(nameof(GetById), new { id }, null);
     }
 
     [HttpGet("{id}")]

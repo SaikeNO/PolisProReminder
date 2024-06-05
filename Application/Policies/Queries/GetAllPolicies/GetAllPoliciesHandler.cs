@@ -2,15 +2,22 @@
 using MediatR;
 using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Policies.Dtos;
+using PolisProReminder.Application.Users;
 using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.Policies.Queries.GetAllPolicies;
 
-public class GetAllPoliciesHandler(IPoliciesRepository policiesRepository, IMapper mapper) : IRequestHandler<GetAllPoliciesQuery, PageResult<PolicyDto>>
+public class GetAllPoliciesHandler(IUserContext userContext,
+    IPoliciesRepository policiesRepository, 
+    IMapper mapper) : IRequestHandler<GetAllPoliciesQuery, PageResult<PolicyDto>>
 {
     public async Task<PageResult<PolicyDto>> Handle(GetAllPoliciesQuery request, CancellationToken cancellationToken)
     {
-        var (policies, totalCount) = await policiesRepository.GetAllMatchingAsync(request.SearchPhrase,
+        var currentUser = userContext.GetCurrentUser();
+        _ = currentUser ?? throw new InvalidOperationException("Current User is not present");
+
+        var (policies, totalCount) = await policiesRepository.GetAllMatchingAsync(currentUser.AgentId,
+            request.SearchPhrase,
             request.PageSize,
             request.PageIndex,
             request.SortBy,

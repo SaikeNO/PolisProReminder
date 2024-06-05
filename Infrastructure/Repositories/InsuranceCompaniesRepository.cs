@@ -7,19 +7,21 @@ namespace PolisProReminder.Infrastructure.Repositories;
 
 internal class InsuranceCompaniesRepository(InsuranceDbContext dbContext) : IInsuranceCompaniesRepository
 {
-    public async Task<IEnumerable<InsuranceCompany>> GetAll()
+    public async Task<IEnumerable<InsuranceCompany>> GetAll(string agentId)
     {
         var companies = await dbContext
             .InsuranceCompanies
+            .Where(c => c.CreatedByUserId == agentId)
             .ToListAsync();
 
         return companies;
     }
 
-    public async Task<InsuranceCompany?> GetById(Guid id)
+    public async Task<InsuranceCompany?> GetById(string agentId, Guid id)
     {
         var company = await dbContext
             .InsuranceCompanies
+            .Where(c => c.CreatedByUserId == agentId)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         return company;

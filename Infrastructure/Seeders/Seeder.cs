@@ -102,6 +102,9 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             LastName = "Lengiewicz",
             Email = "admin@email.com",
             NormalizedEmail = "admin@email.com".ToUpper(),
+            UserName = "admin",
+            NormalizedUserName = "admin".ToUpper(),
+            AgentId = "1",
         };
 
         admin.PasswordHash = passwordHasher.HashPassword(admin, "password");
@@ -112,6 +115,8 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             LastName = "Lengiewicz",
             Email = "agent1@email.com",
             NormalizedEmail = "agent1@email.com".ToUpper(),
+            UserName = "agent1",
+            NormalizedUserName = "agent1".ToUpper(),
         };
 
         agent.AgentId = agent.Id;
@@ -123,6 +128,8 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             LastName = "Lengiewicz",
             Email = "agent2@email.com",
             NormalizedEmail = "agent2@email.com".ToUpper(),
+            UserName = "agent2",
+            NormalizedUserName = "agent2".ToUpper(),
         };
 
         agent2.AgentId = agent2.Id;
@@ -134,7 +141,9 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             LastName = "Lengiewicz",
             Email = "user1@email.com",
             NormalizedEmail = "user1@email.com".ToUpper(),
-            AgentId = agent.Id
+            AgentId = agent.Id,
+            UserName = "user1",
+            NormalizedUserName = "user1".ToUpper(),
         };
 
         user.PasswordHash = passwordHasher.HashPassword(user, "password");
@@ -145,7 +154,9 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             LastName = "Lengiewicz",
             Email = "user2@email.com",
             NormalizedEmail = "user2@email.com".ToUpper(),
-            AgentId = agent2.Id
+            AgentId = agent2.Id,
+            UserName = "user2",
+            NormalizedUserName = "user2".ToUpper(),
         };
 
         user2.PasswordHash = passwordHasher.HashPassword(user2, "password");
