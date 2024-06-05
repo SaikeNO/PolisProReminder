@@ -20,7 +20,7 @@ public class CreatePolicyCommandHandler(IUserContext userContext,
         if (policy != null)
             throw new AlreadyExistsException("Polisa o podanym numerze już istnieje");
 
-        var types = await insuranceTypesRepository.GetManyByIds(request.InsuranceTypeIds);
+        var types = await insuranceTypesRepository.GetManyByIds(currentUser.AgentId, request.InsuranceTypeIds);
 
         var createPolicy = new Policy
         {

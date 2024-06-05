@@ -25,7 +25,7 @@ public class UpdatePolicyCommandHandler(IUserContext userContext,
         List<InsuranceType> newTypes = [];
         foreach (var typeId in request.InsuranceTypeIds)
         {
-            var type = await insuranceTypesRepository.GetById(typeId);
+            var type = await insuranceTypesRepository.GetById(currentUser.AgentId, typeId);
 
             if (type is not null)
                 newTypes.Add(type);
