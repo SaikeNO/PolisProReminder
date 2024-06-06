@@ -79,7 +79,7 @@ internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepos
         }
 
         var insurers = await baseQuery
-            .Skip(pageSize * pageSize)
+            .Skip(pageSize * pageNumber)
             .Take(pageSize)
             .ToListAsync();
 

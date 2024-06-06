@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PolisProReminder.API.Requests;
 using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Policies.Commands.CreatePolicy;
 using PolisProReminder.Application.Policies.Commands.DeletePolicy;
@@ -37,8 +38,21 @@ public class PolicyController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreatePolicyCommand command)
+    public async Task<IActionResult> Create([FromBody] CreatePolicyReq req)
     {
+        var command = new CreatePolicyCommand()
+        {
+            EndDate = DateOnly.FromDateTime(DateTime.Parse(req.EndDate)),
+            StartDate = DateOnly.FromDateTime(DateTime.Parse(req.StartDate)),
+            PaymentDate = DateOnly.FromDateTime(DateTime.Parse(req.PaymentDate)),
+            InsuranceCompanyId = new Guid(req.InsuranceCompanyId),
+            InsuranceTypeIds = req.InsuranceTypeIds.Select(x => new Guid(x)).ToList(),
+            InsurerId = new Guid(req.InsurerId),
+            IsPaid = req.IsPaid,
+            PolicyNumber = req.PolicyNumber,
+            Title = req.Title,
+        };
+
         var id = await mediator.Send(command);
 
         return CreatedAtAction(nameof(GetById), new { id }, null);

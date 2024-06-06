@@ -52,9 +52,10 @@ internal class InsuranceCompaniesService(IUserContext userContext,
     public async Task<Guid> Create(CreateInsuranceCompanyDto dto)
     {
         var company = mapper.Map<InsuranceCompany>(dto);
+        company.CreatedByAgentId = CurrentUser.AgentId;
+        company.CreatedByUserId = CurrentUser.Id;
 
         var companyId = await insuranceCompanyRepository.Create(company);
-        await insuranceCompanyRepository.SaveChanges();
 
         return companyId;
     }

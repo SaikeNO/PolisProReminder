@@ -33,6 +33,8 @@ public class CreatePolicyCommandHandler(IUserContext userContext,
             InsuranceTypes = types.ToList(),
             IsPaid = request.IsPaid,
             Title = request.Title,
+            CreatedByAgentId = currentUser.AgentId,
+            CreatedByUserId = currentUser.Id,
         };
 
         var id = await policiesRepository.Create(createPolicy);

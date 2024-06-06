@@ -37,8 +37,10 @@ internal class InsuranceTypesService(IUserContext userContext,
     {
         var type = mapper.Map<InsuranceType>(dto);
 
+        type.CreatedByUserId = CurrentUser.Id;
+        type.CreatedByAgentId = CurrentUser.AgentId;
+
         await insuranceTypeRepository.Create(type);
-        await insuranceTypeRepository.SaveChanges();
 
         return type.Id;
     }
