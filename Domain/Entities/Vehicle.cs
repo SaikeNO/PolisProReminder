@@ -7,6 +7,7 @@ public class Vehicle
     public string RegistrationNumber { get; set; } = null!;
     public DateOnly? FirstRegistrationDate { get; set; }
     public string? VIN {  get; set; }
+    public bool IsDeleted { get; set; } = false;
     public string CreatedByUserId { get; set; } = null!;
     public string CreatedByAgentId { get; set; } = null!;
 
