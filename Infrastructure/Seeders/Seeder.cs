@@ -16,43 +16,45 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             {
                 var roles = GetRoles();
                 dbContext.Roles.AddRange(roles);
-                await dbContext.SaveChangesAsync();
             }
 
             if (!dbContext.Users.Any())
             {
                 var users = GetUsers();
                 await dbContext.Users.AddRangeAsync(users);
-                await dbContext.SaveChangesAsync();
             }
 
             if (!dbContext.UserRoles.Any())
             {
                 var userRoles = await GetUserRoles();
                 await dbContext.UserRoles.AddRangeAsync(userRoles);
-                await dbContext.SaveChangesAsync();
             }
 
             if (!dbContext.InsuranceTypes.Any())
             {
                 var types = await GetInsuranceTypes();
                 dbContext.InsuranceTypes.AddRange(types);
-                await dbContext.SaveChangesAsync();
             }
 
             if (!dbContext.InsuranceCompanies.Any())
             {
                 var companies = await GetInsuranceCompanies();
                 dbContext.InsuranceCompanies.AddRange(companies);
-                await dbContext.SaveChangesAsync();
             }
 
             if (!dbContext.Insurers.Any())
             {
                 var insurers = await GetInsurers();
                 dbContext.Insurers.AddRange(insurers);
-                await dbContext.SaveChangesAsync();
             }
+
+            if (!dbContext.Vehicles.Any())
+            {
+                var vehicles = await GetVehicles();
+                dbContext.Vehicles.AddRange(vehicles);
+            }
+
+            await dbContext.SaveChangesAsync();
         }
     }
 
@@ -195,8 +197,8 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
                 CreatedByUserId = users.First(u => u.Email == "agent2@email.com").Id
             },
             new()
-            { 
-                Name = "OC", 
+            {
+                Name = "OC",
                 CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
                 CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id
             },
@@ -207,7 +209,7 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
                 CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id
             },
             new()
-            { 
+            {
                 Name = "Na życie",
                 CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
                 CreatedByUserId = users.First(u => u.Email == "user1@email.com").Id
@@ -280,5 +282,33 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             ];
 
         return insurers;
+    }
+
+    private async Task<IEnumerable<Vehicle>> GetVehicles()
+    {
+        var users = await dbContext.Users.ToListAsync();
+        var insurers = await dbContext.Insurers.ToListAsync();
+        List<Vehicle> vehicles = [
+                new(){
+                    CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
+                    CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id,
+                    FirstRegistrationDate = DateOnly.FromDateTime(DateTime.Now),
+                    RegistrationNumber = "BI998FM",
+                    Insurer = insurers.First(i => i.Pesel == "44051401458"),
+                    VIN = "4Y1SL65848Z411439",
+                    Name = "Seat Leon 1.5 TSI",
+                },
+                new(){
+                    CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
+                    CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id,
+                    FirstRegistrationDate = DateOnly.FromDateTime(DateTime.Now),
+                    RegistrationNumber = "BSK23UE",
+                    Insurer = insurers.First(i => i.Pesel == "44051401458"),
+                    VIN = "1J4GK38K66W221344",
+                    Name = "VW Touran 1.4 MPI",
+                }
+            ];
+
+        return vehicles;
     }
 }

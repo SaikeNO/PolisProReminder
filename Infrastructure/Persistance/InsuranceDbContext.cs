@@ -11,6 +11,7 @@ internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) 
     internal DbSet<Policy> Policies { get; set; } = null!;
     internal DbSet<InsuranceCompany> InsuranceCompanies { get; set; } = null!;
     internal DbSet<InsuranceType> InsuranceTypes { get; set; } = null!;
+    internal DbSet<Vehicle> Vehicles { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -20,5 +21,6 @@ internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) 
         modelBuilder.ApplyConfiguration(new InsuranceTypeConfiguration());
         modelBuilder.ApplyConfiguration(new InsurerConfiguration());
         modelBuilder.ApplyConfiguration(new PolicyConfiguration());
+        modelBuilder.ApplyConfiguration(new VehicleConfiguration());
     }
 }
