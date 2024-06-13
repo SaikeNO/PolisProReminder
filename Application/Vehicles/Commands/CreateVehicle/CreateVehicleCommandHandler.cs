@@ -21,7 +21,7 @@ public class CreateVehicleCommandHandler(IUserContext userContext,
         if (vehicle != null)
             throw new AlreadyExistsException("Pojazd o podanym numerze rejestracyjnym już istnieje");
 
-        var insurer = await insurersRepository.GetById(currentUser.Id, request.InsurerId) ?? throw new NotFoundException("Klient o podanym ID nie istnieje");
+        var insurer = await insurersRepository.GetById(currentUser.AgentId, request.InsurerId) ?? throw new NotFoundException("Klient o podanym ID nie istnieje");
         var vehicleBrand = await vehicleBrandsRepository.GetById(request.VehicleBrandId) ?? throw new NotFoundException("Marka pojazdu o podanym ID nie istnieje");
 
         var createVehicle = new Vehicle()

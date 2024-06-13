@@ -60,6 +60,16 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
         return policy;
     }
 
+    public async Task<Policy?> GetByNumber(string agentId, string policyNumber, string requestPolicyNumber)
+    {
+        var policy = await dbContext
+            .Policies
+            .Where(p => p.CreatedByAgentId == agentId)
+            .FirstOrDefaultAsync(p => p.PolicyNumber != policyNumber && p.PolicyNumber == requestPolicyNumber);
+
+        return policy;
+    }
+
     public async Task<(IEnumerable<Policy>, int)> GetAllMatchingAsync(string agentId, 
         string? searchPhrase,
         int pageSize,

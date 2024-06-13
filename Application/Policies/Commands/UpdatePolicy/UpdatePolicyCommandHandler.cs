@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using PolisProReminder.Application.Users;
-using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
@@ -19,17 +18,10 @@ public class UpdatePolicyCommandHandler(IUserContext userContext,
 
         _ = policy ?? throw new NotFoundException("Polisa o podanym ID nie istnieje");
 
-        if (await policiesRepository.GetByNumber(currentUser.AgentId, request.PolicyNumber) != null)
+        if (await policiesRepository.GetByNumber(currentUser.AgentId, policy.PolicyNumber, request.PolicyNumber) != null)
             throw new AlreadyExistsException("Polisa o podanym numerze już istnieje");
 
-        List<InsuranceType> newTypes = [];
-        foreach (var typeId in request.InsuranceTypeIds)
-        {
-            var type = await insuranceTypesRepository.GetById(currentUser.AgentId, typeId);
-
-            if (type is not null)
-                newTypes.Add(type);
-        }
+        var newTypes = await insuranceTypesRepository.GetManyByIds(currentUser.AgentId, request.InsuranceTypeIds);
 
         policy.PolicyNumber = request.PolicyNumber;
         policy.InsuranceCompanyId = request.InsuranceCompanyId;
