@@ -18,7 +18,7 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
 
     public async Task<Guid> Create(Vehicle entity)
     {
-        dbContext.Vehicles.Add(entity);
+        await dbContext.Vehicles.AddAsync(entity);
         await dbContext.SaveChangesAsync();
 
         return entity.Id;
@@ -28,6 +28,7 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
     {
         var vehicles = await dbContext
             .Vehicles
+            .AsNoTracking()
             .Include(v => v.Insurer)
             .Include(v => v.Policies)
             .Where(v => v.CreatedByAgentId == agentId)
@@ -48,14 +49,14 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
         return vehicles;
     }
 
-    public async Task<Vehicle?> GetByVin(string agentId, string vin)
+    public async Task<Vehicle?> GetByRegistrationNumber(string agentId, string registrationNumber)
     {
-        var vehicles = await dbContext
+        var vehicle = await dbContext
             .Vehicles
             .Where(v => v.CreatedByAgentId == agentId)
-            .FirstOrDefaultAsync(v => v.VIN == vin);
+            .FirstOrDefaultAsync(v => v.RegistrationNumber == registrationNumber);
 
-        return vehicles;
+        return vehicle;
     }
 
     public async Task<(IEnumerable<Vehicle>, int)> GetAllMatchingAsync(string agentId,
@@ -69,6 +70,7 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
 
         var baseQuery = dbContext
             .Vehicles
+            .AsNoTracking()
             .Where(v => v.CreatedByAgentId == agentId)
             .Include(p => p.Insurer)
             .Include(p => p.Policies)
