@@ -76,8 +76,8 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
             .Include(p => p.Policies)
             .Where(p => (searchPhraseLower == null || p.VIN.ToLower().Contains(searchPhraseLower)
                                                     || p.Name.ToLower().Contains(searchPhraseLower)
-                                                    || p.RegistrationNumber.ToLower().Contains(searchPhraseLower)
-                         && p.IsDeleted == false));
+                                                    || p.RegistrationNumber.ToLower().Contains(searchPhraseLower))
+                         && p.IsDeleted == false);
 
         var totalCount = await baseQuery.CountAsync();
 

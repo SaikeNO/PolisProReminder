@@ -17,7 +17,7 @@ public class UpdateVehicleCommandHandler(IUserContext userContext,
 
         var vehicle = await vehiclesRepository.GetById(currentUser.AgentId, request.Id) ?? throw new NotFoundException("Pojazd o podanym numerze rejestracyjnym nie istnieje");
 
-        var insurer = await insurersRepository.GetById(currentUser.AgentId, request.InsurerId) ?? throw new NotFoundException("Klient o podanym ID nie istnieje");
+        var insurer = await insurersRepository.GetById(currentUser.AgentId, request.InsurerId) ?? throw new NotFoundException("Pojazd o podanym ID nie istnieje");
         var vehicleBrand = await vehicleBrandsRepository.GetById(request.VehicleBrandId) ?? throw new NotFoundException("Marka pojazdu o podanym ID nie istnieje");
 
         vehicle.FirstRegistrationDate = request.FirstRegistrationDate;
