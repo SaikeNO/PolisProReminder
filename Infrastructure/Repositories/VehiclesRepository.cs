@@ -31,6 +31,7 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
             .AsNoTracking()
             .Include(v => v.Insurer)
             .Include(v => v.Policies)
+            .Include(v => v.VehicleBrand)
             .Where(v => v.CreatedByAgentId == agentId)
             .ToListAsync();
 
@@ -43,6 +44,7 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
             .Vehicles
             .Include(v => v.Insurer)
             .Include(v => v.Policies)
+            .Include(v => v.VehicleBrand)
             .Where(v => v.CreatedByAgentId == agentId)
             .FirstOrDefaultAsync(v => v.Id == id);
 
@@ -53,7 +55,7 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
     {
         var vehicle = await dbContext
             .Vehicles
-            .Where(v => v.CreatedByAgentId == agentId)
+            .Where(v => v.CreatedByAgentId == agentId && v.IsDeleted == false)
             .FirstOrDefaultAsync(v => v.RegistrationNumber == registrationNumber);
 
         return vehicle;
@@ -74,9 +76,13 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
             .Where(v => v.CreatedByAgentId == agentId)
             .Include(p => p.Insurer)
             .Include(p => p.Policies)
+            .Include(v => v.VehicleBrand)
             .Where(p => (searchPhraseLower == null || p.VIN.ToLower().Contains(searchPhraseLower)
                                                     || p.Name.ToLower().Contains(searchPhraseLower)
-                                                    || p.RegistrationNumber.ToLower().Contains(searchPhraseLower))
+                                                    || p.RegistrationNumber.ToLower().Contains(searchPhraseLower)
+                                                    || p.VehicleBrand.Name.ToLower().Contains(searchPhraseLower)
+                                                    || p.Insurer.FirstName.ToLower().Contains(searchPhraseLower)
+                                                    || p.Insurer.LastName.ToLower().Contains(searchPhraseLower))
                          && p.IsDeleted == false);
 
         var totalCount = await baseQuery.CountAsync();

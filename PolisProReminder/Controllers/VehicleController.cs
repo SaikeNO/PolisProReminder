@@ -20,9 +20,24 @@ public class VehicleController(IMediator mediator) : ControllerBase
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateVehicleCommand command)
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] CreateVehicleReq req)
     {
-        command.Id = id;
+        var command = new UpdateVehicleCommand()
+        {
+            Id = id,
+            Capacity = req.Capacity,
+            FirstRegistrationDate = req.FirstRegistrationDate != null ? DateOnly.FromDateTime(DateTime.Parse(req.FirstRegistrationDate)) : null,
+            ProductionYear = req.ProductionYear != null ? DateOnly.FromDateTime(DateTime.Parse(req.ProductionYear)) : null,
+            KM = req.KM,
+            KW = req.KW,
+            Mileage = req.Mileage,
+            Name = req.Name,
+            RegistrationNumber = req.RegistrationNumber,
+            VehicleBrandId = new Guid(req.VehicleBrandId),
+            InsurerId = new Guid(req.InsurerId),
+            VIN = req.VIN,
+        };
+
         await mediator.Send(command);
 
         return NoContent();
@@ -43,8 +58,8 @@ public class VehicleController(IMediator mediator) : ControllerBase
         var command = new CreateVehicleCommand()
         {
             Capacity = req.Capacity,
-            FirstRegistrationDate = DateOnly.FromDateTime(DateTime.Parse(req.FirstRegistrationDate)),
-            ProductionYear = DateOnly.FromDateTime(DateTime.Parse(req.ProductionYear)),
+            FirstRegistrationDate = req.FirstRegistrationDate != null ? DateOnly.FromDateTime(DateTime.Parse(req.FirstRegistrationDate)) : null,
+            ProductionYear = req.ProductionYear != null ? DateOnly.FromDateTime(DateTime.Parse(req.ProductionYear)) : null,
             KM = req.KM,
             KW = req.KW,
             Mileage = req.Mileage,

@@ -21,7 +21,7 @@ public class UpdateVehicleCommandHandler(IUserContext userContext,
         var vehicleBrand = await vehicleBrandsRepository.GetById(request.VehicleBrandId) ?? throw new NotFoundException("Marka pojazdu o podanym ID nie istnieje");
 
         vehicle.FirstRegistrationDate = request.FirstRegistrationDate;
-        vehicle.RegistrationNumber = request.RegistrationNumber;
+        vehicle.RegistrationNumber = request.RegistrationNumber.ToUpper();
         vehicle.ProductionYear = request.ProductionYear;
         vehicle.Capacity = request.Capacity;
         vehicle.Name = request.Name;

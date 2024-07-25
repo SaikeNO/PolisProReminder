@@ -14,7 +14,7 @@ public class VehicleDto
     public decimal? KM { get; set; }
     public decimal? Capacity { get; set; }
     public uint? Mileage { get; set; }
-    public string VehicleBrand { get; set; } = null!;
+    public VehicleBrandDto VehicleBrand { get; set; } = null!;
 
     public virtual VehicleInsurerDto Insurer { get; set; } = null!;
 }
