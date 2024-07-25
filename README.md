@@ -5,6 +5,14 @@ Projekt PolisProReminder to backend aplikacji webowej, który zosta³ zbudowany pr
 
 Aplikacja zosta³a zaprojektowana z myœl¹ o agentach ubezpieczeniowych. Celem projektu jest umo¿liwienie sprawnego zarz¹dzania polisami klientów, usprawniaj¹c procesy obs³ugi ubezpieczeñ.
 
+## Uruchomienie
+W pliku konfiguracyjnym nale¿y uzupe³niæ œcie¿ke do przechowywania plików.
+```json
+{
+  "StoragePath": "XXXX"
+}
+```
+
 ## Technologie
 Projekt wykorzystuje nastêpuj¹ce technologie:
 - **ASP.NET Core**: Framework umo¿liwiaj¹cy budowê aplikacji internetowych w jêzyku C#.
