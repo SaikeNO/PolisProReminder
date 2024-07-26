@@ -11,7 +11,7 @@ internal class InsuranceCompaniesRepository(InsuranceDbContext dbContext) : IIns
     {
         var companies = await dbContext
             .InsuranceCompanies
-            .Where(c => c.CreatedByUserId == agentId)
+            .Where(c => c.CreatedByAgentId == agentId)
             .ToListAsync();
 
         return companies;
@@ -21,7 +21,7 @@ internal class InsuranceCompaniesRepository(InsuranceDbContext dbContext) : IIns
     {
         var company = await dbContext
             .InsuranceCompanies
-            .Where(c => c.CreatedByUserId == agentId)
+            .Where(c => c.CreatedByAgentId == agentId)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         return company;

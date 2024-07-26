@@ -12,7 +12,7 @@ internal class InsuranceTypesRepository(InsuranceDbContext dbContext) : IInsuran
     {
         var types = await dbContext
             .InsuranceTypes
-            .Where(t => t.CreatedByUserId == agentId)
+            .Where(t => t.CreatedByAgentId == agentId)
             .ToListAsync();
 
         return types;
@@ -21,7 +21,7 @@ internal class InsuranceTypesRepository(InsuranceDbContext dbContext) : IInsuran
     public async Task<IEnumerable<InsuranceType>> GetManyByIds(string agentId, IEnumerable<Guid> ids)
     {
         var types = await dbContext.InsuranceTypes
-            .Where(t => t.CreatedByUserId == agentId && ids.Contains(t.Id))
+            .Where(t => t.CreatedByAgentId == agentId && ids.Contains(t.Id))
             .ToListAsync();
 
         return types;
@@ -31,7 +31,7 @@ internal class InsuranceTypesRepository(InsuranceDbContext dbContext) : IInsuran
     {
         var type = await dbContext
             .InsuranceTypes
-            .Where(t => t.CreatedByUserId == agentId)
+            .Where(t => t.CreatedByAgentId == agentId)
             .FirstOrDefaultAsync(i => i.Id == id);
 
         return type;
