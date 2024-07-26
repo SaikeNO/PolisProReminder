@@ -1,6 +1,9 @@
-﻿using MediatR;
+﻿using BrunoZell.ModelBinding;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Writers;
+using Newtonsoft.Json;
 using PolisProReminder.API.Requests;
 using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Vehicles.Commands.CreateVehicle;
@@ -9,7 +12,6 @@ using PolisProReminder.Application.Vehicles.Commands.UpdateVehicle;
 using PolisProReminder.Application.Vehicles.Dtos;
 using PolisProReminder.Application.Vehicles.Queries.GetAllVehicles;
 using PolisProReminder.Application.Vehicles.Queries.GetVehicleById;
-using System.IO;
 
 namespace PolisProReminder.API.Controllers;
 
@@ -53,8 +55,10 @@ public class VehicleController(IMediator mediator, IConfiguration configuration)
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateVehicleReq req)
+    public async Task<IActionResult> Create([FromForm] string jsonString, IEnumerable<IFormFile> attachments)
     {
+        CreateVehicleReq req = JsonConvert.DeserializeObject<CreateVehicleReq>(jsonString);
+
         var command = new CreateVehicleCommand()
         {
             Capacity = req.Capacity,
@@ -68,6 +72,7 @@ public class VehicleController(IMediator mediator, IConfiguration configuration)
             VehicleBrandId = new Guid(req.VehicleBrandId),
             InsurerId = new Guid(req.InsurerId),
             VIN = req.VIN,
+            Attachments = attachments,
         };
 
         var id = await mediator.Send(command);

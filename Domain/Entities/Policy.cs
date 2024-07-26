@@ -1,8 +1,7 @@
 ﻿namespace PolisProReminder.Domain.Entities;
 
-public class Policy
+public class Policy : AttachmentList
 {
-    public Guid Id { get; set; }
     public string Title { get; set; } = null!;
     public string PolicyNumber { get; set; } = null!;
     public Guid InsurerId { get; set; }

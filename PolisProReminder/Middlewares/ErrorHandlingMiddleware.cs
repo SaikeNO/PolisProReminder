@@ -43,6 +43,12 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
                 context.Response.StatusCode = 409;
                 await context.Response.WriteAsync(e.Message);
                 break;
+            case UploadAttachmentException e:
+                logger.LogError(e, e.Message);
+
+                context.Response.StatusCode = 500;
+                await context.Response.WriteAsync(e.Message);
+                break;
             case Exception e:
                 logger.LogError(e, e.Message);
 

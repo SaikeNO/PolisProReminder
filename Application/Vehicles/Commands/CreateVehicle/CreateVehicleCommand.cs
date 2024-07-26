@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace PolisProReminder.Application.Vehicles.Commands.CreateVehicle;
 
@@ -16,4 +17,5 @@ public class CreateVehicleCommand : IRequest<Guid>
 
     public Guid InsurerId { get; set; }
     public Guid VehicleBrandId { get; set; }
+    public IEnumerable<IFormFile> Attachments { get; set; } = [];
 }

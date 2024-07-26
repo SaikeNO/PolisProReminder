@@ -32,5 +32,6 @@ public static class ServiceCollectionExtension
         services.AddScoped<IInsuranceCompaniesRepository, InsuranceCompaniesRepository>();
         services.AddScoped<IVehiclesRepository, VehiclesRepository>();
         services.AddScoped<IVehicleBrandsRepository, VehicleBrandsRepository>();
+        services.AddScoped<IAttachmentsRepository, AttachmentsRepository>();
     }
 }

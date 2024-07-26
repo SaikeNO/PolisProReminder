@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
+using PolisProReminder.Application.Attachments;
 using PolisProReminder.Application.Users;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
@@ -9,7 +11,9 @@ namespace PolisProReminder.Application.Vehicles.Commands.CreateVehicle;
 public class CreateVehicleCommandHandler(IUserContext userContext,
     IVehiclesRepository vehiclesRepository,
     IInsurersRepository insurersRepository,
-    IVehicleBrandsRepository vehicleBrandsRepository) : IRequestHandler<CreateVehicleCommand, Guid>
+    IVehicleBrandsRepository vehicleBrandsRepository,
+    IAttachmentsService attachmentsService,
+    IMapper mapper) : IRequestHandler<CreateVehicleCommand, Guid>
 {
     public async Task<Guid> Handle(CreateVehicleCommand request, CancellationToken cancellationToken)
     {
@@ -40,6 +44,11 @@ public class CreateVehicleCommandHandler(IUserContext userContext,
             VehicleBrand = vehicleBrand,
             Insurer = insurer,
         };
+
+        var savePath = Path.Combine(currentUser.AgentId, request.InsurerId.ToString(), "Vehicles", createVehicle.Id.ToString());
+        var attachments = await attachmentsService.UploadAttachmentsAsync(request.Attachments, savePath);
+
+        createVehicle.Attachments = mapper.Map<IEnumerable<Attachment>>(attachments);
 
         var id = await vehiclesRepository.Create(createVehicle);
         return id;

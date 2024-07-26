@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
+using PolisProReminder.Application.Attachments;
 using PolisProReminder.Application.InsuranceCompanies;
 using PolisProReminder.Application.InsuranceTypes;
 using PolisProReminder.Application.Users;
@@ -18,6 +19,7 @@ public static class ServiceCollectionExtension
         
         services.AddScoped<IInsuranceCompaniesService, InsuranceCompaniesService>();
         services.AddScoped<IInsuranceTypesService, InsuranceTypesService>();
+        services.AddScoped<IAttachmentsService, AttachmentsService>();
 
         services.AddScoped<IUserContext, UserContext>();
 

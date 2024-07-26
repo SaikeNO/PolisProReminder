@@ -1,8 +1,7 @@
 ﻿namespace PolisProReminder.Domain.Entities;
 
-public class Vehicle
+public class Vehicle : AttachmentList
 {
-    public Guid Id { get; set; }
     public string Name { get; set; } = null!;
     public string RegistrationNumber { get; set; } = null!;
     public DateOnly? FirstRegistrationDate { get; set; }
