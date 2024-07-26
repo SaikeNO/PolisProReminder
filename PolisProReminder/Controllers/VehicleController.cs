@@ -1,9 +1,6 @@
-﻿using BrunoZell.ModelBinding;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Writers;
-using Newtonsoft.Json;
 using PolisProReminder.API.Requests;
 using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Vehicles.Commands.CreateVehicle;
@@ -12,6 +9,7 @@ using PolisProReminder.Application.Vehicles.Commands.UpdateVehicle;
 using PolisProReminder.Application.Vehicles.Dtos;
 using PolisProReminder.Application.Vehicles.Queries.GetAllVehicles;
 using PolisProReminder.Application.Vehicles.Queries.GetVehicleById;
+using System.Text.Json;
 
 namespace PolisProReminder.API.Controllers;
 
@@ -57,7 +55,7 @@ public class VehicleController(IMediator mediator, IConfiguration configuration)
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] string jsonString, IEnumerable<IFormFile> attachments)
     {
-        CreateVehicleReq req = JsonConvert.DeserializeObject<CreateVehicleReq>(jsonString);
+        CreateVehicleReq req = JsonSerializer.Deserialize<CreateVehicleReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
 
         var command = new CreateVehicleCommand()
         {
