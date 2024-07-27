@@ -16,6 +16,7 @@ internal class AttachmentsRepository(IConfiguration configuration, InsuranceDbCo
     {
         var set = await dbContext.Set<TEntity>()
             .AsNoTracking()
+            .Include(x => x.Attachments)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (set == null)
@@ -54,7 +55,7 @@ internal class AttachmentsRepository(IConfiguration configuration, InsuranceDbCo
                 FileName = attachment.FileName,
             };
 
-            var uniqueFileName = $"{attachment.FileName}_{a.Id}.{Path.GetExtension(attachment.FileName)}";
+            var uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssffff}_{a.Id}_{attachment.FileName}";
             var filePath = Path.Combine(savePath, uniqueFileName);
             var fullFilePath = Path.Combine(storagePath, filePath);
             Directory.CreateDirectory(Path.GetDirectoryName(fullFilePath));

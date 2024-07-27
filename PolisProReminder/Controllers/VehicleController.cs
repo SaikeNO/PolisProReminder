@@ -8,6 +8,7 @@ using PolisProReminder.Application.Vehicles.Commands.CreateVehicle;
 using PolisProReminder.Application.Vehicles.Commands.DeleteVehicle;
 using PolisProReminder.Application.Vehicles.Commands.UpdateVehicle;
 using PolisProReminder.Application.Vehicles.Dtos;
+using PolisProReminder.Application.Vehicles.Queries.GetAllAttachments;
 using PolisProReminder.Application.Vehicles.Queries.GetAllVehicles;
 using PolisProReminder.Application.Vehicles.Queries.GetVehicleById;
 
@@ -96,26 +97,12 @@ public class VehicleController(IMediator mediator, IConfiguration configuration)
         return Ok(vehicle);
     }
 
-    [AllowAnonymous]
     [HttpGet("{id}/attachments")]
-    public IActionResult GetFiles([FromRoute] string id)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<VehicleDto>> GetAttachments([FromRoute] Guid id)
     {
-        try
-        {
-            var storagePath = configuration["StoragePath"];
-
-            if (storagePath == null)
-                throw new ArgumentNullException(nameof(storagePath));
-
-            var files = Directory.GetFiles(storagePath, $"{id}_*")
-                                      .Select(Path.GetFileName);
-
-            return Ok(files);
-        }
-        catch (Exception ex)
-        {
-            // Handle any error that occurred during file upload
-            return StatusCode(StatusCodes.Status500InternalServerError, "Failed to retrieve uploaded images." + ex.ToString());
-        }
+        var attachmantes = await mediator.Send(new GetAllAttachmentsQuery(id));
+        return Ok(attachmantes);
     }
 }
