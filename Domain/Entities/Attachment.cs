@@ -12,5 +12,5 @@ public class Attachment
 public abstract class AttachmentList
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public IEnumerable<Attachment> Attachments { get; set; } = [];
+    public List<Attachment> Attachments { get; set; } = [];
 }

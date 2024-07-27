@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PolisProReminder.API.Requests;
 using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Vehicles.Commands.CreateVehicle;
@@ -9,7 +10,6 @@ using PolisProReminder.Application.Vehicles.Commands.UpdateVehicle;
 using PolisProReminder.Application.Vehicles.Dtos;
 using PolisProReminder.Application.Vehicles.Queries.GetAllVehicles;
 using PolisProReminder.Application.Vehicles.Queries.GetVehicleById;
-using System.Text.Json;
 
 namespace PolisProReminder.API.Controllers;
 
@@ -20,8 +20,9 @@ public class VehicleController(IMediator mediator, IConfiguration configuration)
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] CreateVehicleReq req)
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] string jsonString, IEnumerable<IFormFile> attachments)
     {
+        CreateVehicleReq req = JsonConvert.DeserializeObject<CreateVehicleReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
         var command = new UpdateVehicleCommand()
         {
             Id = id,
@@ -36,6 +37,7 @@ public class VehicleController(IMediator mediator, IConfiguration configuration)
             VehicleBrandId = new Guid(req.VehicleBrandId),
             InsurerId = new Guid(req.InsurerId),
             VIN = req.VIN,
+            Attachments = attachments,
         };
 
         await mediator.Send(command);
@@ -55,7 +57,7 @@ public class VehicleController(IMediator mediator, IConfiguration configuration)
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] string jsonString, IEnumerable<IFormFile> attachments)
     {
-        CreateVehicleReq req = JsonSerializer.Deserialize<CreateVehicleReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
+        CreateVehicleReq req = JsonConvert.DeserializeObject<CreateVehicleReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
 
         var command = new CreateVehicleCommand()
         {
@@ -95,68 +97,7 @@ public class VehicleController(IMediator mediator, IConfiguration configuration)
     }
 
     [AllowAnonymous]
-    [HttpPost("{id}/upload")]
-    public async Task<IActionResult> UploadFile(string id, IFormFile file)
-    {
-        if (file == null || file.Length == 0)
-            return BadRequest("No file uploaded.");
-
-        var storagePath = configuration["StoragePath"];
-
-        if (storagePath == null)
-            throw new ArgumentNullException(nameof(storagePath));
-
-        //"/app/uploads" this location is virtual, we will map this to azure file share in this video
-        // Generate a unique filename with incremental number
-        var uniqueFileName = $"{id}_{DateTime.Now.Ticks}_{Guid.NewGuid()}_{file.FileName}";
-        var filePath = Path.Combine(storagePath, uniqueFileName);
-
-
-        try
-        {
-            // Save the uploaded file to the specified path
-            using (var stream = System.IO.File.Create(filePath))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            return Ok("Image uploaded successfully.");
-        }
-        catch (Exception ex)
-        {
-            // Handle any error that occurred during file upload
-            return StatusCode(StatusCodes.Status500InternalServerError, "Failed to upload image." + ex.ToString());
-        }
-    }
-
-    [AllowAnonymous]
-    [HttpGet("{id}/file/{fileId}")]
-    public IActionResult GetFile([FromRoute] string id, [FromRoute] string fileId)
-    {
-        try
-        {
-            var storagePath = configuration["StoragePath"];
-
-            if (storagePath == null)
-                throw new ArgumentNullException(nameof(storagePath));
-
-            var filePath = Path.Combine(storagePath, fileId);
-
-            if (System.IO.File.Exists(filePath))
-            {
-                return File(System.IO.File.OpenRead(filePath), "application/octet-stream", Path.GetFileName(filePath));
-            }
-            return NotFound();
-        }
-        catch (Exception ex)
-        {
-            // Handle any error that occurred during file upload
-            return StatusCode(StatusCodes.Status500InternalServerError, "Failed to retrieve uploaded images." + ex.ToString());
-        }
-    }
-
-    [AllowAnonymous]
-    [HttpGet("{id}/files")]
+    [HttpGet("{id}/attachments")]
     public IActionResult GetFiles([FromRoute] string id)
     {
         try

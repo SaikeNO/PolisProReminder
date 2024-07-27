@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace PolisProReminder.Application.Vehicles.Commands.UpdateVehicle;
 
@@ -17,4 +18,6 @@ public class UpdateVehicleCommand : IRequest
 
     public Guid InsurerId { get; set; }
     public Guid VehicleBrandId { get; set; }
+
+    public IEnumerable<IFormFile> Attachments { get; set; } = [];
 }

@@ -19,7 +19,6 @@ public static class ServiceCollectionExtension
         
         services.AddScoped<IInsuranceCompaniesService, InsuranceCompaniesService>();
         services.AddScoped<IInsuranceTypesService, InsuranceTypesService>();
-        services.AddScoped<IAttachmentsService, AttachmentsService>();
 
         services.AddScoped<IUserContext, UserContext>();
 

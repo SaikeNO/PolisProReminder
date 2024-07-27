@@ -12,15 +12,14 @@ public class CreateVehicleCommandHandler(IUserContext userContext,
     IVehiclesRepository vehiclesRepository,
     IInsurersRepository insurersRepository,
     IVehicleBrandsRepository vehicleBrandsRepository,
-    IAttachmentsService attachmentsService,
-    IMapper mapper) : IRequestHandler<CreateVehicleCommand, Guid>
+    IAttachmentsRepository attachmentsRepository) : IRequestHandler<CreateVehicleCommand, Guid>
 {
     public async Task<Guid> Handle(CreateVehicleCommand request, CancellationToken cancellationToken)
     {
         var currentUser = userContext.GetCurrentUser();
         _ = currentUser ?? throw new InvalidOperationException("Current User is not present");
 
-        var vehicle = await vehiclesRepository.GetByRegistrationNumber(currentUser.AgentId, request.RegistrationNumber);
+        var vehicle = await vehiclesRepository.GetByRegistrationNumber(currentUser.AgentId, request.RegistrationNumber, null);
 
         if (vehicle != null)
             throw new AlreadyExistsException("Pojazd o podanym numerze rejestracyjnym już istnieje");
@@ -46,9 +45,9 @@ public class CreateVehicleCommandHandler(IUserContext userContext,
         };
 
         var savePath = Path.Combine(currentUser.AgentId, request.InsurerId.ToString(), "Vehicles", createVehicle.Id.ToString());
-        var attachments = await attachmentsService.UploadAttachmentsAsync(request.Attachments, savePath);
+        var attachments = await attachmentsRepository.UploadAttachmentsAsync(request.Attachments, savePath);
 
-        createVehicle.Attachments = mapper.Map<IEnumerable<Attachment>>(attachments);
+        createVehicle.Attachments = attachments.ToList();
 
         var id = await vehiclesRepository.Create(createVehicle);
         return id;

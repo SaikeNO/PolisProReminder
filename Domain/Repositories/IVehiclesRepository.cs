@@ -10,6 +10,6 @@ public interface IVehiclesRepository
     Task<IEnumerable<Vehicle>> GetAll(string agentId);
     Task<(IEnumerable<Vehicle>, int)> GetAllMatchingAsync(string agentId, string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection);
     Task<Vehicle?> GetById(string agentId, Guid id);
-    Task<Vehicle?> GetByRegistrationNumber(string agentId, string registrationNumber);
+    Task<Vehicle?> GetByRegistrationNumber(string agentId, string registrationNumber, Guid? vehicleId);
     Task SaveChanges();
 }

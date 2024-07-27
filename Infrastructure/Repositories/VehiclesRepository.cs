@@ -32,7 +32,7 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
             .Include(v => v.Insurer)
             .Include(v => v.Policies)
             .Include(v => v.VehicleBrand)
-            .Where(v => v.CreatedByAgentId == agentId)
+            .Where(v => v.CreatedByAgentId == agentId && v.IsDeleted == false)
             .ToListAsync();
 
         return vehicles;
@@ -40,23 +40,24 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
 
     public async Task<Vehicle?> GetById(string agentId, Guid id)
     {
-        var vehicles = await dbContext
+        var vehicle = await dbContext
             .Vehicles
             .Include(v => v.Insurer)
             .Include(v => v.Policies)
             .Include(v => v.VehicleBrand)
-            .Where(v => v.CreatedByAgentId == agentId)
+            .Where(v => v.CreatedByAgentId == agentId && v.IsDeleted == false)
             .FirstOrDefaultAsync(v => v.Id == id);
 
-        return vehicles;
+        return vehicle;
     }
 
-    public async Task<Vehicle?> GetByRegistrationNumber(string agentId, string registrationNumber)
+    public async Task<Vehicle?> GetByRegistrationNumber(string agentId, string registrationNumber, Guid? vehicleId)
     {
         var vehicle = await dbContext
             .Vehicles
-            .Where(v => v.CreatedByAgentId == agentId && v.IsDeleted == false)
-            .FirstOrDefaultAsync(v => v.RegistrationNumber == registrationNumber);
+            .AsNoTracking()
+            .Where(v => v.CreatedByAgentId == agentId && v.IsDeleted == false )
+            .FirstOrDefaultAsync(v => v.RegistrationNumber == registrationNumber && v.Id != vehicleId);
 
         return vehicle;
     }
