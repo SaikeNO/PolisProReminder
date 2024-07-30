@@ -45,9 +45,17 @@ public class CreateVehicleCommandHandler(IUserContext userContext,
         };
 
         var savePath = Path.Combine(currentUser.AgentId, request.InsurerId.ToString(), "Vehicles", createVehicle.Id.ToString());
-        var attachments = await attachmentsRepository.UploadAttachmentsAsync(request.Attachments, savePath);
 
-        createVehicle.Attachments = attachments.ToList();
+        var attachments = request.Attachments.Select(attachment => new Attachment(attachment.FileName, savePath)
+        {
+            CreatedByAgentId = currentUser.AgentId,
+            CreatedByUserId = currentUser.Id,
+        }).ToList();
+
+        var attachmentsFormFiles = request.Attachments.Select((attachment, i) => new AttachmentFormFile(attachment, attachments[i].FilePath));
+        await attachmentsRepository.UploadAttachmentsAsync(attachmentsFormFiles);
+
+        createVehicle.Attachments = attachments;
 
         var id = await vehiclesRepository.Create(createVehicle);
         return id;

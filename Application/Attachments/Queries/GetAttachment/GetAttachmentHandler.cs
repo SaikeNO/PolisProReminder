@@ -12,7 +12,7 @@ internal class GetAttachmentHandler(IAttachmentsRepository attachmentsRepository
 
         var attachment = await attachmentsRepository.GetAttachmentAsync(request.AttachmentId);
 
-        _ = attachment.Value.Item1 ?? throw new NotFoundException("Plik o podanym ID nie istnieje");
+        _ = attachment ?? throw new NotFoundException("Plik o podanym ID nie istnieje");
 
         return (attachment.Value.Item1, attachment.Value.Item2);
     }

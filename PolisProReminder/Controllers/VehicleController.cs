@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PolisProReminder.API.Requests;
+using PolisProReminder.Application.Attachments.Dtos;
 using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Vehicles.Commands.CreateVehicle;
 using PolisProReminder.Application.Vehicles.Commands.DeleteVehicle;
@@ -16,7 +17,7 @@ namespace PolisProReminder.API.Controllers;
 
 [Authorize]
 [Route("api/[controller]")]
-public class VehicleController(IMediator mediator, IConfiguration configuration) : ControllerBase
+public class VehicleController(IMediator mediator) : ControllerBase
 {
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -100,7 +101,7 @@ public class VehicleController(IMediator mediator, IConfiguration configuration)
     [HttpGet("{id}/attachments")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<VehicleDto>> GetAttachments([FromRoute] Guid id)
+    public async Task<ActionResult<IEnumerable<AttachmentDto>>> GetAttachments([FromRoute] Guid id)
     {
         var attachmantes = await mediator.Send(new GetAllAttachmentsQuery(id));
         return Ok(attachmantes);

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using PolisProReminder.Domain.Entities;
+﻿using PolisProReminder.Domain.Entities;
 
 namespace PolisProReminder.Domain.Repositories;
 
@@ -9,6 +8,7 @@ public interface IAttachmentsRepository
     Task<IEnumerable<Attachment>?> GetAll<TEntity>(Guid id) where TEntity : AttachmentList;
     Task<Attachment?> GetById(Guid id);
     Task SaveChanges();
-    Task<IEnumerable<Attachment>> UploadAttachmentsAsync(IEnumerable<IFormFile> files, string savePath);
+    Task<IEnumerable<Attachment>> CreateAttachmentRangeAsync(IEnumerable<Attachment> attachments);
+    Task UploadAttachmentsAsync(IEnumerable<AttachmentFormFile> attachments);
     Task<(FileStream, string)?> GetAttachmentAsync(Guid attachmentId);
 }

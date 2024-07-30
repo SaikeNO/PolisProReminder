@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
-using PolisProReminder.Application.Attachments;
+﻿using MediatR;
 using PolisProReminder.Application.Users;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
@@ -42,9 +40,19 @@ public class UpdateVehicleCommandHandler(IUserContext userContext,
         vehicle.Insurer = insurer;
 
         var savePath = Path.Combine(currentUser.AgentId, request.InsurerId.ToString(), "Vehicles", request.Id.ToString());
-        var attachments = await attachmentsRepository.UploadAttachmentsAsync(request.Attachments, savePath);
 
-        vehicle.Attachments = [.. vehicle.Attachments, .. attachments];
+        var attachments = request.Attachments.Select(attachment => new Attachment(attachment.FileName, savePath)
+        {
+            CreatedByAgentId = currentUser.AgentId,
+            CreatedByUserId = currentUser.Id,
+        }).ToList();
+
+        var attachmentsFormFiles = request.Attachments.Select((attachment, i) => new AttachmentFormFile(attachment, attachments[i].FilePath));
+        await attachmentsRepository.UploadAttachmentsAsync(attachmentsFormFiles);
+
+        vehicle.Attachments = [..vehicle.Attachments, ..attachments];
+
+        //await attachmentsRepository.CreateAttachmentRangeAsync(attachments);
 
         await vehiclesRepository.SaveChanges();
     }

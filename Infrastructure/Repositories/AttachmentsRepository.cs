@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PolisProReminder.Domain.Entities;
-using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 using PolisProReminder.Infrastructure.Persistance;
 
@@ -42,44 +41,25 @@ internal class AttachmentsRepository(IConfiguration configuration, InsuranceDbCo
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Attachment>> UploadAttachmentsAsync(IEnumerable<IFormFile> files, string savePath)
+    public async Task<IEnumerable<Attachment>> CreateAttachmentRangeAsync(IEnumerable<Attachment> attachments)
     {
-        List<Attachment> attachments = [];
-        if (storagePath == null)
-            throw new ArgumentNullException(nameof(storagePath));
-
-        foreach (var attachment in files)
-        {
-            var a = new Attachment()
-            {
-                FileName = attachment.FileName,
-            };
-
-            var uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmssffff}_{a.Id}_{attachment.FileName}";
-            var filePath = Path.Combine(savePath, uniqueFileName);
-            var fullFilePath = Path.Combine(storagePath, filePath);
-            Directory.CreateDirectory(Path.GetDirectoryName(fullFilePath));
-            try
-            {
-                using (var stream = File.Create(fullFilePath))
-                {
-                    await attachment.CopyToAsync(stream);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new UploadAttachmentException(filePath);
-            }
-
-            a.UniqueFileName = uniqueFileName;
-            a.FilePath = filePath;
-            attachments.Add(a);
-        }
-
         await dbContext.Attachments.AddRangeAsync(attachments);
         await SaveChanges();
-
         return attachments;
+    }
+
+    public async Task UploadAttachmentsAsync(IEnumerable<AttachmentFormFile> attachments)
+    {
+        foreach (var attachment in attachments)
+        {
+            var fullFilePath = Path.Combine(storagePath, attachment.FilePath);
+            Directory.CreateDirectory(Path.GetDirectoryName(fullFilePath)!);
+
+            using (var stream = File.Create(fullFilePath))
+            {
+                await attachment.File.CopyToAsync(stream);
+            }
+        }
     }
 
     public async Task<(FileStream, string)?> GetAttachmentAsync(Guid attachmentId)
