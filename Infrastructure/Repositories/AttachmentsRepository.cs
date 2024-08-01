@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Repositories;
@@ -10,6 +9,7 @@ namespace PolisProReminder.Infrastructure.Repositories;
 internal class AttachmentsRepository(IConfiguration configuration, InsuranceDbContext dbContext) : IAttachmentsRepository
 {
     private readonly string storagePath = configuration["StoragePath"] ?? throw new ArgumentNullException(nameof(storagePath));
+    private readonly string storagePathDeleted = configuration["StoragePathDeleted"] ?? throw new ArgumentNullException(nameof(storagePathDeleted));
 
     public async Task<IEnumerable<Attachment>?> GetAll<TEntity>(Guid id) where TEntity : AttachmentList
     {
@@ -21,24 +21,26 @@ internal class AttachmentsRepository(IConfiguration configuration, InsuranceDbCo
         if (set == null)
             return null;
 
-        return set.Attachments;
+        return set.Attachments.Where(a => a.IsDeleted == false);
     }
 
     public async Task<Attachment?> GetById(Guid id)
     {
-        var company = await dbContext
+        var attachment = await dbContext
             .Attachments
-            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
 
-        return company;
+        return attachment;
     }
 
-    public async Task Delete(Attachment entity)
+    public void Delete(Attachment entity)
     {
         entity.IsDeleted = true;
+        var fullFilePath = Path.Combine(storagePath, entity.FilePath);
+        var fullFilePathToMove = Path.Combine(storagePathDeleted, entity.FilePath);
 
-        await dbContext.SaveChangesAsync();
+        Directory.CreateDirectory(Path.GetDirectoryName(fullFilePathToMove)!);
+        File.Move(fullFilePath, fullFilePathToMove);
     }
 
     public async Task<IEnumerable<Attachment>> CreateAttachmentRangeAsync(IEnumerable<Attachment> attachments)

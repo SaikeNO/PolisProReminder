@@ -13,7 +13,6 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
     public async Task Delete(Vehicle entity)
     {
         entity.IsDeleted = true;
-        await dbContext.SaveChangesAsync();
     }
 
     public async Task<Guid> Create(Vehicle entity)
