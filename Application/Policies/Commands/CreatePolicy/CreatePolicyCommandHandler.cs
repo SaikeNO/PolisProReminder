@@ -8,7 +8,8 @@ namespace PolisProReminder.Application.Policies.Commands.CreatePolicy;
 
 public class CreatePolicyCommandHandler(IUserContext userContext,
     IPoliciesRepository policiesRepository,
-    IInsuranceTypesRepository insuranceTypesRepository) : IRequestHandler<CreatePolicyCommand, Guid>
+    IInsuranceTypesRepository insuranceTypesRepository,
+    IAttachmentsRepository attachmentsRepository) : IRequestHandler<CreatePolicyCommand, Guid>
 {
     public async Task<Guid> Handle(CreatePolicyCommand request, CancellationToken cancellationToken)
     {
@@ -36,6 +37,19 @@ public class CreatePolicyCommandHandler(IUserContext userContext,
             CreatedByAgentId = currentUser.AgentId,
             CreatedByUserId = currentUser.Id,
         };
+
+        var savePath = Path.Combine(currentUser.AgentId, request.InsurerId.ToString(), "Policies", createPolicy.Id.ToString());
+
+        var attachments = request.Attachments.Select(attachment => new Attachment(attachment.FileName, savePath)
+        {
+            CreatedByAgentId = currentUser.AgentId,
+            CreatedByUserId = currentUser.Id,
+        }).ToList();
+
+        var attachmentsFormFiles = request.Attachments.Select((attachment, i) => new AttachmentFormFile(attachment, attachments[i].FilePath));
+        await attachmentsRepository.UploadAttachmentsAsync(attachmentsFormFiles);
+
+        createPolicy.Attachments = attachments;
 
         var id = await policiesRepository.Create(createPolicy);
         return id;

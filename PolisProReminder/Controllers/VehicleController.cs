@@ -22,7 +22,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] string jsonString, IEnumerable<IFormFile> attachments)
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments)
     {
         CreateVehicleReq req = JsonConvert.DeserializeObject<CreateVehicleReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
         var command = new UpdateVehicleCommand()
@@ -57,7 +57,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromForm] string jsonString, IEnumerable<IFormFile> attachments)
+    public async Task<IActionResult> Create([FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments)
     {
         CreateVehicleReq req = JsonConvert.DeserializeObject<CreateVehicleReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
 

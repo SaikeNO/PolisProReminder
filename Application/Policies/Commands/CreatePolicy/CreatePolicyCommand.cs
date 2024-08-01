@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace PolisProReminder.Application.Policies.Commands.CreatePolicy;
 
@@ -13,4 +14,6 @@ public class CreatePolicyCommand : IRequest<Guid>
     public bool IsPaid { get; set; }
     public Guid InsurerId { get; set; }
     public List<Guid> InsuranceTypeIds { get; set; } = [];
+    public IEnumerable<IFormFile> Attachments { get; set; } = [];
+
 }

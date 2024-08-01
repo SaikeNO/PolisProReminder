@@ -13,7 +13,6 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
     public async Task Delete(Policy entity)
     {
         entity.IsDeleted = true;
-        await dbContext.SaveChangesAsync();
     }
 
     public async Task<Guid> Create(Policy entity)
