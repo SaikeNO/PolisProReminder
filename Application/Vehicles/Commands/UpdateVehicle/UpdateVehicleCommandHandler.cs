@@ -50,9 +50,9 @@ public class UpdateVehicleCommandHandler(IUserContext userContext,
         var attachmentsFormFiles = request.Attachments.Select((attachment, i) => new AttachmentFormFile(attachment, attachments[i].FilePath));
         await attachmentsRepository.UploadAttachmentsAsync(attachmentsFormFiles);
 
+        await attachmentsRepository.CreateAttachmentRangeAsync(attachments);
+        
         vehicle.Attachments = [..vehicle.Attachments, ..attachments];
-
-        //await attachmentsRepository.CreateAttachmentRangeAsync(attachments);
 
         await vehiclesRepository.SaveChanges();
     }

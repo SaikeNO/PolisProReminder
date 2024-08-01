@@ -44,7 +44,6 @@ internal class AttachmentsRepository(IConfiguration configuration, InsuranceDbCo
     public async Task<IEnumerable<Attachment>> CreateAttachmentRangeAsync(IEnumerable<Attachment> attachments)
     {
         await dbContext.Attachments.AddRangeAsync(attachments);
-        await SaveChanges();
         return attachments;
     }
 
