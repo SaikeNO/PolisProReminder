@@ -27,6 +27,11 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
 
+      - name: Set Environment Variables
+        run: |
+          echo "DOTNET_CLI_HOME=$HOME" >> $GITHUB_ENV
+          echo "HOME=$HOME" >> $GITHUB_ENV
+
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
