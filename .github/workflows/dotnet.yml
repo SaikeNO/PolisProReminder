@@ -1,8 +1,7 @@
 name: CI
 
-# Controls when the workflow will run
 on:
-  push:    
+  push:
     branches: [main]
 
 jobs:
@@ -33,6 +32,4 @@ jobs:
       run: dotnet publish -c Release -o /var/www/polis-pro-be
 
     - name: Restart the app
-      run: |
-        /home/github/restart_service.sh &
-        disown
+      run: sudo systemctl restart polis-pro-be.service
