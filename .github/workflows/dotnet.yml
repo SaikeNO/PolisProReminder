@@ -2,16 +2,13 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push request event for the master branch
   push:    
     branches: [main]
 
 jobs:
   deploy:
-    # Our previously created self-hosted runner
     runs-on: self-hosted
 
-    # A sequence of tasks that will execute as part of the job
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -32,10 +29,16 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
 
-      # We will output publish files to the folder we previously created
     - name: Publish
       run: dotnet publish -c Release -o /var/www/polis-pro-be
+
+    - name: Start D-Bus
+      run: |
+        mkdir -p /run/user/$(id -u)
+        dbus-daemon --session --address=unix:path=/run/user/$(id -u)/bus
+
     - name: Restart the app
       run: |
         export XDG_RUNTIME_DIR=/run/user/$(id -u)
+        export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
         systemctl --user restart polis-pro-be.service
