@@ -34,4 +34,5 @@ jobs:
 
     - name: Restart the app
       run: |
-        nohup /home/github/restart_service.sh &
+        /home/github/restart_service.sh &
+        disown
