@@ -22,7 +22,7 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '8.0.x'
-        
+     
     - name: Install dependencies
       run: dotnet restore
 
@@ -32,13 +32,6 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release -o /var/www/polis-pro-be
 
-    - name: Start D-Bus
-      run: |
-        mkdir -p /run/user/$(id -u)
-        dbus-daemon --session --address=unix:path=/run/user/$(id -u)/bus
-
     - name: Restart the app
       run: |
-        export XDG_RUNTIME_DIR=/run/user/$(id -u)
-        export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
-        systemctl --user restart polis-pro-be.service
+        nohup /home/github/restart_service.sh &
