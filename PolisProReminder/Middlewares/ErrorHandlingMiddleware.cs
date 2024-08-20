@@ -1,54 +1,53 @@
 ﻿using PolisProReminder.Domain.Exceptions;
-
 namespace PolisProReminder.Middlewares;
 
-public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
+public class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger) : IMiddleware
 {
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         try
         {
-            await next(context);
+            await next.Invoke(context);
         }
-        catch (Exception e)
+        catch (UnauthorizedException e)
         {
-            await HandleExceptionAsync(context, e);
+            context.Response.StatusCode = 401;
+            await context.Response.WriteAsync(e.Message);
+
+            logger.LogWarning(e.Message);
         }
-    }
-
-    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
-    {
-        switch (exception)
+        catch (NotAllowedException e)
         {
-            case UnauthorizedException e:
-                context.Response.StatusCode = 401;
-                await context.Response.WriteAsync(e.Message);
-                break;
-            case NotAllowedException e:
-                context.Response.StatusCode = 405;
-                await context.Response.WriteAsync(e.Message);
-                break;
-            case ForbidException e:
-                context.Response.StatusCode = 403;
-                break;
-            case BadRequestException e:
-                context.Response.StatusCode = 400;
-                await context.Response.WriteAsync(e.Message);
-                break;
-            case NotFoundException e:
-                context.Response.StatusCode = 404;
-                await context.Response.WriteAsync(e.Message);
-                break;
-            case AlreadyExistsException e:
-                context.Response.StatusCode = 409;
-                await context.Response.WriteAsync(e.Message);
-                break;
-            case Exception e:
-                logger.LogError(e, e.Message);
+            context.Response.StatusCode = 405;
+            await context.Response.WriteAsync(e.Message);
+        }
+        catch (ForbidException e)
+        {
+            context.Response.StatusCode = 403;
 
-                context.Response.StatusCode = 500;
-                await context.Response.WriteAsync("Coś poszło nie tak");
-                break;
+            logger.LogWarning(e.Message);
+        }
+        catch (BadRequestException e)
+        {
+            context.Response.StatusCode = 400;
+            await context.Response.WriteAsync(e.Message);
+        }
+        catch (NotFoundException e)
+        {
+            context.Response.StatusCode = 404;
+            await context.Response.WriteAsync(e.Message);
+        }
+        catch (AlreadyExistsException e)
+        {
+            context.Response.StatusCode = 409;
+            await context.Response.WriteAsync(e.Message);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, ex.Message);
+
+            context.Response.StatusCode = 500;
+            await context.Response.WriteAsync("Something went wrong");
         }
     }
 }

@@ -41,6 +41,6 @@ public static class WebApplicationBuilderExtenstions
             }
         ));
 
-        //builder.Services.AddScoped<ErrorHandlingMiddleware>();
+        builder.Services.AddScoped<ErrorHandlingMiddleware>();
     }
 }
