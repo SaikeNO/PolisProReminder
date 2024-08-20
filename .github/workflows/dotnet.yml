@@ -31,5 +31,9 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release -o /var/www/polis-pro-be
 
+    - name: Copy appsetting.Production.json
+      run: |
+        sudo cp /polis-pro-be/appsettings.Production.json /var/www/polis-pro-be/appsettings.Production.json
+
     - name: Restart the app
       run: sudo systemctl restart polis-pro-be.service
