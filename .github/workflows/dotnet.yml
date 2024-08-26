@@ -2,7 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -10,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up environment variables
       run: |
@@ -18,7 +19,7 @@ jobs:
         echo "DOTNET_CLI_HOME=/tmp" >> $GITHUB_ENV
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
      
@@ -29,11 +30,10 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     - name: Publish
-      run: dotnet publish -c Release -o /var/www/polis-pro-be
+      run: dotnet publish -c Release -o /var/www/be
 
     - name: Copy appsetting.Production.json
-      run: |
-        sudo cp /polis-pro-be/appsettings.Production.json /var/www/polis-pro-be/appsettings.Production.json
+      run: sudo cp /var/www/settings/appsettings.Production.json /var/www/be/appsettings.Production.json
 
     - name: Restart the app
       run: sudo systemctl restart polis-pro-be.service
