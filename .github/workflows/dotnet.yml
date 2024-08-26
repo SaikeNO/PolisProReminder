@@ -40,6 +40,11 @@ jobs:
     - name: Copy appsetting.Production.json
       run: sudo cp /var/www/settings/appsettings.Production.json /var/www/be/appsettings.Production.json
 
+    - name: pwd
+      run: |
+        pwd
+        ls -l
+
     - name: Update database
       run: dotnet ef database update -c InsuranceDbContext -p PolisProReminder.Infrastructure -s PolisProReminder.API
       env:
