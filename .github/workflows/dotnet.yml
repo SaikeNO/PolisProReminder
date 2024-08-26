@@ -35,5 +35,13 @@ jobs:
     - name: Copy appsetting.Production.json
       run: sudo cp /var/www/settings/appsettings.Production.json /var/www/be/appsettings.Production.json
 
+    - name: Update database
+      run: |
+        dotnet tool install --global dotnet-ef
+        dotnet tool restore
+        dotnet ef database update -c DataContext -p MyProj -s MyProjFactory
+      env:
+        ASPNETCORE_ENVIRONMENT: Development
+
     - name: Restart the app
       run: sudo systemctl restart polis-pro-be.service
