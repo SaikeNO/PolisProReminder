@@ -22,6 +22,11 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '8.0.x'
+    
+    - name: Install dotnet-ef tools
+      run: |
+        dotnet new tool-manifest
+        dotnet tool install dotnet-ef
      
     - name: Install dependencies
       run: dotnet restore
@@ -36,10 +41,7 @@ jobs:
       run: sudo cp /var/www/settings/appsettings.Production.json /var/www/be/appsettings.Production.json
 
     - name: Update database
-      run: |
-        dotnet tool install --global dotnet-ef
-        dotnet tool restore
-        dotnet ef database update -c DataContext -p MyProj -s MyProjFactory
+      run: dotnet ef database update -c InsuranceDbContext -p PolisProReminder.Infrastructure -s PolisProReminder.API
       env:
         ASPNETCORE_ENVIRONMENT: Development
 
