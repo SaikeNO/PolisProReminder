@@ -46,7 +46,7 @@ jobs:
         ls -l
 
     - name: Update database
-      run: dotnet ef database update -c InsuranceDbContext -p PolisProReminder.Infrastructure -s PolisProReminder.API
+      run: dotnet ef database update -c InsuranceDbContext -p Infrastructure -s PolisProReminder
       env:
         ASPNETCORE_ENVIRONMENT: Development
 
