@@ -40,15 +40,10 @@ jobs:
     - name: Copy appsetting.Production.json
       run: sudo cp /var/www/settings/appsettings.Production.json /var/www/be/appsettings.Production.json
 
-    - name: pwd
-      run: |
-        pwd
-        ls -l
-
-    - name: Update database
-      run: dotnet ef database update -c InsuranceDbContext -p Infrastructure -s PolisProReminder
-      env:
-        ASPNETCORE_ENVIRONMENT: Development
+    # - name: Update database
+    #   run: dotnet ef database update -c InsuranceDbContext -p Infrastructure -s PolisProReminder --no-build
+    #   env:
+    #     ASPNETCORE_ENVIRONMENT: Development
 
     - name: Restart the app
       run: sudo systemctl restart polis-pro-be.service
