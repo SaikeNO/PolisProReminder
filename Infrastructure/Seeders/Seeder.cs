@@ -8,6 +8,26 @@ namespace PolisProReminder.Infrastructure.Seeders;
 
 internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwordHasher) : ISeeder
 {
+    public async Task SeedDeployment()
+    {
+        if (dbContext.Database.CanConnect())
+        {
+            if (!dbContext.Roles.Any())
+            {
+                var roles = GetRoles();
+                dbContext.Roles.AddRange(roles);
+                await dbContext.SaveChangesAsync();
+            }
+
+            if (!dbContext.VehicleBrands.Any())
+            {
+                var vehiclesBrands = GetVehicleBrands();
+                dbContext.VehicleBrands.AddRange(vehiclesBrands);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+    }
+
     public async Task Seed()
     {
         if (dbContext.Database.CanConnect())

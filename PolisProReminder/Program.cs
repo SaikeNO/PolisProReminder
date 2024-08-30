@@ -7,7 +7,6 @@ using PolisProReminder.Middlewares;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-// Add services to the container.
 
 builder.AddPresentation();
 builder.Services.AddApplication();
@@ -20,21 +19,22 @@ var app = builder.Build();
 
 var scope = app.Services.CreateScope();
 var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
-await seeder.Seed();
-
-// Configure the HTTP request pipeline.
-
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
 {
+    await seeder.Seed();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "PolisPro Reminder API");
     });
+}
+else
+{
+    await seeder.SeedDeployment();
 }
 
 app.MapGroup("api/identity")

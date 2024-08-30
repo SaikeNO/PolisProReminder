@@ -3,4 +3,5 @@
 public interface ISeeder
 {
     Task Seed();
+    Task SeedDeployment();
 }
