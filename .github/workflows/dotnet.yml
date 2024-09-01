@@ -36,10 +36,7 @@ jobs:
       run: sudo cp /var/www/settings/appsettings.Production.json /var/www/be/appsettings.Production.json
 
     - name: Update database
-      run: |
-        dotnet tool install --global dotnet-ef
-        dotnet tool restore
-        dotnet ef database update -c InsuranceDbContext -p Infrastructure -s PolisProReminder --no-build
+      run: dotnet ef database update -c InsuranceDbContext -p Infrastructure -s PolisProReminder
       env:
         ASPNETCORE_ENVIRONMENT: Development
 
