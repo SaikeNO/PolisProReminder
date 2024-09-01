@@ -43,7 +43,7 @@ jobs:
     - name: Update database
       run: dotnet ef database update -c InsuranceDbContext -p Infrastructure -s PolisProReminder --no-build
       env:
-        ASPNETCORE_ENVIRONMENT: Production
+        ASPNETCORE_ENVIRONMENT: Development
 
     - name: Restart the app
       run: sudo systemctl restart polis-pro-be.service
