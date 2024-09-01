@@ -10,7 +10,7 @@ public class CreatePolicyCommand : IRequest<Guid>
     public Guid InsuranceCompanyId { get; set; }
     public DateOnly StartDate { get; set; }
     public DateOnly EndDate { get; set; }
-    public DateOnly PaymentDate { get; set; }
+    public DateOnly? PaymentDate { get; set; }
     public bool IsPaid { get; set; }
     public Guid InsurerId { get; set; }
     public List<Guid> InsuranceTypeIds { get; set; } = [];

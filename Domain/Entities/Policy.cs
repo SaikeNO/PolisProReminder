@@ -9,7 +9,7 @@ public class Policy : AttachmentList
     public Guid? VehicleId { get; set; }
     public DateOnly StartDate { get; set; }
     public DateOnly EndDate { get; set; }
-    public DateOnly PaymentDate { get; set; }
+    public DateOnly? PaymentDate { get; set; }
     public bool IsPaid { get; set; } = false;
     public bool IsDeleted { get; set; } = false;
     public bool IsArchived { get; set; } = false;

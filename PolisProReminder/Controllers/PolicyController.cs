@@ -32,7 +32,7 @@ public class PolicyController(IMediator mediator) : ControllerBase
             Id = id,
             EndDate = DateOnly.FromDateTime(DateTime.Parse(req.EndDate)),
             StartDate = DateOnly.FromDateTime(DateTime.Parse(req.StartDate)),
-            PaymentDate = DateOnly.FromDateTime(DateTime.Parse(req.PaymentDate)),
+            PaymentDate = req.PaymentDate is not null ? DateOnly.FromDateTime(DateTime.Parse(req.PaymentDate)) : null,
             InsuranceCompanyId = new Guid(req.InsuranceCompanyId),
             InsuranceTypeIds = req.InsuranceTypeIds.Select(x => new Guid(x)).ToList(),
             InsurerId = new Guid(req.InsurerId),
@@ -65,7 +65,7 @@ public class PolicyController(IMediator mediator) : ControllerBase
         {
             EndDate = DateOnly.FromDateTime(DateTime.Parse(req.EndDate)),
             StartDate = DateOnly.FromDateTime(DateTime.Parse(req.StartDate)),
-            PaymentDate = DateOnly.FromDateTime(DateTime.Parse(req.PaymentDate)),
+            PaymentDate = req.PaymentDate is not null ? DateOnly.FromDateTime(DateTime.Parse(req.PaymentDate)) : null,
             InsuranceCompanyId = new Guid(req.InsuranceCompanyId),
             InsuranceTypeIds = req.InsuranceTypeIds.Select(x => new Guid(x)).ToList(),
             InsurerId = new Guid(req.InsurerId),
