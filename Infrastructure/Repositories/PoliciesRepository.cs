@@ -129,6 +129,7 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
             .Include(p => p.Insurer)
             .Include(p => p.InsuranceTypes)
             .Where(p => p.CreatedByAgentId == agentId)
+            .Where(p => p.IsDeleted == false)
             .OrderBy(p => p.EndDate)
             .Take(count)
             .ToListAsync();
