@@ -15,7 +15,7 @@ internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepos
         var insurers = await dbContext
             .Insurers
             .Where(i => i.CreatedByAgentId == agentId && i.IsDeleted == false)
-            .Include(i => i.Policies)
+            .Include(i => i.Policies.Where(p => p.IsDeleted == false))
             .ThenInclude(p => p.InsuranceCompany)
             .Include(i => i.Policies)
             .ThenInclude(p => p.InsuranceTypes)
@@ -50,7 +50,7 @@ internal class InsurersRepository(InsuranceDbContext dbContext) : IInsurersRepos
         var baseQuery = dbContext
             .Insurers
             .Where(i => i.CreatedByAgentId == agentId && i.IsDeleted == false)
-            .Include(i => i.Policies)
+            .Include(i => i.Policies.Where(p => p.IsDeleted == false))
             .ThenInclude(p => p.InsuranceCompany)
             .Include(i => i.Policies)
             .ThenInclude(p => p.InsuranceTypes)
