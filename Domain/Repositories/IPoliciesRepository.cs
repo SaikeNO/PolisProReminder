@@ -9,6 +9,7 @@ public interface IPoliciesRepository
     Task Delete(Policy entity);
     Task<IEnumerable<Policy>> GetAll(string agentId);
     Task<Policy?> GetById(string agentId, Guid id);
+    Task<IEnumerable<Policy>> GetByIds(string agentId, IEnumerable<Guid> ids);
     Task<Policy?> GetByNumber(string agentId, string policyNumber);
     Task<Policy?> GetByNumber(string agentId, string policyNumber, string requestPolicyNumber);
     Task<IEnumerable<Policy>> GetLatestPolicies(string agentId, int count);

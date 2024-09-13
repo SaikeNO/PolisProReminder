@@ -36,6 +36,21 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
         return policies;
     }
 
+    public async Task<IEnumerable<Policy>> GetByIds(string agentId, IEnumerable<Guid> ids)
+    {
+        var policies = await dbContext
+            .Policies
+            .Include(p => p.InsuranceCompany)
+            .Include(p => p.Insurer)
+            .Include(p => p.InsuranceTypes)
+            .Where(p => p.IsDeleted == false)
+            .Where(p => p.CreatedByAgentId == agentId)
+            .Where(p => ids.Contains(p.Id))
+            .ToListAsync();
+
+        return policies;
+    }
+
     public async Task<Policy?> GetById(string agentId, Guid id)
     {
         var policy = await dbContext
@@ -68,6 +83,7 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
 
         return policy;
     }
+
 
     public async Task<(IEnumerable<Policy>, int)> GetAllMatchingAsync(string agentId, 
         string? searchPhrase,

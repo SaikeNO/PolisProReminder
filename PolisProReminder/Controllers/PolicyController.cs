@@ -7,6 +7,7 @@ using PolisProReminder.Application.Attachments.Dtos;
 using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Policies.Commands.CreatePolicy;
 using PolisProReminder.Application.Policies.Commands.DeletePolicy;
+using PolisProReminder.Application.Policies.Commands.PaidPolicies;
 using PolisProReminder.Application.Policies.Commands.UpdatePolicyCommand;
 using PolisProReminder.Application.Policies.Dtos;
 using PolisProReminder.Application.Policies.Queries.GetAllAttachments;
@@ -53,6 +54,14 @@ public class PolicyController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> DeletePolicy([FromRoute] Guid id)
     {
         await mediator.Send(new DeletePolicyCommand(id));
+        return NoContent();
+    }
+
+    [HttpPatch("/paid")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> PaidPolicies([FromBody] PaidPoliciesCommand command)
+    {
+        await mediator.Send(command);
         return NoContent();
     }
 
