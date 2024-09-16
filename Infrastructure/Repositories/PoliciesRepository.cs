@@ -10,7 +10,7 @@ namespace PolisProReminder.Infrastructure.Repositories;
 
 internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepository
 {
-    public async Task Delete(Policy entity)
+    public void Delete(Policy entity)
     {
         entity.IsDeleted = true;
     }
@@ -91,7 +91,8 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
         int pageNumber,
         string? sortBy,
         SortDirection sortDirection,
-        Guid? typeId)
+        Guid? typeId,
+        bool isArchived)
     {
         var searchPhraseLower = searchPhrase?.ToLower();
 
@@ -106,7 +107,7 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
                                                     || p.Insurer.FirstName.ToLower().Contains(searchPhraseLower)
                                                     || p.Insurer.LastName.ToLower().Contains(searchPhraseLower))
                         && (typeId == null || p.InsuranceTypes.Any(t => t.Id == typeId))
-                         && p.IsArchived == false
+                         && p.IsArchived == isArchived
                          && p.IsDeleted == false)
             .OrderBy(p => p.EndDate);
 

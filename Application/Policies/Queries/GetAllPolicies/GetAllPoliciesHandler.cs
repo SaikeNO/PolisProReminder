@@ -22,7 +22,8 @@ public class GetAllPoliciesHandler(IUserContext userContext,
             request.PageIndex,
             request.SortBy,
             request.SortDirection,
-            request.TypeId);
+            request.TypeId,
+            request.IsArchived);
 
         var policiesDtos = mapper.Map<List<PolicyDto>>(policies);
 

@@ -57,7 +57,7 @@ public class PolicyController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
-    [HttpPatch("/paid")]
+    [HttpPatch("Paid")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PaidPolicies([FromBody] PaidPoliciesCommand command)
     {

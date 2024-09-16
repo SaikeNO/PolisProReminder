@@ -15,7 +15,7 @@ public class DeletePolicyCommandHandler(IUserContext userContext,
         var currentUser = userContext.GetCurrentUser() ?? throw new InvalidOperationException("Current User is not present");
         var policy = await policiesRepository.GetById(currentUser.AgentId, request.Id) ?? throw new NotFoundException("Polisa o podanym ID nie istnieje");
 
-        await policiesRepository.Delete(policy);
+        policiesRepository.Delete(policy);
 
         var attachments = (await attachmentsRepository.GetAll<Policy>(request.Id))!.ToList();
 

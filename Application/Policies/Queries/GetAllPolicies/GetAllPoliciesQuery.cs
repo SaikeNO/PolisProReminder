@@ -13,4 +13,5 @@ public class GetAllPoliciesQuery : IRequest<PageResult<PolicyDto>>
     public string? SortBy { get; set; }
     public SortDirection SortDirection { get; set; }
     public Guid? TypeId { get; set; }
+    public bool IsArchived { get; set; }
 }
