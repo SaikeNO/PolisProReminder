@@ -11,6 +11,7 @@ public class Policy : AttachmentList
     public DateOnly EndDate { get; set; }
     public DateOnly? PaymentDate { get; set; }
     public bool IsPaid { get; set; } = false;
+    public string? Note { get; set; }
     public bool IsDeleted { get; set; } = false;
     public bool IsArchived { get; set; } = false;
     public string CreatedByUserId { get; set; } = null!;

@@ -8,7 +8,7 @@ using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Policies.Commands.CreatePolicy;
 using PolisProReminder.Application.Policies.Commands.DeletePolicy;
 using PolisProReminder.Application.Policies.Commands.PaidPolicies;
-using PolisProReminder.Application.Policies.Commands.UpdatePolicyCommand;
+using PolisProReminder.Application.Policies.Commands.UpdatePolicy;
 using PolisProReminder.Application.Policies.Dtos;
 using PolisProReminder.Application.Policies.Queries.GetAllAttachments;
 using PolisProReminder.Application.Policies.Queries.GetAllPolicies;
@@ -40,7 +40,8 @@ public class PolicyController(IMediator mediator) : ControllerBase
             IsPaid = req.IsPaid,
             PolicyNumber = req.PolicyNumber,
             Title = req.Title,
-            Attachments = attachments
+            Attachments = attachments,
+            Note = req.Note,
         };
 
         await mediator.Send(command);
@@ -81,7 +82,8 @@ public class PolicyController(IMediator mediator) : ControllerBase
             IsPaid = req.IsPaid,
             PolicyNumber = req.PolicyNumber,
             Title = req.Title,
-            Attachments = attachments
+            Attachments = attachments,
+            Note = req.Note,
         };
 
         var id = await mediator.Send(command);

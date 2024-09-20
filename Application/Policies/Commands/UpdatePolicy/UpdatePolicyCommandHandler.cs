@@ -4,7 +4,7 @@ using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
-namespace PolisProReminder.Application.Policies.Commands.UpdatePolicyCommand;
+namespace PolisProReminder.Application.Policies.Commands.UpdatePolicy;
 
 public class UpdatePolicyCommandHandler(IUserContext userContext,
     IPoliciesRepository policiesRepository,
@@ -33,6 +33,7 @@ public class UpdatePolicyCommandHandler(IUserContext userContext,
         policy.InsurerId = request.InsurerId;
         policy.IsPaid = request.IsPaid;
         policy.Title = request.Title;
+        policy.Note = request.Note;
         policy.InsuranceTypes.Clear();
         policy.InsuranceTypes.AddRange(newTypes);
 

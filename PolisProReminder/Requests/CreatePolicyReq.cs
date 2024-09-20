@@ -9,6 +9,7 @@ public class CreatePolicyReq
     public string EndDate { get; set; }
     public string PaymentDate { get; set; }
     public bool IsPaid { get; set; }
+    public string Note { get; set; }
     public string InsurerId { get; set; }
     public List<string> InsuranceTypeIds { get; set; } = [];
 }

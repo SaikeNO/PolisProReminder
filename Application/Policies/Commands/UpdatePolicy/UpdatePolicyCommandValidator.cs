@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace PolisProReminder.Application.Policies.Commands.UpdatePolicyCommand;
+namespace PolisProReminder.Application.Policies.Commands.UpdatePolicy;
 
 public class UpdatePolicyCommandValidator : AbstractValidator<UpdatePolicyCommand>
 {
@@ -16,6 +16,10 @@ public class UpdatePolicyCommandValidator : AbstractValidator<UpdatePolicyComman
         RuleFor(dto => dto.PolicyNumber)
             .NotEmpty()
             .Length(1, 60);
+
+        RuleFor(dto => dto.Note)
+            .NotEmpty()
+            .Length(1, 500);
 
         RuleFor(dto => dto.InsuranceCompanyId)
             .NotEmpty();

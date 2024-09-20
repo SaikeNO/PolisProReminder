@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace PolisProReminder.Application.Policies.Commands.UpdatePolicyCommand;
+namespace PolisProReminder.Application.Policies.Commands.UpdatePolicy;
 
 public class UpdatePolicyCommand : IRequest
 {
@@ -13,6 +13,7 @@ public class UpdatePolicyCommand : IRequest
     public DateOnly EndDate { get; set; }
     public DateOnly? PaymentDate { get; set; }
     public bool IsPaid { get; set; }
+    public string? Note { get; set; }
     public Guid InsurerId { get; set; }
     public List<Guid> InsuranceTypeIds { get; set; } = [];
     public IEnumerable<IFormFile> Attachments { get; set; } = [];

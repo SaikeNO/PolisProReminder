@@ -12,6 +12,7 @@ public class CreatePolicyCommand : IRequest<Guid>
     public DateOnly EndDate { get; set; }
     public DateOnly? PaymentDate { get; set; }
     public bool IsPaid { get; set; }
+    public string Note { get; set; }
     public Guid InsurerId { get; set; }
     public List<Guid> InsuranceTypeIds { get; set; } = [];
     public IEnumerable<IFormFile> Attachments { get; set; } = [];

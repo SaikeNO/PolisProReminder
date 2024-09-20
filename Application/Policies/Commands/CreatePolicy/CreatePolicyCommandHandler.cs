@@ -34,6 +34,7 @@ public class CreatePolicyCommandHandler(IUserContext userContext,
             InsuranceTypes = types.ToList(),
             IsPaid = request.IsPaid,
             Title = request.Title,
+            Note = request.Note,
             CreatedByAgentId = currentUser.AgentId,
             CreatedByUserId = currentUser.Id,
         };

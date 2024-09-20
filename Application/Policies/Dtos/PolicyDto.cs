@@ -13,6 +13,7 @@ public class PolicyDto
     public DateOnly EndDate { get; set; }
     public DateOnly? PaymentDate { get; set; }
     public bool IsPaid { get; set; }
+    public string? Note { get; set; }
 
     public PolicyInsurerDto Insurer { get; set; } = null!;
     public List<InsuranceTypeDto> InsuranceTypes { get; set; } = new();
