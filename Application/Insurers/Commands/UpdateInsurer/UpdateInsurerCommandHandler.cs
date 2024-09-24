@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using PolisProReminder.Application.Insurers.Commands.UpdateInurer;
 using PolisProReminder.Application.Users;
 using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
@@ -25,6 +24,9 @@ public class UpdateInsurerCommandHandler(IInsurersRepository insurersRepository,
         insurer.PhoneNumber = request.PhoneNumber;
         insurer.FirstName = request.FirstName;
         insurer.LastName = request.LastName;
+        insurer.PostalCode = request.PostalCode;
+        insurer.City = request.City;
+        insurer.PostalCode = request.PostalCode;
 
         await insurersRepository.SaveChanges();
     }

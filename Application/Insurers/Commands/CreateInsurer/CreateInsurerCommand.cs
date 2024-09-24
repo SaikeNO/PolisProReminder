@@ -1,12 +1,7 @@
 ﻿using MediatR;
+using PolisProReminder.Application.Insurers.Commands.BaseInsurer;
 
 namespace PolisProReminder.Application.Insurers.Commands.CreateInsurer;
 
-public class CreateInsurerCommand : IRequest<Guid>
-{
-    public string Pesel { get; set; } = null!;
-    public string FirstName { get; set; } = null!;
-    public string? LastName { get; set; }
-    public string? PhoneNumber { get; set; }
-    public string? Email { get; set; }
-}
+public record CreateInsurerCommand(string Pesel, string FirstName, string? LastName, string? PhoneNumber, string? Email, string? PostalCode, string? City, string? Street)
+    : BaseInsurerCommand(Pesel, FirstName, LastName, PhoneNumber, Email, PostalCode, City, Street), IRequest<Guid> { }

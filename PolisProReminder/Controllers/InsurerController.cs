@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Insurers.Commands.CreateInsurer;
 using PolisProReminder.Application.Insurers.Commands.DeleteInsurer;
-using PolisProReminder.Application.Insurers.Commands.UpdateInurer;
+using PolisProReminder.Application.Insurers.Commands.UpdateInsurer;
 using PolisProReminder.Application.Insurers.Dtos;
 using PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
 using PolisProReminder.Application.Insurers.Queries.GetInsurerById;

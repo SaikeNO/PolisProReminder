@@ -22,6 +22,15 @@ public class InsurerConfiguration : IEntityTypeConfiguration<Insurer>
             .IsRequired()
             .HasMaxLength(11);
 
+        builder.Property(i => i.PostalCode)
+            .HasMaxLength(6);
+
+        builder.Property(i => i.City)
+            .HasMaxLength(60);
+
+        builder.Property(i => i.Street)
+            .HasMaxLength(60);
+
         builder.HasMany(i => i.Policies)
             .WithOne(p => p.Insurer)
             .OnDelete(DeleteBehavior.Restrict);
