@@ -26,7 +26,7 @@ public class UpdateInsurerCommandHandler(IInsurersRepository insurersRepository,
         insurer.LastName = request.LastName;
         insurer.PostalCode = request.PostalCode;
         insurer.City = request.City;
-        insurer.PostalCode = request.PostalCode;
+        insurer.Street = request.Street;
 
         await insurersRepository.SaveChanges();
     }
