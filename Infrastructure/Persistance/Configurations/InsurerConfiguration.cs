@@ -15,7 +15,6 @@ public class InsurerConfiguration : IEntityTypeConfiguration<Insurer>
             .HasMaxLength(20);
 
         builder.Property(i => i.LastName)
-            .IsRequired()
             .HasMaxLength(20);
 
         builder.Property(i => i.Pesel)
