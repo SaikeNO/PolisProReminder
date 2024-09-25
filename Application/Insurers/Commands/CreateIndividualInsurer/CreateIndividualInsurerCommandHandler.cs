@@ -5,13 +5,13 @@ using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
-namespace PolisProReminder.Application.Insurers.Commands.CreateInsurer;
+namespace PolisProReminder.Application.Insurers.Commands.CreateIndividualInsurer;
 
-public class CreateInsurerCommandHandler(IInsurersRepository insurersRepository, 
+public class CreateIndividualInsurerCommandHandler(IInsurersRepository insurersRepository,
     IMapper mapper,
-    IUserContext userContext) : IRequestHandler<CreateInsurerCommand, Guid>
+    IUserContext userContext) : IRequestHandler<CreateIndividualInsurerCommand, Guid>
 {
-    public async Task<Guid> Handle(CreateInsurerCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(CreateIndividualInsurerCommand request, CancellationToken cancellationToken)
     {
         var currentUser = userContext.GetCurrentUser();
         _ = currentUser ?? throw new InvalidOperationException("Current User is not present");

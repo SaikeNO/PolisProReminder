@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Common;
-using PolisProReminder.Application.Insurers.Commands.CreateInsurer;
+using PolisProReminder.Application.Insurers.Commands.CreateIndividualInsurer;
 using PolisProReminder.Application.Insurers.Commands.DeleteInsurer;
 using PolisProReminder.Application.Insurers.Commands.UpdateInsurer;
 using PolisProReminder.Application.Insurers.Dtos;
@@ -37,7 +37,7 @@ public class InsurerController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateInsurerCommand command)
+    public async Task<IActionResult> Create([FromBody] CreateIndividualInsurerCommand command)
     {
         var id = await mediator.Send(command);
 

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using PolisProReminder.Application.Insurers.Commands.CreateInsurer;
+using PolisProReminder.Application.Insurers.Commands.CreateIndividualInsurer;
 using PolisProReminder.Application.Policies.Dtos;
 using PolisProReminder.Domain.Entities;
 
@@ -9,7 +9,7 @@ public class InsurersProfile : Profile
 {
     public InsurersProfile()
     {
-        CreateMap<CreateInsurerCommand, Insurer>();
+        CreateMap<CreateIndividualInsurerCommand, Insurer>();
 
         CreateMap<Insurer, PolicyInsurerDto>()
             .ReverseMap();

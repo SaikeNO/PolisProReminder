@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using PolisProReminder.Application.Users;
+using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
@@ -19,14 +20,10 @@ public class UpdateInsurerCommandHandler(IInsurersRepository insurersRepository,
         if (await insurersRepository.GetByPeselAndId(currentUser.AgentId, request.Pesel, request.Id) != null)
             throw new AlreadyExistsException("Klient o podanym numerze PESEL już istnieje");
 
-        insurer.Email = request.Email;
+        insurer.Update(request.FirstName, request.LastName, request.PhoneNumber, request.Email, request.PostalCode, request.City, request.Street);
         insurer.Pesel = request.Pesel;
-        insurer.PhoneNumber = request.PhoneNumber;
-        insurer.FirstName = request.FirstName;
-        insurer.LastName = request.LastName;
-        insurer.PostalCode = request.PostalCode;
-        insurer.City = request.City;
-        insurer.Street = request.Street;
+
+
 
         await insurersRepository.SaveChanges();
     }

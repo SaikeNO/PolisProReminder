@@ -6,17 +6,6 @@ public class BaseInsurerCommandValidator : AbstractValidator<BaseInsurerCommand>
 {
     public BaseInsurerCommandValidator()
     {
-        RuleFor(dto => dto.Pesel)
-            .Matches(Resources.PeselRegex)
-            .NotEmpty();
-
-        RuleFor(dto => dto.FirstName)
-            .NotEmpty()
-            .Length(1, 30);
-
-        RuleFor(dto => dto.LastName)
-            .MaximumLength(30);
-
         RuleFor(dto => dto.Email)
             .EmailAddress();
 

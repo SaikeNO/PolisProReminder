@@ -7,7 +7,8 @@ namespace PolisProReminder.Infrastructure.Persistance;
 
 internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) : IdentityDbContext<User>(options)
 {
-    internal DbSet<Insurer> Insurers { get; set; } = null!;
+    internal DbSet<IndividualInsurer> IndividualInsurers { get; set; } = null!;
+    internal DbSet<BussinesInsurer> BussinesInsurers { get; set; } = null!;
     internal DbSet<Policy> Policies { get; set; } = null!;
     internal DbSet<InsuranceCompany> InsuranceCompanies { get; set; } = null!;
     internal DbSet<InsuranceType> InsuranceTypes { get; set; } = null!;
@@ -21,7 +22,8 @@ internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) 
 
         modelBuilder.ApplyConfiguration(new InsuranceCompanyConfiguration());
         modelBuilder.ApplyConfiguration(new InsuranceTypeConfiguration());
-        modelBuilder.ApplyConfiguration(new InsurerConfiguration());
+        modelBuilder.ApplyConfiguration(new BussinesInsurerConfiguration());
+        modelBuilder.ApplyConfiguration(new IndividualInsurerConfiguration());
         modelBuilder.ApplyConfiguration(new PolicyConfiguration());
         modelBuilder.ApplyConfiguration(new VehicleConfiguration());
         modelBuilder.ApplyConfiguration(new VehicleBrandConfiguration());
