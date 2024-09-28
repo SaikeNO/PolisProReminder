@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Repositories;
+using PolisProReminder.Infrastructure.Extensions;
 using PolisProReminder.Infrastructure.Persistance;
 
 namespace PolisProReminder.Infrastructure.Repositories;
@@ -8,30 +9,31 @@ namespace PolisProReminder.Infrastructure.Repositories;
 internal class InsuranceTypesRepository(InsuranceDbContext dbContext) : IInsuranceTypesRepository
 {
     
-    public async Task<IEnumerable<InsuranceType>> GetAll(string agentId)
+    public async Task<IEnumerable<InsuranceType>> GetAll(Guid agentId)
     {
         var types = await dbContext
             .InsuranceTypes
-            .Where(t => t.CreatedByAgentId == agentId)
+            .CreatedByAgent(agentId)
             .ToListAsync();
 
         return types;
     }
 
-    public async Task<IEnumerable<InsuranceType>> GetManyByIds(string agentId, IEnumerable<Guid> ids)
+    public async Task<IEnumerable<InsuranceType>> GetManyByIds(Guid agentId, IEnumerable<Guid> ids)
     {
         var types = await dbContext.InsuranceTypes
-            .Where(t => t.CreatedByAgentId == agentId && ids.Contains(t.Id))
+            .CreatedByAgent(agentId)
+            .Where(t => ids.Contains(t.Id))
             .ToListAsync();
 
         return types;
     }
 
-    public async Task<InsuranceType?> GetById(string agentId, Guid id)
+    public async Task<InsuranceType?> GetById(Guid agentId, Guid id)
     {
         var type = await dbContext
             .InsuranceTypes
-            .Where(t => t.CreatedByAgentId == agentId)
+            .CreatedByAgent(agentId)
             .FirstOrDefaultAsync(i => i.Id == id);
 
         return type;
@@ -41,13 +43,13 @@ internal class InsuranceTypesRepository(InsuranceDbContext dbContext) : IInsuran
     {
         dbContext.Remove(entity);
 
-        await dbContext.SaveChangesAsync();
+        await SaveChanges();
     }
 
     public async Task<Guid> Create(InsuranceType entity)
     {
         await dbContext.InsuranceTypes.AddAsync(entity);
-        await dbContext.SaveChangesAsync();
+        await SaveChanges();
 
         return entity.Id;
     }

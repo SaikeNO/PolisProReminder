@@ -4,7 +4,7 @@ using PolisProReminder.Domain.Entities;
 
 namespace PolisProReminder.Infrastructure.Persistance.Configurations;
 
-public abstract class BaseInsurerConfiguration<TBase> : IEntityTypeConfiguration<TBase> where TBase : Insurer
+public abstract class BaseInsurerConfiguration<TBase> : IEntityTypeConfiguration<TBase> where TBase : BaseInsurer
 {
     public virtual void Configure(EntityTypeBuilder<TBase> builder)
     {

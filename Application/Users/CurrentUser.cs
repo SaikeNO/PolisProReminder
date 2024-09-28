@@ -1,6 +1,6 @@
 ﻿namespace PolisProReminder.Application.Users;
 
-public record CurrentUser(string Id, string Email, string AgentId, IEnumerable<string> Roles)
+public record CurrentUser(Guid Id, string Email, Guid AgentId, IEnumerable<string> Roles)
 {
     public bool IsInRole(string role) => Roles.Contains(role);
 }

@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using MediatR;
 using PolisProReminder.Application.Users;
-using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.Insurers.Commands.CreateIndividualInsurer;
 
-public class CreateIndividualInsurerCommandHandler(IInsurersRepository insurersRepository,
+public class CreateIndividualInsurerCommandHandler(IIndividualInsurersRepository insurersRepository,
     IMapper mapper,
     IUserContext userContext) : IRequestHandler<CreateIndividualInsurerCommand, Guid>
 {
@@ -22,7 +21,7 @@ public class CreateIndividualInsurerCommandHandler(IInsurersRepository insurersR
         var insurer = mapper.Map<Insurer>(request);
 
         insurer.CreatedByUserId = currentUser.Id;
-        insurer.CreatedByAgentId = currentUser.AgentId!;
+        insurer.CreatedByAgentId = currentUser.AgentId;
 
         await insurersRepository.Create(insurer);
 

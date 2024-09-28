@@ -1,10 +1,12 @@
-﻿namespace PolisProReminder.Domain.Entities;
+﻿using PolisProReminder.Domain.Interfaces;
 
-public class InsuranceType
+namespace PolisProReminder.Domain.Entities;
+
+public class InsuranceType : ICreatedBy
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;
-    public string CreatedByUserId { get; set; } = null!;
-    public string CreatedByAgentId { get; set; } = null!;
-    public List<Policy> Policies { get; set; } = new();
+    public Guid CreatedByUserId { get; set; }
+    public Guid CreatedByAgentId { get; set; }
+    public List<Policy> Policies { get; set; } = [];
 }

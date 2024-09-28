@@ -27,7 +27,8 @@ public static class ServiceCollectionExtension
 
         services.AddScoped<ISeeder, Seeder>();
         services.AddScoped<IPoliciesRepository, PoliciesRepository>();
-        services.AddScoped<IInsurersRepository, InsurersRepository>();
+        services.AddScoped<IIndividualInsurersRepository, IndividualInsurersRepository>();
+        services.AddScoped<IBussinesInsurersRepository, BussinesInsurersRepository>();
         services.AddScoped<IInsuranceTypesRepository, InsuranceTypesRepository>();
         services.AddScoped<IInsuranceCompaniesRepository, InsuranceCompaniesRepository>();
         services.AddScoped<IVehiclesRepository, VehiclesRepository>();
