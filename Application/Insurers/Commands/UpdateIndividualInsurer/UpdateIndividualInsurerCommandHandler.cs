@@ -4,12 +4,12 @@ using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
-namespace PolisProReminder.Application.Insurers.Commands.UpdateInsurer;
+namespace PolisProReminder.Application.Insurers.Commands.UpdateIndividualInsurer;
 
-public class UpdateInsurerCommandHandler(IInsurersRepository insurersRepository,
-    IUserContext userContext) : IRequestHandler<UpdateInsurerCommand>
+public class UpdateIndividualInsurerCommandHandler(IIndividualInsurersRepository insurersRepository,
+    IUserContext userContext) : IRequestHandler<UpdateIndividualInsurerCommand>
 {
-    public async Task Handle(UpdateInsurerCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateIndividualInsurerCommand request, CancellationToken cancellationToken)
     {
         var currentUser = userContext.GetCurrentUser();
         _ = currentUser ?? throw new InvalidOperationException("Current User is not present");
@@ -20,10 +20,15 @@ public class UpdateInsurerCommandHandler(IInsurersRepository insurersRepository,
         if (await insurersRepository.GetByPeselAndId(currentUser.AgentId, request.Pesel, request.Id) != null)
             throw new AlreadyExistsException("Klient o podanym numerze PESEL już istnieje");
 
-        insurer.Update(request.FirstName, request.LastName, request.PhoneNumber, request.Email, request.PostalCode, request.City, request.Street);
-        insurer.Pesel = request.Pesel;
-
-
+        if (insurer is IndividualInsurer individualInsurer)
+        {
+            individualInsurer.Update(request.PhoneNumber, request.Email, request.PostalCode, request.City, request.Street);
+            individualInsurer.Update(request.FirstName, request.LastName, request.Pesel);
+        }
+        else
+        {
+            throw new InvalidOperationException("Klient nie jest typu indywidualnego");
+        }
 
         await insurersRepository.SaveChanges();
     }

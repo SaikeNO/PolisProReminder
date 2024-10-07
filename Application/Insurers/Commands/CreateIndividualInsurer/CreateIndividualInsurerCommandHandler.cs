@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using PolisProReminder.Application.Users;
+using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
@@ -18,7 +19,7 @@ public class CreateIndividualInsurerCommandHandler(IIndividualInsurersRepository
         if (await insurersRepository.GetByPeselAndId(currentUser.AgentId, request.Pesel, null) != null)
             throw new AlreadyExistsException("Klient o podanym numerze PESEL już istnieje");
 
-        var insurer = mapper.Map<Insurer>(request);
+        var insurer = mapper.Map<IndividualInsurer>(request);
 
         insurer.CreatedByUserId = currentUser.Id;
         insurer.CreatedByAgentId = currentUser.AgentId;

@@ -23,7 +23,7 @@ public class GetAllVehiclesHandler(IUserContext userContext,
             request.SortBy,
             request.SortDirection);
 
-        var vehiclesDtos = mapper.Map<List<VehicleDto>>(vehicles);
+        var vehiclesDtos = mapper.Map<IEnumerable<VehicleDto>>(vehicles);
 
         var result = new PageResult<VehicleDto>(vehiclesDtos, totalCount, request.PageSize, request.PageIndex);
         return result;

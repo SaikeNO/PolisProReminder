@@ -3,8 +3,8 @@ using PolisProReminder.Domain.Entities;
 
 namespace PolisProReminder.Domain.Repositories;
 
-public interface IBussinesInsurersRepository : IBaseInsurersRepository<BussinesInsurer>
+public interface IBusinessInsurersRepository : IBaseInsurersRepository
 {
-    Task<(IEnumerable<BussinesInsurer>, int)> GetAllMatchingAsync(Guid agentId, string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection);
-    Task<BussinesInsurer?> GetByNipRegonAndId(Guid agentId, string nip, string regon, Guid? id);
+    Task<(IEnumerable<BusinessInsurer>, int)> GetAllMatchingAsync(Guid agentId, string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection);
+    Task<BusinessInsurer?> GetByNipRegonAndId(Guid agentId, string nip, string regon, Guid? id);
 }

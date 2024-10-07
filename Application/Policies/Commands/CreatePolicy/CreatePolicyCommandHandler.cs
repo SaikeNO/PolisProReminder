@@ -39,7 +39,7 @@ public class CreatePolicyCommandHandler(IUserContext userContext,
             CreatedByUserId = currentUser.Id,
         };
 
-        var savePath = Path.Combine(currentUser.AgentId, request.InsurerId.ToString(), "Policies", createPolicy.Id.ToString());
+        var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerId.ToString(), "Policies", createPolicy.Id.ToString());
 
         var attachments = request.Attachments.Select(attachment => new Attachment(attachment.FileName, savePath)
         {

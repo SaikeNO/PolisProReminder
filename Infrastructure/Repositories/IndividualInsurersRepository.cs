@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 
 namespace PolisProReminder.Infrastructure.Repositories;
 
-internal class IndividualInsurersRepository : BaseInsurersRepository<IndividualInsurer>, IIndividualInsurersRepository
+internal class IndividualInsurersRepository : BaseInsurersRepository, IIndividualInsurersRepository
 {
     private readonly InsuranceDbContext _dbContext;
     public IndividualInsurersRepository(InsuranceDbContext dbContext) : base(dbContext)
@@ -45,10 +45,10 @@ internal class IndividualInsurersRepository : BaseInsurersRepository<IndividualI
         {
             var columnsSelector = new Dictionary<string, Expression<Func<IndividualInsurer, object>>>
             {
-                { nameof(InsurerDto.FirstName).ToLower(), i => i.FirstName },
-                { nameof(InsurerDto.LastName).ToLower(), i => i.LastName },
-                { nameof(InsurerDto.Pesel).ToLower(), i => i.Pesel },
-                { nameof(InsurerDto.Email).ToLower(), i => i.Email },
+                { nameof(IndividualInsurerDto.FirstName).ToLower(), i => i.FirstName },
+                { nameof(IndividualInsurerDto.LastName).ToLower(), i => i.LastName },
+                { nameof(IndividualInsurerDto.Pesel).ToLower(), i => i.Pesel },
+                { nameof(IndividualInsurerDto.Email).ToLower(), i => i.Email },
             };
 
             var selectedColumn = columnsSelector[sortBy];

@@ -12,7 +12,7 @@ internal class ChangePasswordCommandHandler(IUserContext userContext, UserManage
         var currentUser = userContext.GetCurrentUser();
         _ = currentUser ?? throw new InvalidOperationException("Current User is not present");
 
-        var user = await userManager.FindByIdAsync(currentUser.Id);
+        var user = await userManager.FindByIdAsync(currentUser.Id.ToString());
         _ = user ?? throw new InvalidOperationException("User is not present");
        
 

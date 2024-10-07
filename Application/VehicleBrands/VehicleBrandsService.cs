@@ -10,7 +10,7 @@ internal class VehicleBrandsService(IVehicleBrandsRepository vehicleBrandsReposi
     {
         var brands = await vehicleBrandsRepository.GetAll();
 
-        return mapper.Map<List<VehicleBrandDto>>(brands);
+        return mapper.Map<IEnumerable<VehicleBrandDto>>(brands);
     }
 
     public async Task<VehicleBrandDto?> GetById(Guid id)

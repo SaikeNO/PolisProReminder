@@ -108,12 +108,12 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
             .Include(p => p.InsuranceCompany)
             .Include(p => p.Insurer)
             .Include(p => p.InsuranceTypes)
-            .Where(p => (searchPhraseLower == null || p.Title.ToLower().Contains(searchPhraseLower)
-                                                    || p.PolicyNumber.ToLower().Contains(searchPhraseLower)
-                                                    || p.Insurer.FirstName.ToLower().Contains(searchPhraseLower)
-                                                    || p.Insurer.LastName.ToLower().Contains(searchPhraseLower))
-                        && (typeId == null || p.InsuranceTypes.Any(t => t.Id == typeId))
-                         && p.IsArchived == isArchived)
+            .Where(p => searchPhraseLower == null
+                        || p.Title.ToLower().Contains(searchPhraseLower)
+                        || p.PolicyNumber.ToLower().Contains(searchPhraseLower))
+            .FilterByInsurer(searchPhraseLower, dbContext)
+            .Where(p => typeId == null || p.InsuranceTypes.Any(t => t.Id == typeId))
+            .Where(p => p.IsArchived == isArchived)
             .OrderBy(p => p.EndDate);
 
         var totalCount = await baseQuery.CountAsync();

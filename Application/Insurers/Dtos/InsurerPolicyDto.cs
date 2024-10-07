@@ -13,5 +13,5 @@ public class InsurerPolicyDto
     public DateOnly PaymentDate { get; set; }
     public bool IsPaid { get; set; }
 
-    public List<InsuranceTypeDto> InsuranceTypes { get; set; } = new();
+    public IEnumerable<InsuranceTypeDto> InsuranceTypes { get; set; } = [];
 }

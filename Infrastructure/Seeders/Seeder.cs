@@ -196,19 +196,22 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
         return [admin, agent, agent2, user, user2];
     }
 
-    private IEnumerable<IdentityRole> GetRoles()
+    private IEnumerable<UserRole> GetRoles()
     {
-        List<IdentityRole> roles = [
+        List<UserRole> roles = [
             new(UserRoles.User)
             {
+                Id = Guid.NewGuid(),
                 NormalizedName = UserRoles.User.ToUpper(),
             },
             new(UserRoles.Agent)
             {
+                Id = Guid.NewGuid(),
                 NormalizedName = UserRoles.Agent.ToUpper(),
             },
             new(UserRoles.Admin)
             {
+                Id = Guid.NewGuid(),
                 NormalizedName = UserRoles.Admin.ToUpper(),
             }
             ];

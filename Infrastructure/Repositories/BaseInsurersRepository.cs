@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PolisProReminder.Domain.Entities;
+using PolisProReminder.Domain.Repositories;
 using PolisProReminder.Infrastructure.Extensions;
 using PolisProReminder.Infrastructure.Persistance;
 
 namespace PolisProReminder.Infrastructure.Repositories;
 
-internal abstract class BaseInsurersRepository<TEntity>(InsuranceDbContext dbContext) where TEntity : BaseInsurer
+internal class BaseInsurersRepository(InsuranceDbContext dbContext) : IBaseInsurersRepository
 {
-    public async Task<IEnumerable<TEntity>> GetAll(Guid agentId)
+    public async Task<IEnumerable<BaseInsurer>> GetAll(Guid agentId)
     {
-        var insurers = await dbContext.Set<TEntity>()
+        var insurers = await dbContext.Set<BaseInsurer>()
             .CreatedByAgent(agentId)
             .NotDeleted()
             .Include(i => i.Policies.Where(p => p.IsDeleted == false))
@@ -21,9 +22,9 @@ internal abstract class BaseInsurersRepository<TEntity>(InsuranceDbContext dbCon
         return insurers;
     }
 
-    public async Task<TEntity?> GetById(Guid agentId, Guid id)
+    public async Task<BaseInsurer?> GetById(Guid agentId, Guid id)
     {
-        var insurer = await dbContext.Set<TEntity>()
+        var insurer = await dbContext.Set<BaseInsurer>()
             .CreatedByAgent(agentId)
             .NotDeleted()
             .Include(i => i.Policies)
@@ -35,7 +36,7 @@ internal abstract class BaseInsurersRepository<TEntity>(InsuranceDbContext dbCon
         return insurer;
     }
 
-    public async Task<Guid> Create(TEntity entity)
+    public async Task<Guid> Create(BaseInsurer entity)
     {
         await dbContext.AddAsync(entity);
         return entity.Id;

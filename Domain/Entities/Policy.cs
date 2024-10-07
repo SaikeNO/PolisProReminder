@@ -23,5 +23,5 @@ public class Policy : AttachmentList, ISoftDeletable, ICreatedBy
     public virtual BaseInsurer Insurer { get; set; } = null!;
     public virtual Vehicle? Vehicle { get; set; }
     public virtual InsuranceCompany? InsuranceCompany { get; set; }
-    public virtual List<InsuranceType> InsuranceTypes { get; set; } = [];
+    public virtual IEnumerable<InsuranceType> InsuranceTypes { get; set; } = null!;
 }

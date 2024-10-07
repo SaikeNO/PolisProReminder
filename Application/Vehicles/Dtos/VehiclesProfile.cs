@@ -8,6 +8,8 @@ public class VehiclesProfile : Profile
     public VehiclesProfile()
     {
         CreateMap<Vehicle, VehicleDto>();
-        CreateMap<Insurer, VehicleInsurerDto>();
+             //.ForMember(v => v.Insurer, v => v.MapFrom(s => s.InsuranceCompany.ShortName)); ;
+        CreateMap<IndividualInsurer, VehicleIndividualInsurerDto>();
+        CreateMap<BusinessInsurer, VehicleBusinessInsurerDto>();
     }
 }

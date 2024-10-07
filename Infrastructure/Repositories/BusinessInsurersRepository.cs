@@ -9,15 +9,15 @@ using System.Linq.Expressions;
 
 namespace PolisProReminder.Infrastructure.Repositories;
 
-internal class BussinesInsurersRepository : BaseInsurersRepository<BussinesInsurer>, IBussinesInsurersRepository
+internal class BusinessInsurersRepository : BaseInsurersRepository, IBusinessInsurersRepository
 {
     private readonly InsuranceDbContext _dbContext;
-    public BussinesInsurersRepository(InsuranceDbContext dbContext) : base(dbContext)
+    public BusinessInsurersRepository(InsuranceDbContext dbContext) : base(dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<(IEnumerable<BussinesInsurer>, int)> GetAllMatchingAsync(Guid agentId,
+    public async Task<(IEnumerable<BusinessInsurer>, int)> GetAllMatchingAsync(Guid agentId,
         string? searchPhrase,
         int pageSize,
         int pageNumber,
@@ -27,7 +27,7 @@ internal class BussinesInsurersRepository : BaseInsurersRepository<BussinesInsur
         var searchPhraseLower = searchPhrase?.ToLower();
 
         var baseQuery = _dbContext
-            .BussinesInsurers
+            .BusinessInsurers
             .CreatedByAgent(agentId)
             .NotDeleted()
             .Include(i => i.Policies.Where(p => p.IsDeleted == false))
@@ -43,13 +43,13 @@ internal class BussinesInsurersRepository : BaseInsurersRepository<BussinesInsur
 
         if (sortBy != null && sortDirection != SortDirection.None)
         {
-            var columnsSelector = new Dictionary<string, Expression<Func<BussinesInsurer, object>>>
+            var columnsSelector = new Dictionary<string, Expression<Func<BusinessInsurer, object>>>
             {
-                { nameof(InsurerDto.FirstName).ToLower(), i => i.Name },
-                { nameof(InsurerDto.LastName).ToLower(), i => i.Nip },
-                { nameof(InsurerDto.Pesel).ToLower(), i => i.Regon },
-                { nameof(InsurerDto.Email).ToLower(), i => i.Email },
-                { nameof(InsurerDto.Email).ToLower(), i => i.PhoneNumber },
+                { nameof(BusinessInsurerDto.Name).ToLower(), i => i.Name },
+                { nameof(BusinessInsurerDto.Nip).ToLower(), i => i.Nip },
+                { nameof(BusinessInsurerDto.Regon).ToLower(), i => i.Regon },
+                { nameof(BusinessInsurerDto.Email).ToLower(), i => i.Email },
+                { nameof(BusinessInsurerDto.PhoneNumber).ToLower(), i => i.PhoneNumber },
             };
 
             var selectedColumn = columnsSelector[sortBy];
@@ -67,10 +67,10 @@ internal class BussinesInsurersRepository : BaseInsurersRepository<BussinesInsur
         return (insurers, totalCount);
     }
 
-    public async Task<BussinesInsurer?> GetByNipRegonAndId(Guid agentId, string nip, string regon, Guid? id)
+    public async Task<BusinessInsurer?> GetByNipRegonAndId(Guid agentId, string nip, string regon, Guid? id)
     {
         var insurer = await _dbContext
-            .BussinesInsurers
+            .BusinessInsurers
             .CreatedByAgent(agentId)
             .NotDeleted()
             .FirstOrDefaultAsync(i => (i.Nip == nip || i.Regon == regon) && i.Id != id);

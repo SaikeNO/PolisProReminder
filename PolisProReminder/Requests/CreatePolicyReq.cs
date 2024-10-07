@@ -11,5 +11,5 @@ public class CreatePolicyReq
     public bool IsPaid { get; set; }
     public string Note { get; set; }
     public string InsurerId { get; set; }
-    public List<string> InsuranceTypeIds { get; set; } = [];
+    public IEnumerable<string> InsuranceTypeIds { get; set; } = [];
 }

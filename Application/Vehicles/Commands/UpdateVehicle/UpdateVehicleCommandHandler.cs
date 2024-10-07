@@ -8,7 +8,7 @@ namespace PolisProReminder.Application.Vehicles.Commands.UpdateVehicle;
 
 public class UpdateVehicleCommandHandler(IUserContext userContext,
     IVehiclesRepository vehiclesRepository,
-    IInsurersRepository insurersRepository,
+    IBaseInsurersRepository insurersRepository,
     IVehicleBrandsRepository vehicleBrandsRepository,
     IAttachmentsRepository attachmentsRepository) : IRequestHandler<UpdateVehicleCommand>
 {
@@ -39,7 +39,7 @@ public class UpdateVehicleCommandHandler(IUserContext userContext,
         vehicle.VehicleBrand = vehicleBrand;
         vehicle.Insurer = insurer;
 
-        var savePath = Path.Combine(currentUser.AgentId, request.InsurerId.ToString(), "Vehicles", request.Id.ToString());
+        var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerId.ToString(), "Vehicles", request.Id.ToString());
 
         var attachments = request.Attachments.Select(attachment => new Attachment(attachment.FileName, savePath)
         {

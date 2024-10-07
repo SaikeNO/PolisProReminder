@@ -1,7 +1,9 @@
 using PolisProReminder.Domain.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PolisProReminder.Domain.Entities;
 
+[Table("Insurers")]
 public abstract record BaseInsurer(string? PhoneNumber, string? Email, string? PostalCode, string? City, string? Street) : ICreatedBy, ISoftDeletable
 {
     public Guid Id { get; set; } = Guid.NewGuid();
@@ -15,8 +17,8 @@ public abstract record BaseInsurer(string? PhoneNumber, string? Email, string? P
     public Guid CreatedByAgentId { get; set; }
 
     public bool IsDeleted { get; set; } = false;
-    public virtual List<Policy> Policies { get; set; } = [];
-    public virtual List<Vehicle> Vehicle { get; set; } = [];
+    public virtual IEnumerable<Policy> Policies { get; set; }
+    public virtual IEnumerable<Vehicle> Vehicle { get; set; }
 
     public void Update(string? phoneNumber, string? email, string? postalCode, string? city, string? street)
     {

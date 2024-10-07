@@ -1,6 +1,6 @@
 ﻿namespace PolisProReminder.Domain.Entities;
 
-public record BussinesInsurer(string Name, string? Nip, string? Regon, string? PhoneNumber, string? Email, string? PostalCode, string? City, string? Street) 
+public record BusinessInsurer(string Name, string? Nip, string? Regon, string? PhoneNumber, string? Email, string? PostalCode, string? City, string? Street) 
     : BaseInsurer(PhoneNumber,  Email,  PostalCode,  City, Street)
 {
     public string Name { get; private set; } = Name;

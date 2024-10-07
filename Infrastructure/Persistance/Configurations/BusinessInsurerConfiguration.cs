@@ -3,9 +3,9 @@ using PolisProReminder.Domain.Entities;
 
 namespace PolisProReminder.Infrastructure.Persistance.Configurations;
 
-internal class BussinesInsurerConfiguration : BaseInsurerConfiguration<BussinesInsurer>
+internal class BusinessInsurerConfiguration : BaseInsurerConfiguration<BusinessInsurer>
 {
-    public override void Configure(EntityTypeBuilder<BussinesInsurer> builder)
+    public override void Configure(EntityTypeBuilder<BusinessInsurer> builder)
     {
         base.Configure(builder);
 

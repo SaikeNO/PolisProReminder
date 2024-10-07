@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PolisProReminder.Infrastructure.Persistance;
 
@@ -11,9 +12,11 @@ using PolisProReminder.Infrastructure.Persistance;
 namespace PolisProReminder.Infrastructure.Migrations
 {
     [DbContext(typeof(InsuranceDbContext))]
-    partial class InsuranceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241007174751_AddIndividualAndBusinessInsurers")]
+    partial class AddIndividualAndBusinessInsurers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace PolisProReminder.Infrastructure.Migrations
 
                     b.HasIndex("PoliciesId");
 
-                    b.ToTable("InsuranceTypePolicy", (string)null);
+                    b.ToTable("InsuranceTypePolicy");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -230,7 +233,7 @@ namespace PolisProReminder.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Insurers", (string)null);
+                    b.ToTable("Insurers");
 
                     b.HasDiscriminator<string>("InsurerType").HasValue("BaseInsurer");
 
@@ -550,7 +553,7 @@ namespace PolisProReminder.Infrastructure.Migrations
                         .HasMaxLength(9)
                         .HasColumnType("nvarchar(9)");
 
-                    b.ToTable("Insurers", (string)null);
+                    b.ToTable("Insurers");
 
                     b.HasDiscriminator().HasValue("Business");
                 });
@@ -573,7 +576,7 @@ namespace PolisProReminder.Infrastructure.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
-                    b.ToTable("Insurers", (string)null);
+                    b.ToTable("Insurers");
 
                     b.HasDiscriminator().HasValue("Individual");
                 });

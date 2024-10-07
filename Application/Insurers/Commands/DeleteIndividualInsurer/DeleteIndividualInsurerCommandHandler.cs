@@ -3,12 +3,12 @@ using PolisProReminder.Application.Users;
 using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
-namespace PolisProReminder.Application.Insurers.Commands.DeleteInsurer;
+namespace PolisProReminder.Application.Insurers.Commands.DeleteIndividualInsurer;
 
-public class DeleteInsurerCommandHandler(IInsurersRepository insurersRepository, 
-    IUserContext userContext) : IRequestHandler<DeleteInsurerCommand>
+public class DeleteIndividualInsurerCommandHandler(IIndividualInsurersRepository insurersRepository,
+    IUserContext userContext) : IRequestHandler<DeleteIndividualInsurerCommand>
 {
-    public async Task Handle(DeleteInsurerCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteIndividualInsurerCommand request, CancellationToken cancellationToken)
     {
         var currentUser = userContext.GetCurrentUser();
         _ = currentUser ?? throw new InvalidOperationException("Current User is not present");
@@ -17,10 +17,10 @@ public class DeleteInsurerCommandHandler(IInsurersRepository insurersRepository,
 
         _ = insurer ?? throw new NotFoundException("Klient o podanym ID nie istnieje");
 
-        if (insurer.Policies.Count != 0)
+        if (insurer.Policies.ToList().Count != 0)
             throw new NotAllowedException("Klient posiada polisy");
 
-        insurer.IsDeleted = true;
+        insurer.Delete();
 
         await insurersRepository.SaveChanges();
     }

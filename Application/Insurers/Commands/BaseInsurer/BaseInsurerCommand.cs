@@ -9,7 +9,7 @@ public abstract record BaseInsurerCommand(string? PhoneNumber, string? Email, st
     public string? Street { get; init; } = Street;
 }
 
-public record BussinesInsurerCommand(string Name, string? Nip, string? Regon, string? PhoneNumber, string? Email, string? PostalCode, string? City, string? Street)
+public record BusinessInsurerCommand(string Name, string? Nip, string? Regon, string? PhoneNumber, string? Email, string? PostalCode, string? City, string? Street)
     : BaseInsurerCommand(PhoneNumber, Email, PostalCode, City, Street)
 {
     public string Name { get; init; } = Name;

@@ -9,5 +9,5 @@ public class InsuranceCompany : ICreatedBy
     public string ShortName { get; set; } = string.Empty;
     public Guid CreatedByUserId { get; set; }
     public Guid CreatedByAgentId { get; set; }
-    public virtual List<Policy> Policies { get; set; } = [];
+    public virtual IEnumerable<Policy> Policies { get; set; }
 }

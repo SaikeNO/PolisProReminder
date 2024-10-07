@@ -11,8 +11,9 @@ public class UpdateUserDetailsCommandHandler(IUserContext userContext,
     public async Task Handle(UpdateUserDetailsCommand request, CancellationToken cancellationToken)
     {
         var user = userContext.GetCurrentUser();
+        _ = user ?? throw new InvalidOperationException("Current User is not present");
 
-        var dbUser = await userStore.FindByIdAsync(user!.Id, cancellationToken);
+        var dbUser = await userStore.FindByIdAsync(user.Id.ToString(), cancellationToken);
 
         _ = dbUser ?? throw new NotFoundException("Użytkownik o podanym ID nie istnieje");
         

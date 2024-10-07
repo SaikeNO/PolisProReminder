@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
-using PolisProReminder.Application.Attachments;
+﻿using MediatR;
 using PolisProReminder.Application.Users;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
@@ -10,7 +8,7 @@ namespace PolisProReminder.Application.Vehicles.Commands.CreateVehicle;
 
 public class CreateVehicleCommandHandler(IUserContext userContext,
     IVehiclesRepository vehiclesRepository,
-    IInsurersRepository insurersRepository,
+    IBaseInsurersRepository insurersRepository,
     IVehicleBrandsRepository vehicleBrandsRepository,
     IAttachmentsRepository attachmentsRepository) : IRequestHandler<CreateVehicleCommand, Guid>
 {
@@ -44,7 +42,7 @@ public class CreateVehicleCommandHandler(IUserContext userContext,
             Insurer = insurer,
         };
 
-        var savePath = Path.Combine(currentUser.AgentId, request.InsurerId.ToString(), "Vehicles", createVehicle.Id.ToString());
+        var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerId.ToString(), "Vehicles", createVehicle.Id.ToString());
 
         var attachments = request.Attachments.Select(attachment => new Attachment(attachment.FileName, savePath)
         {
