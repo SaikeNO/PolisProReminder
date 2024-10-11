@@ -13,6 +13,8 @@ public class InsurersProfile : Profile
         CreateMap<BusinessInsurer, BusinessInsurerDto>();
         CreateMap<IndividualInsurer, IndividualInsurerDto>();
 
-        CreateMap<Policy, InsurerPolicyDto>();
+        CreateMap<IndividualInsurer, VehicleIndividualInsurerDto>();
+        CreateMap<BusinessInsurer, VehicleBusinessInsurerDto>();
+
     }
 }

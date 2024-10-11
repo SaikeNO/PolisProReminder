@@ -10,8 +10,6 @@ public class VehiclesProfile : Profile
         CreateMap<Vehicle, VehicleDto>()
             .ForMember(v => v.InsurerId, v => v.MapFrom(v => v.Insurer.Id))
             .ForMember(v => v.InsurerName, v => v.MapFrom(v => GetInsurerName(v.Insurer)));
-        CreateMap<IndividualInsurer, VehicleIndividualInsurerDto>();
-        CreateMap<BusinessInsurer, VehicleBusinessInsurerDto>();
     }
 
     private static string GetInsurerName(BaseInsurer insurer)

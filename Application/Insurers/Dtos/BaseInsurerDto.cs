@@ -1,4 +1,6 @@
-﻿namespace PolisProReminder.Application.Insurers.Dtos;
+﻿using PolisProReminder.Application.Policies.Dtos;
+
+namespace PolisProReminder.Application.Insurers.Dtos;
 
 public abstract record BaseInsurerDto(Guid Id, string? PhoneNumber, string? Email, string? PostalCode, string? City, string? Street, IEnumerable<InsurerPolicyDto> Policies)
 {

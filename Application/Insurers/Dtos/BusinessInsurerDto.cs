@@ -1,4 +1,6 @@
-﻿namespace PolisProReminder.Application.Insurers.Dtos;
+﻿using PolisProReminder.Application.Policies.Dtos;
+
+namespace PolisProReminder.Application.Insurers.Dtos;
 
 public record BusinessInsurerDto(Guid Id, string Name, string? Nip, string? Regon, string? PhoneNumber, string? Email, string? PostalCode, string? City, string? Street, IEnumerable<InsurerPolicyDto> Policies)
 : BaseInsurerDto(Id, PhoneNumber, Email, PostalCode, City, Street, Policies)

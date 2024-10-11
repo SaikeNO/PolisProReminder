@@ -1,7 +1,7 @@
 ﻿using PolisProReminder.Application.InsuranceCompanies.Dtos;
 using PolisProReminder.Application.InsuranceTypes.Dtos;
 
-namespace PolisProReminder.Application.Insurers.Dtos;
+namespace PolisProReminder.Application.Policies.Dtos;
 
 public class InsurerPolicyDto
 {

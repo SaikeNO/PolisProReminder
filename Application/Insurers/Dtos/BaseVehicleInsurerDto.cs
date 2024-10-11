@@ -1,4 +1,4 @@
-﻿namespace PolisProReminder.Application.Vehicles.Dtos;
+﻿namespace PolisProReminder.Application.Insurers.Dtos;
 
 public abstract record BaseVehicleInsurerDto(Guid Id, string? PhoneNumber, string? Email, string? PostalCode, string? City, string? Street)
 {

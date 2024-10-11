@@ -10,6 +10,8 @@ public class PoliciesProfile : Profile
         CreateMap<Policy, PolicyDto>()
             .ForMember(p => p.InsurerId, p => p.MapFrom(p => p.Insurer.Id))
             .ForMember(p => p.InsurerName, p => p.MapFrom(p => GetInsurerName(p.Insurer)));
+
+        CreateMap<Policy, InsurerPolicyDto>();
     }
 
     private static string GetInsurerName(BaseInsurer insurer)
