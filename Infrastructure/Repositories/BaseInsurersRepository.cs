@@ -39,6 +39,8 @@ internal class BaseInsurersRepository(InsuranceDbContext dbContext) : IBaseInsur
     public async Task<Guid> Create(BaseInsurer entity)
     {
         await dbContext.AddAsync(entity);
+        await SaveChanges();
+
         return entity.Id;
     }
 

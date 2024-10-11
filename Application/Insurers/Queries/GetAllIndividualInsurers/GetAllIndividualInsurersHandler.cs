@@ -16,7 +16,7 @@ public class GetAllIndividualInsurersHandler(IIndividualInsurersRepository insur
         var currentUser = userContext.GetCurrentUser();
         _ = currentUser ?? throw new InvalidOperationException("Current User is not present");
 
-        var insurers = await insurersRepository.GetAll(currentUser.AgentId);
+        var insurers = await insurersRepository.GetAllIndividual(currentUser.AgentId);
 
         return mapper.Map<IEnumerable<IndividualInsurerDto>>(insurers);
     }

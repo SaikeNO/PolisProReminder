@@ -2,18 +2,19 @@
 
 namespace PolisProReminder.Application.Vehicles.Dtos;
 
-public record VehicleDto(Guid Id, string Name, string RegistrationNumber, DateOnly? FirstRegistrationDate, DateOnly? ProductionYear, string? VIN, int? KW, int? KM, int? Capacity, uint? Mileage, string Insurer, VehicleBrandDto VehicleBrand)
+public record VehicleDto
 {
-    public Guid Id { get; set; } = Id;
-    public string Name { get; set; } = Name;
-    public string RegistrationNumber { get; set; } = RegistrationNumber;
-    public DateOnly? FirstRegistrationDate { get; set; } = FirstRegistrationDate;
-    public DateOnly? ProductionYear { get; set; } = ProductionYear;
-    public string? VIN { get; set; } = VIN;
-    public int? KW { get; set; } = KW;
-    public int? KM { get; set; } = KM;
-    public int? Capacity { get; set; } = Capacity;
-    public uint? Mileage { get; set; } = Mileage;
-    public string Insurer { get; set; } = Insurer;
-    public VehicleBrandDto VehicleBrand { get; set; } = VehicleBrand;
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string RegistrationNumber { get; set; } = string.Empty;
+    public DateOnly? FirstRegistrationDate { get; set; }
+    public DateOnly? ProductionYear { get; set; }
+    public string? VIN { get; set; }
+    public int? KW { get; set; }
+    public int? KM { get; set; }
+    public int? Capacity { get; set; }
+    public uint? Mileage { get; set; }
+    public string InsurerName { get; set; } = string.Empty;
+    public Guid InsurerId { get; set; }
+    public VehicleBrandDto VehicleBrand { get; set; } = null!;
 }

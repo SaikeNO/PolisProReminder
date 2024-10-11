@@ -17,6 +17,21 @@ internal class IndividualInsurersRepository : BaseInsurersRepository, IIndividua
         _dbContext = dbContext;
     }
 
+    public async Task<IEnumerable<BaseInsurer>> GetAllIndividual(Guid agentId)
+    {
+        var insurers = await _dbContext
+            .IndividualInsurers
+            .CreatedByAgent(agentId)
+            .NotDeleted()
+            .Include(i => i.Policies.Where(p => p.IsDeleted == false))
+            .ThenInclude(p => p.InsuranceCompany)
+            .Include(i => i.Policies)
+            .ThenInclude(p => p.InsuranceTypes)
+            .ToListAsync();
+
+        return insurers;
+    }
+
     public async Task<(IEnumerable<IndividualInsurer>, int)> GetAllMatchingAsync(Guid agentId,
         string? searchPhrase,
         int pageSize,
