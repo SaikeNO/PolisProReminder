@@ -686,7 +686,7 @@ namespace PolisProReminder.Infrastructure.Migrations
                     b.HasOne("PolisProReminder.Domain.Entities.User", "Agent")
                         .WithMany()
                         .HasForeignKey("AgentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Agent");

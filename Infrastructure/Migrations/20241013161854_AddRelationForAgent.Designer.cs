@@ -12,8 +12,8 @@ using PolisProReminder.Infrastructure.Persistance;
 namespace PolisProReminder.Infrastructure.Migrations
 {
     [DbContext(typeof(InsuranceDbContext))]
-    [Migration("20241013113011_AddRelationFromUserToAgent")]
-    partial class AddRelationFromUserToAgent
+    [Migration("20241013161854_AddRelationForAgent")]
+    partial class AddRelationForAgent
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -689,7 +689,7 @@ namespace PolisProReminder.Infrastructure.Migrations
                     b.HasOne("PolisProReminder.Domain.Entities.User", "Agent")
                         .WithMany()
                         .HasForeignKey("AgentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Agent");
