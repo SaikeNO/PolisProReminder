@@ -10,6 +10,10 @@ jobs:
     runs-on: self-hosted
 
     steps:
+    - name: Stop docker containers
+      run: |
+        sudo docker stop `sudo docker ps -q`
+
     - name: Checkout repository
       uses: actions/checkout@v4
 
@@ -42,6 +46,11 @@ jobs:
           sudo cp /var/www/settings/appsettings.Production.json /var/www/be/appsettings.Production.json
           sudo cp /var/www/settings/appsettings.Production.json ./PolisProReminder/appsettings.Production.json
 
+    - name: Start docker containers
+      run: |
+        sudo docker start `sudo docker ps -q`
+        sudo docker ps -a
+        
     - name: Update database
       run: dotnet ef database update -c InsuranceDbContext -p Infrastructure -s PolisProReminder
       env:
