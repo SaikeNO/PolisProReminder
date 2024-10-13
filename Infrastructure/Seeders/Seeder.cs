@@ -67,10 +67,10 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
                 await dbContext.SaveChangesAsync();
             }
 
-            if (!dbContext.Insurers.Any())
+            if (!dbContext.IndividualInsurers.Any())
             {
                 var insurers = await GetInsurers();
-                dbContext.Insurers.AddRange(insurers);
+                dbContext.IndividualInsurers.AddRange(insurers);
                 await dbContext.SaveChangesAsync();
             }
 
@@ -90,12 +90,12 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
         }
     }
 
-    private async Task<IEnumerable<IdentityUserRole<string>>> GetUserRoles()
+    private async Task<IEnumerable<IdentityUserRole<Guid>>> GetUserRoles()
     {
         var roles = await dbContext.Roles.ToListAsync();
         var users = await dbContext.Users.ToListAsync();
 
-        List<IdentityUserRole<string>> userRoles = [
+        List<IdentityUserRole<Guid>> userRoles = [
             new()
             {
                 RoleId = roles.First(r => r.Name == UserRoles.Admin).Id,
@@ -136,9 +136,9 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             NormalizedEmail = "admin@email.com".ToUpper(),
             UserName = "admin",
             NormalizedUserName = "admin".ToUpper(),
-            AgentId = "1",
         };
 
+        admin.AgentId = admin.Id;
         admin.PasswordHash = passwordHasher.HashPassword(admin, "password");
 
         var agent = new User()
@@ -196,19 +196,22 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
         return [admin, agent, agent2, user, user2];
     }
 
-    private IEnumerable<IdentityRole> GetRoles()
+    private IEnumerable<UserRole> GetRoles()
     {
-        List<IdentityRole> roles = [
+        List<UserRole> roles = [
             new(UserRoles.User)
             {
+                Id = Guid.NewGuid(),
                 NormalizedName = UserRoles.User.ToUpper(),
             },
             new(UserRoles.Agent)
             {
+                Id = Guid.NewGuid(),
                 NormalizedName = UserRoles.Agent.ToUpper(),
             },
             new(UserRoles.Admin)
             {
+                Id = Guid.NewGuid(),
                 NormalizedName = UserRoles.Admin.ToUpper(),
             }
             ];
@@ -272,40 +275,25 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
         return companies;
     }
 
-    private async Task<IEnumerable<Insurer>> GetInsurers()
+    private async Task<IEnumerable<IndividualInsurer>> GetInsurers()
     {
         var users = await dbContext.Users.ToListAsync();
 
-        List<Insurer> insurers = [
-            new ()
+        List<IndividualInsurer> insurers = [
+            new ("Mateusz", "Lengiewicz", "44051401458", "800666209", "mat.len@test.com", "16-130", "Sitkowo", "Sitkowo 22")
             {
-                FirstName = "Mateusz",
-                LastName = "Lengiewicz",
-                Pesel = "44051401458",
-                Email = "mat.len@test.com",
-                PhoneNumber = "800666209",
                 CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
                 CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id
             },
 
-            new ()
+            new ("Jan", "Kowalski", "77020201233", "098666222", "janek.szparek@test.com", "16-130", "Sitkowo", "Sitkowo 22")
             {
-                FirstName = "Jan",
-                LastName = "Kowalski",
-                Pesel = "77020201233",
-                Email = "janek.szparek@test.com",
-                PhoneNumber = "098666222",
                 CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
                 CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id
             },
 
-            new ()
+            new ("Janusz", "Wariat", "88101006122", "111222333", "januszex@test.com", "16-130", "Sitkowo", "Sitkowo 22")
             {
-                FirstName = "Janusz",
-                LastName = "Wariat",
-                Pesel = "88101006122",
-                Email = "januszex@test.com",
-                PhoneNumber = "111222333",
                 CreatedByAgentId = users.First(u => u.Email == "agent1@email.com").Id,
                 CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id
             }
@@ -421,7 +409,7 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
     private async Task<IEnumerable<Vehicle>> GetVehicles()
     {
         var users = await dbContext.Users.ToListAsync();
-        var insurers = await dbContext.Insurers.ToListAsync();
+        var insurers = await dbContext.IndividualInsurers.ToListAsync();
         var vehicleBrands = await dbContext.VehicleBrands.ToListAsync();
 
         List<Vehicle> vehicles = [

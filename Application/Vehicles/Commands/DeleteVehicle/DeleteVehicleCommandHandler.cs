@@ -15,7 +15,7 @@ public class DeleteVehicleCommandHandler(IUserContext userContext,
         var currentUser = userContext.GetCurrentUser() ?? throw new InvalidOperationException("Current User is not present");
         var vehicle = await vehiclesRepository.GetById(currentUser.AgentId, request.Id) ?? throw new NotFoundException("Pojazd o podanym numerze rejestracyjnym nie istnieje");
 
-        await vehiclesRepository.Delete(vehicle);
+        vehiclesRepository.Delete(vehicle);
 
         var attachments = (await attachmentsRepository.GetAll<Vehicle>(request.Id))!.ToList();
 

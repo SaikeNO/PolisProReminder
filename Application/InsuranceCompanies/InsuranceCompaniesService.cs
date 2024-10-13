@@ -17,7 +17,7 @@ internal class InsuranceCompaniesService(IUserContext userContext,
     {
         var companies = await insuranceCompanyRepository.GetAll(CurrentUser.AgentId);
 
-        return mapper.Map<List<InsuranceCompanyDto>>(companies);
+        return mapper.Map<IEnumerable<InsuranceCompanyDto>>(companies);
     }
 
     public async Task<InsuranceCompanyDto?> GetById(Guid id)

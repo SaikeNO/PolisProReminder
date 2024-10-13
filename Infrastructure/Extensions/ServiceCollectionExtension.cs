@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Repositories;
 using PolisProReminder.Infrastructure.Authorization;
@@ -17,17 +17,20 @@ public static class ServiceCollectionExtension
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("PolisProReminderDB");
-        services.AddDbContext<InsuranceDbContext>(options => options.UseSqlServer(connectionString));
+        services.AddDbContext<InsuranceDbContext>(options => options.UseSqlServer(connectionString).LogTo(Console.WriteLine, LogLevel.Information));
         services.AddHostedService<ArchivePoliciesService>();
 
         services.AddIdentityApiEndpoints<User>()
-            .AddRoles<IdentityRole>()
+            .AddRoles<UserRole>()
             .AddClaimsPrincipalFactory<InsuranceUserClaimsPrincipalFactory>()
             .AddEntityFrameworkStores<InsuranceDbContext>();
 
         services.AddScoped<ISeeder, Seeder>();
+        services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<IPoliciesRepository, PoliciesRepository>();
-        services.AddScoped<IInsurersRepository, InsurersRepository>();
+        services.AddScoped<IBaseInsurersRepository, BaseInsurersRepository>();
+        services.AddScoped<IIndividualInsurersRepository, IndividualInsurersRepository>();
+        services.AddScoped<IBusinessInsurersRepository, BusinessInsurersRepository>();
         services.AddScoped<IInsuranceTypesRepository, InsuranceTypesRepository>();
         services.AddScoped<IInsuranceCompaniesRepository, InsuranceCompaniesRepository>();
         services.AddScoped<IVehiclesRepository, VehiclesRepository>();

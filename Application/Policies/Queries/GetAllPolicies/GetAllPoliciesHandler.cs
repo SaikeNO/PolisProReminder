@@ -25,7 +25,7 @@ public class GetAllPoliciesHandler(IUserContext userContext,
             request.TypeId,
             request.IsArchived);
 
-        var policiesDtos = mapper.Map<List<PolicyDto>>(policies);
+        var policiesDtos = mapper.Map<IEnumerable<PolicyDto>>(policies);
 
         var result = new PageResult<PolicyDto>(policiesDtos, totalCount, request.PageSize, request.PageIndex);
         return result;

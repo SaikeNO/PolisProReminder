@@ -1,5 +1,6 @@
 using PolisProReminder.API.Extensions;
 using PolisProReminder.Application.Extensions;
+using PolisProReminder.Mailer.Extensions;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Infrastructure.Extensions;
 using PolisProReminder.Infrastructure.Seeders;
@@ -10,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddPresentation();
 builder.Services.AddApplication();
+builder.Services.AddMailer(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration)

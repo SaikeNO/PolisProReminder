@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using PolisProReminder.Application.Policies.Notifications;
 using PolisProReminder.Application.Users;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
@@ -9,7 +10,8 @@ namespace PolisProReminder.Application.Policies.Commands.CreatePolicy;
 public class CreatePolicyCommandHandler(IUserContext userContext,
     IPoliciesRepository policiesRepository,
     IInsuranceTypesRepository insuranceTypesRepository,
-    IAttachmentsRepository attachmentsRepository) : IRequestHandler<CreatePolicyCommand, Guid>
+    IAttachmentsRepository attachmentsRepository,
+    IMediator mediator) : IRequestHandler<CreatePolicyCommand, Guid>
 {
     public async Task<Guid> Handle(CreatePolicyCommand request, CancellationToken cancellationToken)
     {
@@ -39,7 +41,7 @@ public class CreatePolicyCommandHandler(IUserContext userContext,
             CreatedByUserId = currentUser.Id,
         };
 
-        var savePath = Path.Combine(currentUser.AgentId, request.InsurerId.ToString(), "Policies", createPolicy.Id.ToString());
+        var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerId.ToString(), "Policies", createPolicy.Id.ToString());
 
         var attachments = request.Attachments.Select(attachment => new Attachment(attachment.FileName, savePath)
         {
@@ -53,6 +55,10 @@ public class CreatePolicyCommandHandler(IUserContext userContext,
         createPolicy.Attachments = attachments;
 
         var id = await policiesRepository.Create(createPolicy);
+
+        var notification = new CreatePolicyNotification(createPolicy);
+        await mediator.Publish(notification, cancellationToken);
+
         return id;
     }
 }

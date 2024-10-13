@@ -3,9 +3,9 @@ using PolisProReminder.Application.Common;
 using PolisProReminder.Application.Insurers.Dtos;
 using PolisProReminder.Domain.Constants;
 
-namespace PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
+namespace PolisProReminder.Application.Insurers.Queries.GetPaginatedInsurers;
 
-public class GetPaginatedInsurersQuery : IRequest<PageResult<InsurerDto>>
+public class GetPaginatedInsurersQuery : IRequest<PageResult<IndividualInsurerDto>>
 {
     public string? SearchPhrase { get; set; }
     public int PageIndex { get; set; }

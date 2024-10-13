@@ -30,13 +30,13 @@ internal class VehicleBrandsRepository(InsuranceDbContext dbContext) : IVehicleB
     {
         dbContext.Remove(entity);
 
-        await dbContext.SaveChangesAsync();
+        await SaveChanges();
     }
 
     public async Task<Guid> Create(VehicleBrand entity)
     {
         await dbContext.VehicleBrands.AddAsync(entity);
-        await dbContext.SaveChangesAsync();
+        await SaveChanges();
 
         return entity.Id;
     }

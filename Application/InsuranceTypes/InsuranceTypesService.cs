@@ -49,7 +49,7 @@ internal class InsuranceTypesService(IUserContext userContext,
     {
         var types = await insuranceTypeRepository.GetAll(CurrentUser.AgentId);
 
-        return mapper.Map<List<InsuranceTypeDto>>(types);
+        return mapper.Map<IEnumerable<InsuranceTypeDto>>(types);
     }
 
     public async Task<InsuranceTypeDto?> GetById(Guid id)

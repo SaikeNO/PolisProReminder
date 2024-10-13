@@ -6,17 +6,16 @@ using System.Security.Claims;
 namespace PolisProReminder.Infrastructure.Authorization;
 
 public class InsuranceUserClaimsPrincipalFactory(UserManager<User> userManager,
-    RoleManager<IdentityRole> roleManager,
+    RoleManager<UserRole> roleManager,
     IOptions<IdentityOptions> options)
-        : UserClaimsPrincipalFactory<User, IdentityRole>(userManager, roleManager, options)
+        : UserClaimsPrincipalFactory<User, UserRole>(userManager, roleManager, options)
 {
     public override async Task<ClaimsPrincipal> CreateAsync(User user)
     {
-        var id = await GenerateClaimsAsync(user);
+        var claims = await GenerateClaimsAsync(user);
 
-        if (user.AgentId != null)
-            id.AddClaim(new Claim("AgentId", user.AgentId));
+        claims.AddClaim(new Claim("AgentId", user.AgentId.ToString()));
 
-        return new ClaimsPrincipal(id);
+        return new ClaimsPrincipal(claims);
     }
 }

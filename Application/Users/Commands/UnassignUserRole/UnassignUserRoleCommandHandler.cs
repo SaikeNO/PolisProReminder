@@ -6,7 +6,7 @@ using PolisProReminder.Domain.Exceptions;
 namespace PolisProReminder.Application.Users.Commands.UnassignUserRole;
 
 public class UnassignUserRoleCommandHandler(UserManager<User> userManager,
-    RoleManager<IdentityRole> roleManager) : IRequestHandler<UnassignUserRoleCommand>
+    RoleManager<UserRole> roleManager) : IRequestHandler<UnassignUserRoleCommand>
 {
     public async Task Handle(UnassignUserRoleCommand request, CancellationToken cancellationToken)
     {

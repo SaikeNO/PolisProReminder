@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using PolisProReminder.Application.Insurers.Dtos;
 using PolisProReminder.Domain.Entities;
 
 namespace PolisProReminder.Application.Policies.Dtos;
@@ -8,10 +7,20 @@ public class PoliciesProfile : Profile
 {
     public PoliciesProfile()
     {
-        CreateMap<Policy, PolicyDto>();
+        CreateMap<Policy, PolicyDto>()
+            .ForMember(p => p.InsurerId, p => p.MapFrom(p => p.Insurer.Id))
+            .ForMember(p => p.InsurerName, p => p.MapFrom(p => GetInsurerName(p.Insurer)));
 
-        CreateMap<Policy, InsurerPolicyDto>()
-            .ForMember(p => p.InsuranceCompany, c => c.MapFrom(s => s.InsuranceCompany.ShortName));
+        CreateMap<Policy, InsurerPolicyDto>();
+    }
 
+    private static string GetInsurerName(BaseInsurer insurer)
+    {
+        return insurer switch
+        {
+            IndividualInsurer individualInsurer => $"{individualInsurer.LastName} {individualInsurer.FirstName}",
+            BusinessInsurer businessInsurer => businessInsurer.Name,
+            _ => string.Empty
+        };
     }
 }

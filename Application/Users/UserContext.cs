@@ -21,11 +21,11 @@ public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContex
             return null;
         }
 
-        var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+        var userId = Guid.Parse(user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value);
         var email = user.FindFirst(c => c.Type == ClaimTypes.Email)!.Value;
-        var AgentId = user.FindFirst(c => c.Type == "AgentId")!.Value;
+        var agentId = Guid.Parse(user.FindFirst(c => c.Type == "AgentId")!.Value);
         var roles = user.Claims.Where(c => c.Type == ClaimTypes.Role)!.Select(c => c.Value);
 
-        return new CurrentUser(userId, email, AgentId, roles);
+        return new CurrentUser(userId, email, agentId, roles);
     }
 }

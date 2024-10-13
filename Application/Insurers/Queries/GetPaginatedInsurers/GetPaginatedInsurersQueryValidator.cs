@@ -1,16 +1,16 @@
 ﻿using FluentValidation;
 using PolisProReminder.Application.Insurers.Dtos;
 
-namespace PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
+namespace PolisProReminder.Application.Insurers.Queries.GetPaginatedInsurers;
 
 public class GetPaginatedInsurersQueryValidator : AbstractValidator<GetPaginatedInsurersQuery>
 {
     private readonly int[] allowPageSizes = [5, 10, 15, 30];
     private readonly string[] allowedSortByColumnNames = [
-        nameof(InsurerDto.FirstName),
-        nameof(InsurerDto.LastName),
-        nameof(InsurerDto.Email),
-        nameof(InsurerDto.Pesel),
+        nameof(IndividualInsurerDto.FirstName),
+        nameof(IndividualInsurerDto.LastName),
+        nameof(IndividualInsurerDto.Email),
+        nameof(IndividualInsurerDto.Pesel),
     ];
 
     public GetPaginatedInsurersQueryValidator()

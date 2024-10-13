@@ -1,27 +1,28 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Repositories;
+using PolisProReminder.Infrastructure.Extensions;
 using PolisProReminder.Infrastructure.Persistance;
 
 namespace PolisProReminder.Infrastructure.Repositories;
 
 internal class InsuranceCompaniesRepository(InsuranceDbContext dbContext) : IInsuranceCompaniesRepository
 {
-    public async Task<IEnumerable<InsuranceCompany>> GetAll(string agentId)
+    public async Task<IEnumerable<InsuranceCompany>> GetAll(Guid agentId)
     {
         var companies = await dbContext
             .InsuranceCompanies
-            .Where(c => c.CreatedByAgentId == agentId)
+            .CreatedByAgent(agentId)
             .ToListAsync();
 
         return companies;
     }
 
-    public async Task<InsuranceCompany?> GetById(string agentId, Guid id)
+    public async Task<InsuranceCompany?> GetById(Guid agentId, Guid id)
     {
         var company = await dbContext
             .InsuranceCompanies
-            .Where(c => c.CreatedByAgentId == agentId)
+            .CreatedByAgent(agentId)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         return company;
@@ -31,7 +32,7 @@ internal class InsuranceCompaniesRepository(InsuranceDbContext dbContext) : IIns
     {
         dbContext.Remove(entity);
 
-        await dbContext.SaveChangesAsync();
+        await SaveChanges();
     }
 
     public async Task<Guid> Create(InsuranceCompany entity)
@@ -40,7 +41,7 @@ internal class InsuranceCompaniesRepository(InsuranceDbContext dbContext) : IIns
             .InsuranceCompanies
             .AddAsync(entity);
 
-        await dbContext.SaveChangesAsync();
+        await SaveChanges();
 
         return entity.Id;
     }
