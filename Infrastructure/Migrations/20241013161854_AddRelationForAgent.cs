@@ -5,7 +5,7 @@
 namespace PolisProReminder.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddRelationFromUserToAgent : Migration
+    public partial class AddRelationForAgent : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,7 +21,7 @@ namespace PolisProReminder.Infrastructure.Migrations
                 column: "AgentId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />

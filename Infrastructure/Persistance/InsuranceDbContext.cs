@@ -20,6 +20,7 @@ internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) 
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new InsuranceCompanyConfiguration());
         modelBuilder.ApplyConfiguration(new InsuranceTypeConfiguration());
         modelBuilder.ApplyConfiguration(new BusinessInsurerConfiguration());
