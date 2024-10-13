@@ -27,7 +27,7 @@ public class Attachment: ISoftDeletable, ICreatedBy
 public abstract class AttachmentList
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public IEnumerable<Attachment> Attachments { get; set; } = null!;
+    public List<Attachment> Attachments { get; set; } = [];
 }
 
 public class AttachmentFormFile(IFormFile file, string filePath)
