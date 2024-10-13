@@ -25,5 +25,6 @@
 
   <ItemGroup>
 	<ProjectReference Include="..\Infrastructure\PolisProReminder.Infrastructure.csproj" />
+	<ProjectReference Include="..\PolisProReminder.Mailer\PolisProReminder.Mailer.csproj" />
   </ItemGroup>
 </Project>

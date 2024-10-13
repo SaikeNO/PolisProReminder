@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -27,6 +26,7 @@ public static class ServiceCollectionExtension
             .AddEntityFrameworkStores<InsuranceDbContext>();
 
         services.AddScoped<ISeeder, Seeder>();
+        services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<IPoliciesRepository, PoliciesRepository>();
         services.AddScoped<IBaseInsurersRepository, BaseInsurersRepository>();
         services.AddScoped<IIndividualInsurersRepository, IndividualInsurersRepository>();

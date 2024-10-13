@@ -16,6 +16,7 @@ public class User : IdentityUser<Guid>
     public string LastName { get; set; } = null!;
 
     public Guid AgentId { get; set; }
+    public virtual User Agent { get; set; } = null!;
 }
 
 public class UserRole : IdentityRole<Guid>

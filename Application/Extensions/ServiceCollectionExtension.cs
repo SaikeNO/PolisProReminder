@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
-using PolisProReminder.Application.Attachments;
 using PolisProReminder.Application.InsuranceCompanies;
 using PolisProReminder.Application.InsuranceTypes;
 using PolisProReminder.Application.Users;
@@ -16,7 +15,7 @@ public static class ServiceCollectionExtension
         services.AddAutoMapper(applicationAssembly);
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(applicationAssembly));
         services.AddValidatorsFromAssembly(applicationAssembly).AddFluentValidationAutoValidation();
-        
+
         services.AddScoped<IInsuranceCompaniesService, InsuranceCompaniesService>();
         services.AddScoped<IInsuranceTypesService, InsuranceTypesService>();
 

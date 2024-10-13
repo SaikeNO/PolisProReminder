@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using PolisProReminder.Application.Policies.Notifications;
 using PolisProReminder.Application.Users;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
@@ -9,7 +10,8 @@ namespace PolisProReminder.Application.Policies.Commands.CreatePolicy;
 public class CreatePolicyCommandHandler(IUserContext userContext,
     IPoliciesRepository policiesRepository,
     IInsuranceTypesRepository insuranceTypesRepository,
-    IAttachmentsRepository attachmentsRepository) : IRequestHandler<CreatePolicyCommand, Guid>
+    IAttachmentsRepository attachmentsRepository,
+    IMediator mediator) : IRequestHandler<CreatePolicyCommand, Guid>
 {
     public async Task<Guid> Handle(CreatePolicyCommand request, CancellationToken cancellationToken)
     {
@@ -53,6 +55,10 @@ public class CreatePolicyCommandHandler(IUserContext userContext,
         createPolicy.Attachments = attachments;
 
         var id = await policiesRepository.Create(createPolicy);
+
+        var notification = new CreatePolicyNotification(createPolicy);
+        await mediator.Publish(notification, cancellationToken);
+
         return id;
     }
 }
