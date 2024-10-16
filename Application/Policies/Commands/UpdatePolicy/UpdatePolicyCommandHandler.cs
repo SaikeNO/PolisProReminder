@@ -36,8 +36,8 @@ public class UpdatePolicyCommandHandler(IUserContext userContext,
         policy.IsPaid = request.IsPaid;
         policy.Title = request.Title;
         policy.Note = request.Note;
-        policy.InsuranceTypes.ToList().Clear();
-        policy.InsuranceTypes.ToList().AddRange(newTypes);
+        policy.InsuranceTypes.Clear();
+        policy.InsuranceTypes.AddRange(newTypes);
 
         var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerId.ToString(), "Policies", request.Id.ToString());
 
