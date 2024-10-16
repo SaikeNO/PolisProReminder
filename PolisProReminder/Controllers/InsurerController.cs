@@ -8,7 +8,8 @@ using PolisProReminder.Application.Insurers.Commands.UpdateIndividualInsurer;
 using PolisProReminder.Application.Insurers.Dtos;
 using PolisProReminder.Application.Insurers.Queries.GetAllIndividualInsurers;
 using PolisProReminder.Application.Insurers.Queries.GetIndividualInsurerById;
-using PolisProReminder.Application.Insurers.Queries.GetPaginatedInsurers;
+using PolisProReminder.Application.Insurers.Queries.GetPaginatedBusinessInsurers;
+using PolisProReminder.Application.Insurers.Queries.GetPaginatedIndividualInsurers;
 
 namespace PolisProReminder.API.Controllers;
 
@@ -53,8 +54,15 @@ public class InsurerController(IMediator mediator) : ControllerBase
         return Ok(insurers);
     }
 
-    [HttpGet("getPaginated")]
-    public async Task<ActionResult<PageResult<IndividualInsurerDto>>> GetIndividualPaginated([FromQuery] GetPaginatedInsurersQuery query)
+    [HttpGet("paginated")]
+    public async Task<ActionResult<PageResult<IndividualInsurerDto>>> GetIndividualPaginated([FromQuery] GetPaginatedIndividualInsurersQuery query)
+    {
+        var insurers = await mediator.Send(query);
+        return Ok(insurers);
+    }
+
+    [HttpGet("business/paginated")]
+    public async Task<ActionResult<PageResult<BusinessInsurerDto>>> GetBusinessPaginated([FromQuery] GetPaginatedBusinessInsurersQuery query)
     {
         var insurers = await mediator.Send(query);
         return Ok(insurers);

@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 using PolisProReminder.Application.Insurers.Dtos;
 
-namespace PolisProReminder.Application.Insurers.Queries.GetPaginatedInsurers;
+namespace PolisProReminder.Application.Insurers.Queries.GetPaginatedIndividualInsurers;
 
-public class GetPaginatedInsurersQueryValidator : AbstractValidator<GetPaginatedInsurersQuery>
+public class GetPaginatedIndividualInsurersQueryValidator : AbstractValidator<GetPaginatedIndividualInsurersQuery>
 {
     private readonly int[] allowPageSizes = [5, 10, 15, 30];
     private readonly string[] allowedSortByColumnNames = [
@@ -13,7 +13,7 @@ public class GetPaginatedInsurersQueryValidator : AbstractValidator<GetPaginated
         nameof(IndividualInsurerDto.Pesel),
     ];
 
-    public GetPaginatedInsurersQueryValidator()
+    public GetPaginatedIndividualInsurersQueryValidator()
     {
         RuleFor(p => p.PageIndex)
             .GreaterThanOrEqualTo(1);
