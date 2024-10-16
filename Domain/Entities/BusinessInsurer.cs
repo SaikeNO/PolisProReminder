@@ -7,7 +7,7 @@ public record BusinessInsurer(string Name, string? Nip, string? Regon, string? P
     public string? Nip { get; private set; } = Nip;
     public string? Regon { get; private set; } = Regon;
 
-    public void Update(string name, string? nip, string regon)
+    public void Update(string name, string? nip, string? regon)
     {
         Name = name;
         Nip = nip;

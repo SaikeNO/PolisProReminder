@@ -17,6 +17,21 @@ internal class BusinessInsurersRepository : BaseInsurersRepository, IBusinessIns
         _dbContext = dbContext;
     }
 
+    public async Task<IEnumerable<BusinessInsurer>> GetAllBusiness(Guid agentId)
+    {
+        var insurers = await _dbContext
+            .BusinessInsurers
+            .CreatedByAgent(agentId)
+            .NotDeleted()
+            .Include(i => i.Policies.Where(p => p.IsDeleted == false))
+            .ThenInclude(p => p.InsuranceCompany)
+            .Include(i => i.Policies)
+            .ThenInclude(p => p.InsuranceTypes)
+            .ToListAsync();
+
+        return insurers;
+    }
+
     public async Task<(IEnumerable<BusinessInsurer>, int)> GetAllMatchingAsync(Guid agentId,
         string? searchPhrase,
         int pageSize,
@@ -67,7 +82,7 @@ internal class BusinessInsurersRepository : BaseInsurersRepository, IBusinessIns
         return (insurers, totalCount);
     }
 
-    public async Task<BusinessInsurer?> GetByNipRegonAndId(Guid agentId, string nip, string regon, Guid? id)
+    public async Task<BusinessInsurer?> GetByNipRegonAndId(Guid agentId, string? nip, string? regon, Guid? id)
     {
         var insurer = await _dbContext
             .BusinessInsurers
