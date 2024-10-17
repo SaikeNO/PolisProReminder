@@ -16,5 +16,23 @@ public class InsurersProfile : Profile
         CreateMap<IndividualInsurer, VehicleIndividualInsurerDto>();
         CreateMap<BusinessInsurer, VehicleBusinessInsurerDto>();
 
+        CreateMap<BaseInsurer, InsurerBasicInfoDto>()
+           .ForMember(dest => dest.Name, opt => opt.MapFrom(src => GetInsurerName(src)))
+           .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+
+    }
+
+    public static string GetInsurerName(BaseInsurer insurer)
+    {
+        if (insurer is IndividualInsurer individualInsurer)
+        {
+            return $"{individualInsurer.FirstName} {individualInsurer.LastName}";
+        }
+        else if (insurer is BusinessInsurer businessInsurer)
+        {
+            return businessInsurer.Name;
+        }
+
+        return string.Empty;
     }
 }

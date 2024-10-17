@@ -10,6 +10,7 @@ using PolisProReminder.Application.Insurers.Commands.UpdateIndividualInsurer;
 using PolisProReminder.Application.Insurers.Dtos;
 using PolisProReminder.Application.Insurers.Queries.GetAllBusinessInsurers;
 using PolisProReminder.Application.Insurers.Queries.GetAllIndividualInsurers;
+using PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
 using PolisProReminder.Application.Insurers.Queries.GetInsurerById;
 using PolisProReminder.Application.Insurers.Queries.GetPaginatedBusinessInsurers;
 using PolisProReminder.Application.Insurers.Queries.GetPaginatedIndividualInsurers;
@@ -38,6 +39,14 @@ public class InsurerController(IMediator mediator) : ControllerBase
         var insurer = await mediator.Send(new GetInsurerByIdQuery(id));
 
         return Ok(insurer);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<InsurerBasicInfoDto>>> GetAll()
+    {
+        var insurers = await mediator.Send(new GetAllInsurersQuery());
+
+        return Ok(insurers);
     }
 
     [HttpPut("Individual/{id}")]
