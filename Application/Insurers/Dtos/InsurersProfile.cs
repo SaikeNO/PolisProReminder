@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PolisProReminder.Application.Insurers.Commands.CreateBusinessInsurer;
 using PolisProReminder.Application.Insurers.Commands.CreateIndividualInsurer;
 using PolisProReminder.Domain.Entities;
 
@@ -9,6 +10,7 @@ public class InsurersProfile : Profile
     public InsurersProfile()
     {
         CreateMap<CreateIndividualInsurerCommand, IndividualInsurer>();
+        CreateMap<CreateBusinessInsurerCommand, BusinessInsurer>();
 
         CreateMap<BusinessInsurer, BusinessInsurerDto>();
         CreateMap<IndividualInsurer, IndividualInsurerDto>();
