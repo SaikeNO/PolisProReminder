@@ -1,20 +1,6 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
+using PolisProReminder.Application.Policies.Commands.BasePolicy;
 
 namespace PolisProReminder.Application.Policies.Commands.CreatePolicy;
 
-public class CreatePolicyCommand : IRequest<Guid>
-{
-    public string Title { get; set; } = null!;
-    public string PolicyNumber { get; set; } = null!;
-    public Guid InsuranceCompanyId { get; set; }
-    public DateOnly StartDate { get; set; }
-    public DateOnly EndDate { get; set; }
-    public DateOnly? PaymentDate { get; set; }
-    public bool IsPaid { get; set; }
-    public string? Note { get; set; }
-    public Guid InsurerId { get; set; }
-    public IEnumerable<Guid> InsuranceTypeIds { get; set; } = [];
-    public IEnumerable<IFormFile> Attachments { get; set; } = [];
-
-}
+public class CreatePolicyCommand : BasePolicyCommand, IRequest<Guid> { }

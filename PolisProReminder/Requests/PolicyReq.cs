@@ -1,6 +1,6 @@
 ﻿namespace PolisProReminder.API.Requests;
 
-public class CreatePolicyReq
+public class PolicyReq
 {
     public string Title { get; set; } = null!;
     public string PolicyNumber { get; set; } = null!;
@@ -10,6 +10,6 @@ public class CreatePolicyReq
     public string PaymentDate { get; set; }
     public bool IsPaid { get; set; }
     public string Note { get; set; }
-    public string InsurerId { get; set; }
+    public IEnumerable<string> InsurerIds { get; set; } = [];
     public IEnumerable<string> InsuranceTypeIds { get; set; } = [];
 }

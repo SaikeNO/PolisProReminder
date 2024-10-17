@@ -18,7 +18,7 @@ public abstract record BaseInsurer(string? PhoneNumber, string? Email, string? P
 
     public bool IsDeleted { get; set; } = false;
     public virtual IEnumerable<Policy> Policies { get; set; }
-    public virtual IEnumerable<Vehicle> Vehicle { get; set; }
+    public virtual IEnumerable<Vehicle> Vehicles { get; set; }
 
     public void Update(string? phoneNumber, string? email, string? postalCode, string? city, string? street)
     {

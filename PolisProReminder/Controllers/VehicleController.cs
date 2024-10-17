@@ -24,7 +24,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments)
     {
-        CreateVehicleReq req = JsonConvert.DeserializeObject<CreateVehicleReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
+        VehicleReq req = JsonConvert.DeserializeObject<VehicleReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
         var command = new UpdateVehicleCommand()
         {
             Id = id,
@@ -37,7 +37,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
             Name = req.Name,
             RegistrationNumber = req.RegistrationNumber,
             VehicleBrandId = new Guid(req.VehicleBrandId),
-            InsurerId = new Guid(req.InsurerId),
+            InsurerIds = req.InsurerIds.Select(x => new Guid(x)).ToList(),
             VIN = req.VIN,
             Attachments = attachments,
         };
@@ -59,7 +59,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments)
     {
-        CreateVehicleReq req = JsonConvert.DeserializeObject<CreateVehicleReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
+        VehicleReq req = JsonConvert.DeserializeObject<VehicleReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
 
         var command = new CreateVehicleCommand()
         {
@@ -72,7 +72,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
             Name = req.Name,
             RegistrationNumber = req.RegistrationNumber,
             VehicleBrandId = new Guid(req.VehicleBrandId),
-            InsurerId = new Guid(req.InsurerId),
+            InsurerIds = req.InsurerIds.Select(x => new Guid(x)).ToList(),
             VIN = req.VIN,
             Attachments = attachments,
         };

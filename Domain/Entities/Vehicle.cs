@@ -19,6 +19,6 @@ public class Vehicle : AttachmentList, ISoftDeletable, ICreatedBy
     public Guid CreatedByAgentId { get; set; }
 
     public virtual IEnumerable<Policy> Policies { get; set; } = null!;
-    public virtual BaseInsurer Insurer { get; set; } = null!;
+    public virtual List<BaseInsurer> Insurers { get; set; } = null!;
     public virtual VehicleBrand VehicleBrand { get; set; } = null!;
 }

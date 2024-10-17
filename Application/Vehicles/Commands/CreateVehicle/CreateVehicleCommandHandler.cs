@@ -22,7 +22,7 @@ public class CreateVehicleCommandHandler(IUserContext userContext,
         if (vehicle != null)
             throw new AlreadyExistsException("Pojazd o podanym numerze rejestracyjnym już istnieje");
 
-        var insurer = await insurersRepository.GetById(currentUser.AgentId, request.InsurerId) ?? throw new NotFoundException("Klient o podanym ID nie istnieje");
+        var insurers = await insurersRepository.GetManyByIds(currentUser.AgentId, request.InsurerIds);
         var vehicleBrand = await vehicleBrandsRepository.GetById(request.VehicleBrandId) ?? throw new NotFoundException("Marka pojazdu o podanym ID nie istnieje");
 
         var createVehicle = new Vehicle()
@@ -39,10 +39,10 @@ public class CreateVehicleCommandHandler(IUserContext userContext,
             KW = request.KW,
             Mileage = request.Mileage,
             VehicleBrand = vehicleBrand,
-            Insurer = insurer,
+            Insurers = insurers.ToList(),
         };
 
-        var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerId.ToString(), "Vehicles", createVehicle.Id.ToString());
+        var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerIds.First().ToString(), "Vehicles", createVehicle.Id.ToString());
 
         var attachments = request.Attachments.Select(attachment => new Attachment(attachment.FileName, savePath)
         {

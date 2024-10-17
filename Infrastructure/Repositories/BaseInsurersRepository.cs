@@ -36,6 +36,16 @@ internal class BaseInsurersRepository(InsuranceDbContext dbContext) : IBaseInsur
         return insurer;
     }
 
+    public async Task<IEnumerable<BaseInsurer>> GetManyByIds(Guid agentId, IEnumerable<Guid> ids)
+    {
+        var insurers = await dbContext.Set<BaseInsurer>()
+            .CreatedByAgent(agentId)
+            .Where(i => ids.Contains(i.Id))
+            .ToListAsync();
+
+        return insurers;
+    }
+
     public async Task<Guid> Create(BaseInsurer entity)
     {
         await dbContext.AddAsync(entity);

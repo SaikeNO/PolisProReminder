@@ -17,7 +17,7 @@ public static class QueryableExtensions
 
         return query.Where(e =>
             dbContext.Set<IndividualInsurer>()
-                .Where(i => EF.Property<Guid>(e, "InsurerId") == i.Id)
+                .Where(i => EF.Property<List<BaseInsurer>>(e, "Insurers").Select(insurer => insurer.Id).Contains(i.Id))
                 .Any(i => i.LastName.ToLower().Contains(searchPhraseLower)
                         || i.FirstName.ToLower().Contains(searchPhraseLower)
                         || i.Email.ToLower().Contains(searchPhraseLower)
@@ -25,7 +25,7 @@ public static class QueryableExtensions
                         || i.PhoneNumber.ToLower().Contains(searchPhraseLower))
             ||
             dbContext.Set<BusinessInsurer>()
-                .Where(b => EF.Property<Guid>(e, "InsurerId") == b.Id)
+                .Where(b => EF.Property<List<BaseInsurer>>(e, "Insurers").Select(insurer => insurer.Id).Contains(b.Id))
                 .Any(b => b.Name.ToLower().Contains(searchPhraseLower)
                         || b.Nip.ToLower().Contains(searchPhraseLower)
                         || b.Regon.ToLower().Contains(searchPhraseLower)

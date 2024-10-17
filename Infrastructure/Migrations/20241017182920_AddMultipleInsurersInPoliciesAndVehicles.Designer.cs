@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PolisProReminder.Infrastructure.Persistance;
 
@@ -11,9 +12,11 @@ using PolisProReminder.Infrastructure.Persistance;
 namespace PolisProReminder.Infrastructure.Migrations
 {
     [DbContext(typeof(InsuranceDbContext))]
-    partial class InsuranceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241017182920_AddMultipleInsurersInPoliciesAndVehicles")]
+    partial class AddMultipleInsurersInPoliciesAndVehicles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -382,7 +385,7 @@ namespace PolisProReminder.Infrastructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("AgentId")
+                    b.Property<Guid>("AgentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -726,9 +729,10 @@ namespace PolisProReminder.Infrastructure.Migrations
             modelBuilder.Entity("PolisProReminder.Domain.Entities.User", b =>
                 {
                     b.HasOne("PolisProReminder.Domain.Entities.User", "Agent")
-                        .WithMany("AssignedUsers")
+                        .WithMany()
                         .HasForeignKey("AgentId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Agent");
                 });
@@ -752,11 +756,6 @@ namespace PolisProReminder.Infrastructure.Migrations
             modelBuilder.Entity("PolisProReminder.Domain.Entities.Policy", b =>
                 {
                     b.Navigation("Attachments");
-                });
-
-            modelBuilder.Entity("PolisProReminder.Domain.Entities.User", b =>
-                {
-                    b.Navigation("AssignedUsers");
                 });
 
             modelBuilder.Entity("PolisProReminder.Domain.Entities.Vehicle", b =>

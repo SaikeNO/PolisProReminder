@@ -1,4 +1,5 @@
-﻿using PolisProReminder.Application.VehicleBrands.Dtos;
+﻿using PolisProReminder.Application.Insurers.Dtos;
+using PolisProReminder.Application.VehicleBrands.Dtos;
 
 namespace PolisProReminder.Application.Vehicles.Dtos;
 
@@ -15,6 +16,6 @@ public record VehicleDto
     public int? Capacity { get; set; }
     public uint? Mileage { get; set; }
     public string InsurerName { get; set; } = string.Empty;
-    public Guid InsurerId { get; set; }
+    public IEnumerable<InsurerBasicInfoDto> Insurers { get; set; } = [];
     public VehicleBrandDto VehicleBrand { get; set; } = null!;
 }

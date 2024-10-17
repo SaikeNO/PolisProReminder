@@ -1,6 +1,6 @@
 ﻿namespace PolisProReminder.API.Requests;
 
-public class CreateVehicleReq
+public class VehicleReq
 {
     public string Name { get; set; } = null!;
     public string RegistrationNumber { get; set; } = null!;
@@ -12,6 +12,6 @@ public class CreateVehicleReq
     public int? Capacity { get; set; }
     public uint? Mileage { get; set; }
 
-    public string InsurerId { get; set; }
+    public IEnumerable<string> InsurerIds { get; set; }
     public string VehicleBrandId { get; set; }
 }

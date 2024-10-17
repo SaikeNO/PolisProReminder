@@ -11,7 +11,7 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
         builder.ToTable("AspNetUsers");
 
         builder.HasOne(p => p.Agent)
-            .WithMany()
+            .WithMany(a => a.AssignedUsers)
             .HasForeignKey(p => p.AgentId)
             .OnDelete(DeleteBehavior.Restrict);
     }

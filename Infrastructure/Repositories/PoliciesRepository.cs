@@ -31,7 +31,7 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
             .CreatedByAgent(agentId)
             .NotDeleted()
             .Include(p => p.InsuranceCompany)
-            .Include(p => p.Insurer)
+            .Include(p => p.Insurers)
             .Include(p => p.InsuranceTypes)
             .ToListAsync();
 
@@ -45,7 +45,7 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
             .CreatedByAgent(agentId)
             .NotDeleted()
             .Include(p => p.InsuranceCompany)
-            .Include(p => p.Insurer)
+            .Include(p => p.Insurers)
             .Include(p => p.InsuranceTypes)
             .Where(p => ids.Contains(p.Id))
             .ToListAsync();
@@ -60,7 +60,7 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
             .CreatedByAgent(agentId)
             .NotDeleted()
             .Include(p => p.InsuranceCompany)
-            .Include(p => p.Insurer)
+            .Include(p => p.Insurers)
             .Include(p => p.InsuranceTypes)
             .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -106,7 +106,7 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
             .CreatedByAgent(agentId)
             .NotDeleted()
             .Include(p => p.InsuranceCompany)
-            .Include(p => p.Insurer)
+            .Include(p => p.Insurers)
             .Include(p => p.InsuranceTypes)
             .Where(p => searchPhraseLower == null
                         || p.Title.ToLower().Contains(searchPhraseLower)
@@ -150,7 +150,7 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
             .CreatedByAgent(agentId)
             .NotDeleted()
             .Include(p => p.InsuranceCompany)
-            .Include(p => p.Insurer)
+            .Include(p => p.Insurers)
             .Include(p => p.InsuranceTypes)
             .OrderBy(p => p.EndDate)
             .Take(count)

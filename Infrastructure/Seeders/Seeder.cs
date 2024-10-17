@@ -130,11 +130,13 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
     {
         var admin = new User()
         {
+            Id = Guid.NewGuid(),
             FirstName = "Mateusz",
             LastName = "Lengiewicz",
             Email = "admin@email.com",
             NormalizedEmail = "admin@email.com".ToUpper(),
             UserName = "admin",
+            SecurityStamp = Guid.NewGuid().ToString(),
             NormalizedUserName = "admin".ToUpper(),
         };
 
@@ -143,11 +145,13 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
 
         var agent = new User()
         {
+            Id = Guid.NewGuid(),
             FirstName = "Agent1",
             LastName = "Lengiewicz",
             Email = "agent1@email.com",
             NormalizedEmail = "agent1@email.com".ToUpper(),
             UserName = "agent1",
+            SecurityStamp = Guid.NewGuid().ToString(),
             NormalizedUserName = "agent1".ToUpper(),
         };
 
@@ -156,11 +160,13 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
 
         var agent2 = new User()
         {
+            Id = Guid.NewGuid(),
             FirstName = "Agent2",
             LastName = "Lengiewicz",
             Email = "agent2@email.com",
             NormalizedEmail = "agent2@email.com".ToUpper(),
             UserName = "agent2",
+            SecurityStamp = Guid.NewGuid().ToString(),
             NormalizedUserName = "agent2".ToUpper(),
         };
 
@@ -169,12 +175,14 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
 
         var user = new User()
         {
+            Id = Guid.NewGuid(),
             FirstName = "Użytkownik",
             LastName = "Lengiewicz",
             Email = "user1@email.com",
             NormalizedEmail = "user1@email.com".ToUpper(),
             AgentId = agent.Id,
             UserName = "user1",
+            SecurityStamp = Guid.NewGuid().ToString(),
             NormalizedUserName = "user1".ToUpper(),
         };
 
@@ -182,12 +190,14 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
 
         var user2 = new User()
         {
+            Id = Guid.NewGuid(),
             FirstName = "Użytkownik",
             LastName = "Lengiewicz",
             Email = "user2@email.com",
             NormalizedEmail = "user2@email.com".ToUpper(),
             AgentId = agent2.Id,
             UserName = "user2",
+            SecurityStamp = Guid.NewGuid().ToString(),
             NormalizedUserName = "user2".ToUpper(),
         };
 
@@ -418,7 +428,7 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
                     CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id,
                     FirstRegistrationDate = DateOnly.FromDateTime(DateTime.Now),
                     RegistrationNumber = "BI998FM",
-                    Insurer = insurers.First(i => i.Pesel == "44051401458"),
+                    Insurers = [insurers.First(i => i.Pesel == "44051401458")],
                     VIN = "4Y1SL65848Z411439",
                     Name = "Seat Leon 1.5 TSI",
                     VehicleBrand = vehicleBrands.First(b => b.Name == "SEAT")
@@ -428,7 +438,7 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
                     CreatedByUserId = users.First(u => u.Email == "agent1@email.com").Id,
                     FirstRegistrationDate = DateOnly.FromDateTime(DateTime.Now),
                     RegistrationNumber = "BSK23UE",
-                    Insurer = insurers.First(i => i.Pesel == "44051401458"),
+                    Insurers = [insurers.First(i => i.Pesel == "44051401458")],
                     VIN = "1J4GK38K66W221344",
                     Name = "VW Touran 1.4 MPI",
                     VehicleBrand = vehicleBrands.First(b => b.Name == "Volkswagen")

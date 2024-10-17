@@ -24,7 +24,7 @@ public class UpdateVehicleCommandHandler(IUserContext userContext,
 
         var vehicle = await vehiclesRepository.GetById(currentUser.AgentId, request.Id) ?? throw new NotFoundException("Pojazd o podanym ID nie istnieje");
 
-        var insurer = await insurersRepository.GetById(currentUser.AgentId, request.InsurerId) ?? throw new NotFoundException("Klient o podanym ID nie istnieje");
+        var newInsurers = await insurersRepository.GetManyByIds(currentUser.AgentId, request.InsurerIds);
         var vehicleBrand = await vehicleBrandsRepository.GetById(request.VehicleBrandId) ?? throw new NotFoundException("Marka pojazdu o podanym ID nie istnieje");
 
         vehicle.FirstRegistrationDate = request.FirstRegistrationDate;
@@ -37,9 +37,11 @@ public class UpdateVehicleCommandHandler(IUserContext userContext,
         vehicle.KW = request.KW;
         vehicle.Mileage = request.Mileage;
         vehicle.VehicleBrand = vehicleBrand;
-        vehicle.Insurer = insurer;
 
-        var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerId.ToString(), "Vehicles", request.Id.ToString());
+        vehicle.Insurers.Clear();
+        vehicle.Insurers.AddRange(newInsurers);
+
+        var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerIds.First().ToString(), "Vehicles", request.Id.ToString());
 
         var attachments = request.Attachments.Select(attachment => new Attachment(attachment.FileName, savePath)
         {

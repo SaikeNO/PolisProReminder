@@ -26,7 +26,7 @@ public class PolicyController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments)
     {
-        CreatePolicyReq req = JsonConvert.DeserializeObject<CreatePolicyReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
+        PolicyReq req = JsonConvert.DeserializeObject<PolicyReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
 
         var command = new UpdatePolicyCommand()
         {
@@ -36,7 +36,7 @@ public class PolicyController(IMediator mediator) : ControllerBase
             PaymentDate = req.PaymentDate is not null ? DateOnly.FromDateTime(DateTime.Parse(req.PaymentDate)) : null,
             InsuranceCompanyId = new Guid(req.InsuranceCompanyId),
             InsuranceTypeIds = req.InsuranceTypeIds.Select(x => new Guid(x)).ToList(),
-            InsurerId = new Guid(req.InsurerId),
+            InsurerIds = req.InsurerIds.Select(x => new Guid(x)).ToList(),
             IsPaid = req.IsPaid,
             PolicyNumber = req.PolicyNumber,
             Title = req.Title,
@@ -69,7 +69,7 @@ public class PolicyController(IMediator mediator) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments)
     {
-        CreatePolicyReq req = JsonConvert.DeserializeObject<CreatePolicyReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
+        PolicyReq req = JsonConvert.DeserializeObject<PolicyReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
 
         var command = new CreatePolicyCommand()
         {
@@ -78,7 +78,7 @@ public class PolicyController(IMediator mediator) : ControllerBase
             PaymentDate = req.PaymentDate is not null ? DateOnly.FromDateTime(DateTime.Parse(req.PaymentDate)) : null,
             InsuranceCompanyId = new Guid(req.InsuranceCompanyId),
             InsuranceTypeIds = req.InsuranceTypeIds.Select(x => new Guid(x)).ToList(),
-            InsurerId = new Guid(req.InsurerId),
+            InsurerIds = req.InsurerIds.Select(x => new Guid(x)).ToList(),
             IsPaid = req.IsPaid,
             PolicyNumber = req.PolicyNumber,
             Title = req.Title,

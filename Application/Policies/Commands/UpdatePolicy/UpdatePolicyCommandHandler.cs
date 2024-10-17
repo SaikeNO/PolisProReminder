@@ -9,6 +9,7 @@ namespace PolisProReminder.Application.Policies.Commands.UpdatePolicy;
 
 public class UpdatePolicyCommandHandler(IUserContext userContext,
     IPoliciesRepository policiesRepository,
+    IBaseInsurersRepository insurersRepository,
     IInsuranceTypesRepository insuranceTypesRepository,
     IAttachmentsRepository attachmentsRepository,
     IMediator mediator) : IRequestHandler<UpdatePolicyCommand>
@@ -26,20 +27,24 @@ public class UpdatePolicyCommandHandler(IUserContext userContext,
             throw new AlreadyExistsException("Polisa o podanym numerze już istnieje");
 
         var newTypes = await insuranceTypesRepository.GetManyByIds(currentUser.AgentId, request.InsuranceTypeIds);
+        var newInsurers = await insurersRepository.GetManyByIds(currentUser.AgentId, request.InsurerIds);
 
         policy.PolicyNumber = request.PolicyNumber;
         policy.InsuranceCompanyId = request.InsuranceCompanyId;
         policy.StartDate = request.StartDate;
         policy.EndDate = request.EndDate;
         policy.PaymentDate = request.PaymentDate;
-        policy.InsurerId = request.InsurerId;
         policy.IsPaid = request.IsPaid;
         policy.Title = request.Title;
         policy.Note = request.Note;
+
+        policy.Insurers.Clear();
+        policy.Insurers.AddRange(newInsurers);
+
         policy.InsuranceTypes.Clear();
         policy.InsuranceTypes.AddRange(newTypes);
 
-        var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerId.ToString(), "Policies", request.Id.ToString());
+        var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerIds.First().ToString(), "Policies", request.Id.ToString());
 
         var attachments = request.Attachments.Select(attachment => new Attachment(attachment.FileName, savePath)
         {

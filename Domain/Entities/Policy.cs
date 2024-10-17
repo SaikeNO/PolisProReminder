@@ -6,7 +6,6 @@ public class Policy : AttachmentList, ISoftDeletable, ICreatedBy
 {
     public string Title { get; set; } = null!;
     public string PolicyNumber { get; set; } = null!;
-    public Guid InsurerId { get; set; }
     public Guid? InsuranceCompanyId { get; set; }
     public Guid? VehicleId { get; set; }
     public DateOnly StartDate { get; set; }
@@ -20,8 +19,8 @@ public class Policy : AttachmentList, ISoftDeletable, ICreatedBy
     public Guid CreatedByUserId { get; set; }
     public Guid CreatedByAgentId { get; set; }
 
-    public virtual BaseInsurer Insurer { get; set; } = null!;
     public virtual Vehicle? Vehicle { get; set; }
     public virtual InsuranceCompany? InsuranceCompany { get; set; }
     public virtual List<InsuranceType> InsuranceTypes { get; set; } = null!;
+    public virtual List<BaseInsurer> Insurers { get; set; } = null!;
 }

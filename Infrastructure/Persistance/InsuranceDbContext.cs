@@ -34,5 +34,29 @@ internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) 
             .HasDiscriminator<string>("InsurerType")
             .HasValue<IndividualInsurer>("Individual")
             .HasValue<BusinessInsurer>("Business");
+
+        modelBuilder.Entity<BaseInsurer>()
+            .HasMany(i => i.Policies)
+            .WithMany(p => p.Insurers)
+            .UsingEntity<Dictionary<string, object>>(
+                "InsurerPolicies",
+                j => j.HasOne<Policy>().WithMany().HasForeignKey("PolicyId"),
+                j => j.HasOne<BaseInsurer>().WithMany().HasForeignKey("InsurerId"),
+                j =>
+                {
+                    j.HasKey("PolicyId", "InsurerId");
+                });
+
+        modelBuilder.Entity<BaseInsurer>()
+           .HasMany(i => i.Vehicles)
+           .WithMany(p => p.Insurers)
+           .UsingEntity<Dictionary<string, object>>(
+               "InsurerVehicles",
+               j => j.HasOne<Vehicle>().WithMany().HasForeignKey("VehicleId"),
+               j => j.HasOne<BaseInsurer>().WithMany().HasForeignKey("InsurerId"),
+               j =>
+               {
+                   j.HasKey("VehicleId", "InsurerId");
+               });
     }
 }

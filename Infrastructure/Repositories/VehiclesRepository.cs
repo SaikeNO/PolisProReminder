@@ -30,7 +30,7 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
             .Vehicles
             .CreatedByAgent(agentId)
             .NotDeleted()
-            .Include(v => v.Insurer)
+            .Include(v => v.Insurers)
             .Include(v => v.Policies)
             .Include(v => v.VehicleBrand)
             .ToListAsync();
@@ -44,7 +44,7 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
             .Vehicles
             .CreatedByAgent(agentId)
             .NotDeleted()
-            .Include(v => v.Insurer)
+            .Include(v => v.Insurers)
             .Include(v => v.Policies)
             .Include(v => v.VehicleBrand)
             .FirstOrDefaultAsync(v => v.Id == id);
@@ -78,7 +78,7 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
             .AsNoTracking()
             .CreatedByAgent(agentId)
             .NotDeleted()
-            .Include(p => p.Insurer)
+            .Include(p => p.Insurers)
             .Include(p => p.Policies)
             .Include(v => v.VehicleBrand)
             .Where(p => searchPhraseLower == null || p.VIN.ToLower().Contains(searchPhraseLower)
