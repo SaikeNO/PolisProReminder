@@ -6,7 +6,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PolisProReminder.Infrastructure.Migrations
 {
     /// <inheritdoc />
+#pragma warning disable CS8981 // Nazwa typu zawiera tylko małe litery ascii. Takie nazwy mogą zostać zarezerwowane dla języka.
     public partial class addvehicles : Migration
+#pragma warning restore CS8981 // Nazwa typu zawiera tylko małe litery ascii. Takie nazwy mogą zostać zarezerwowane dla języka.
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

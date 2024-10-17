@@ -13,7 +13,9 @@ namespace PolisProReminder.Infrastructure.Migrations
 {
     [DbContext(typeof(InsuranceDbContext))]
     [Migration("20240601101328_clean-architecture-init")]
+#pragma warning disable CS8981 // Nazwa typu zawiera tylko małe litery ascii. Takie nazwy mogą zostać zarezerwowane dla języka.
     partial class cleanarchitectureinit
+#pragma warning restore CS8981 // Nazwa typu zawiera tylko małe litery ascii. Takie nazwy mogą zostać zarezerwowane dla języka.
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
