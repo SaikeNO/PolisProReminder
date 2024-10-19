@@ -11,7 +11,7 @@ internal class BusinessInsurerConfiguration : BaseInsurerConfiguration<BusinessI
 
         builder.Property(i => i.Name)
             .IsRequired()
-            .HasMaxLength(60);
+            .HasMaxLength(120);
 
         builder.Property(i => i.Nip)
             .IsRequired()
