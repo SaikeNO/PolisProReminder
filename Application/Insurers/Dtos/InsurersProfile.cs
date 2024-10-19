@@ -28,7 +28,7 @@ public class InsurersProfile : Profile
     {
         if (insurer is IndividualInsurer individualInsurer)
         {
-            return $"{individualInsurer.FirstName} {individualInsurer.LastName}";
+            return $"{individualInsurer.LastName} {individualInsurer.FirstName}";
         }
         else if (insurer is BusinessInsurer businessInsurer)
         {

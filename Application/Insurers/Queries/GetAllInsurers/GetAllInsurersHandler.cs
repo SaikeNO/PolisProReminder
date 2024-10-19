@@ -15,7 +15,9 @@ internal class GetAllInsurersHandler(IBaseInsurersRepository insurersRepository,
         _ = currentUser ?? throw new InvalidOperationException("Current User is not present");
 
         var insurers = await insurersRepository.GetAll(currentUser.AgentId);
-        
-        return mapper.Map<IEnumerable<InsurerBasicInfoDto>>(insurers);
+
+        var insurersDto = mapper.Map<IEnumerable<InsurerBasicInfoDto>>(insurers);
+
+        return insurersDto.OrderBy(i => i.Name);
     }
 }
