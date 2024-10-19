@@ -5,7 +5,7 @@ namespace PolisProReminder.Application.Policies.Queries.GetAllPolicies;
 
 public class GetAllPoliciesQueryValidator : AbstractValidator<GetAllPoliciesQuery>
 {
-    private readonly int[] allowPageSizes = [5, 10, 15, 30];
+    private readonly int[] allowPageSizes = [10, 20, 30, 50];
     private readonly string[] allowedSortByColumnNames = [
         nameof(PolicyDto.Title),
         nameof(PolicyDto.PolicyNumber),

@@ -5,7 +5,7 @@ namespace PolisProReminder.Application.Insurers.Queries.GetPaginatedIndividualIn
 
 public class GetPaginatedIndividualInsurersQueryValidator : AbstractValidator<GetPaginatedIndividualInsurersQuery>
 {
-    private readonly int[] allowPageSizes = [5, 10, 15, 30];
+    private readonly int[] allowPageSizes = [10, 20, 30, 50];
     private readonly string[] allowedSortByColumnNames = [
         nameof(IndividualInsurerDto.FirstName),
         nameof(IndividualInsurerDto.LastName),

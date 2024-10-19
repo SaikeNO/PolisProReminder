@@ -5,7 +5,7 @@ namespace PolisProReminder.Application.Vehicles.Queries.GetAllVehicles;
 
 public class GetAllVehiclesValidator : AbstractValidator<GetAllVehiclesQuery>
 {
-    private readonly int[] allowPageSizes = [5, 10, 15, 30];
+    private readonly int[] allowPageSizes = [10, 20, 30, 50];
     private readonly string[] allowedSortByColumnNames = [
         nameof(VehicleDto.Name),
         nameof(VehicleDto.VIN),
