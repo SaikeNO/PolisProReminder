@@ -81,11 +81,17 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
             .Include(p => p.Insurers)
             .Include(p => p.Policies)
             .Include(v => v.VehicleBrand)
-            .Where(p => searchPhraseLower == null || p.VIN.ToLower().Contains(searchPhraseLower)
-                                                    || p.Name.ToLower().Contains(searchPhraseLower)
-                                                    || p.RegistrationNumber.ToLower().Contains(searchPhraseLower)
-                                                    || p.VehicleBrand.Name.ToLower().Contains(searchPhraseLower))
-            .FilterByInsurer(searchPhraseLower, dbContext);
+             .Where(v => searchPhraseLower == null
+                || v.VIN.ToLower().Contains(searchPhraseLower)
+                || v.Name.ToLower().Contains(searchPhraseLower)
+                || v.RegistrationNumber.ToLower().Contains(searchPhraseLower)
+                || v.VehicleBrand.Name.ToLower().Contains(searchPhraseLower)
+                || dbContext.Set<IndividualInsurer>()
+                    .FilterBySearchPhrase(searchPhraseLower)
+                    .Any(i => v.Insurers.Select(insurer => insurer.Id).Contains(i.Id))
+                || dbContext.Set<BusinessInsurer>()
+                    .FilterBySearchPhrase(searchPhraseLower)
+                    .Any(b => v.Insurers.Select(insurer => insurer.Id).Contains(b.Id)));
 
         var totalCount = await baseQuery.CountAsync();
 

@@ -49,11 +49,7 @@ internal class BusinessInsurersRepository : BaseInsurersRepository, IBusinessIns
             .ThenInclude(p => p.InsuranceCompany)
             .Include(i => i.Policies)
             .ThenInclude(p => p.InsuranceTypes)
-            .Where(i => searchPhraseLower == null || i.Name.ToLower().Contains(searchPhraseLower)
-                                                    || i.Nip.ToLower().Contains(searchPhraseLower)
-                                                    || i.Regon.ToLower().Contains(searchPhraseLower)
-                                                    || i.Email.ToLower().Contains(searchPhraseLower)
-                                                    || i.PhoneNumber.ToLower().Contains(searchPhraseLower));
+            .FilterBySearchPhrase(searchPhraseLower);
         var totalCount = await baseQuery.CountAsync();
 
         if (sortBy != null && sortDirection != SortDirection.None)
