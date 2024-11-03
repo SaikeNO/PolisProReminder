@@ -1,29 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using PolisProReminder.Domain.Entities;
+using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 using PolisProReminder.Infrastructure.Persistance;
+using PolisProReminder.Infrastructure.Settings;
 
 namespace PolisProReminder.Infrastructure.Repositories;
 
-internal class AttachmentsRepository(IConfiguration configuration, InsuranceDbContext dbContext) : IAttachmentsRepository
+internal class AttachmentsRepository(AttachmentsSettings attachmentsSettings, InsuranceDbContext dbContext) : IAttachmentsRepository
 {
-    private readonly string storagePath = configuration["StoragePath"] ?? throw new ArgumentNullException(nameof(storagePath));
-    private readonly string storagePathDeleted = configuration["StoragePathDeleted"] ?? throw new ArgumentNullException(nameof(storagePathDeleted));
-
-    public async Task<IEnumerable<Attachment>?> GetAll<TEntity>(Guid id) where TEntity : AttachmentList
-    {
-        var set = await dbContext.Set<TEntity>()
-            .AsNoTracking()
-            .Include(x => x.Attachments)
-            .FirstOrDefaultAsync(x => x.Id == id);
-
-        if (set == null)
-            return null;
-
-        return set.Attachments.Where(a => a.IsDeleted == false);
-    }
-
     public async Task<Attachment?> GetById(Guid id)
     {
         var attachment = await dbContext
@@ -33,33 +19,60 @@ internal class AttachmentsRepository(IConfiguration configuration, InsuranceDbCo
         return attachment;
     }
 
+    public async Task<IEnumerable<Attachment>> GetManyByIds(IEnumerable<Guid> ids)
+    {
+        var attachments = await dbContext
+            .Attachments
+            .Where(a => ids.Contains(a.Id))
+            .ToListAsync();
+
+        return attachments;
+    }
+
     public void Delete(Attachment entity)
     {
         entity.IsDeleted = true;
-        var fullFilePath = Path.Combine(storagePath, entity.FilePath);
-        var fullFilePathToMove = Path.Combine(storagePathDeleted, entity.FilePath);
+        var fullFilePath = Path.Combine(attachmentsSettings.StoragePath, entity.FilePath);
+        var fullFilePathToMove = Path.Combine(attachmentsSettings.StoragePathDeleted, entity.FilePath);
 
         Directory.CreateDirectory(Path.GetDirectoryName(fullFilePathToMove)!);
         File.Move(fullFilePath, fullFilePathToMove);
     }
 
-    public async Task<IEnumerable<Attachment>> CreateAttachmentRangeAsync(IEnumerable<Attachment> attachments)
+    public async Task SaveAttachmentAsync(Attachment attachment)
     {
-        await dbContext.Attachments.AddRangeAsync(attachments);
-        return attachments;
+        await dbContext.Attachments.AddAsync(attachment);
     }
 
-    public async Task UploadAttachmentsAsync(IEnumerable<AttachmentFormFile> attachments)
+    public async Task UploadAttachmentAsync(IFormFile attachment, string savePath)
     {
-        foreach (var attachment in attachments)
-        {
-            var fullFilePath = Path.Combine(storagePath, attachment.FilePath);
-            Directory.CreateDirectory(Path.GetDirectoryName(fullFilePath)!);
+        var fullFilePath = Path.Combine(attachmentsSettings.StoragePath, savePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(fullFilePath)!);
 
-            using (var stream = File.Create(fullFilePath))
-            {
-                await attachment.File.CopyToAsync(stream);
-            }
+        using (var stream = File.Create(fullFilePath))
+        {
+            await attachment.CopyToAsync(stream);
+        }
+    }
+
+    public async Task UploadAndSaveAttachmentAsync(Attachment attachment, IFormFile file)
+    {
+        using var transaction = await dbContext.Database.BeginTransactionAsync();
+        try
+        {
+            await UploadAttachmentAsync(file, attachment.FilePath);
+            await SaveAttachmentAsync(attachment);
+
+            await dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            RemoveAttachment(attachment.FileName);
+
+            throw new FileUploadException("Nie można zapisać pliku.");
         }
     }
 
@@ -69,7 +82,7 @@ internal class AttachmentsRepository(IConfiguration configuration, InsuranceDbCo
         if (attachment == null)
             return null;
 
-        var filePath = Path.Combine(storagePath, attachment.FilePath);
+        var filePath = Path.Combine(attachmentsSettings.StoragePath, attachment.FilePath);
 
         if (File.Exists(filePath))
         {
@@ -80,4 +93,14 @@ internal class AttachmentsRepository(IConfiguration configuration, InsuranceDbCo
     }
 
     public Task SaveChanges() => dbContext.SaveChangesAsync();
+
+    private void RemoveAttachment(string filePath)
+    {
+        var fullFilePath = Path.Combine(attachmentsSettings.StoragePath, filePath);
+
+        if (File.Exists(fullFilePath))
+        {
+            File.Delete(fullFilePath);
+        }
+    }
 }

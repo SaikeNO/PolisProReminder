@@ -24,6 +24,7 @@ public class CreateVehicleCommandHandler(IUserContext userContext,
 
         var insurers = await insurersRepository.GetManyByIds(currentUser.AgentId, request.InsurerIds);
         var vehicleBrand = await vehicleBrandsRepository.GetById(request.VehicleBrandId) ?? throw new NotFoundException("Marka pojazdu o podanym ID nie istnieje");
+        var attachments = await attachmentsRepository.GetManyByIds(request.AttachmentIds);
 
         var createVehicle = new Vehicle()
         {
@@ -40,20 +41,8 @@ public class CreateVehicleCommandHandler(IUserContext userContext,
             Mileage = request.Mileage,
             VehicleBrand = vehicleBrand,
             Insurers = insurers.ToList(),
+            Attachments = attachments.ToList()
         };
-
-        var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerIds.First().ToString(), "Vehicles", createVehicle.Id.ToString());
-
-        var attachments = request.Attachments.Select(attachment => new Attachment(attachment.FileName, savePath)
-        {
-            CreatedByAgentId = currentUser.AgentId,
-            CreatedByUserId = currentUser.Id,
-        }).ToList();
-
-        var attachmentsFormFiles = request.Attachments.Select((attachment, i) => new AttachmentFormFile(attachment, attachments[i].FilePath));
-        await attachmentsRepository.UploadAttachmentsAsync(attachmentsFormFiles);
-
-        createVehicle.Attachments = attachments;
 
         var id = await vehiclesRepository.Create(createVehicle);
         return id;

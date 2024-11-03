@@ -2,8 +2,9 @@
 
 namespace PolisProReminder.Domain.Entities;
 
-public class Policy : AttachmentList, ISoftDeletable, ICreatedBy
+public class Policy : ISoftDeletable, ICreatedBy
 {
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string Title { get; set; } = null!;
     public string PolicyNumber { get; set; } = null!;
     public Guid? InsuranceCompanyId { get; set; }
@@ -23,4 +24,5 @@ public class Policy : AttachmentList, ISoftDeletable, ICreatedBy
     public virtual InsuranceCompany? InsuranceCompany { get; set; }
     public virtual List<InsuranceType> InsuranceTypes { get; set; } = null!;
     public virtual List<BaseInsurer> Insurers { get; set; } = null!;
+    public virtual List<Attachment> Attachments { get; set; } = null!;
 }

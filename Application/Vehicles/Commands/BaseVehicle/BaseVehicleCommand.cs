@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace PolisProReminder.Application.Vehicles.Commands.BaseVehicle;
+﻿namespace PolisProReminder.Application.Vehicles.Commands.BaseVehicle;
 
 public class BaseVehicleCommand
 {
@@ -17,5 +15,5 @@ public class BaseVehicleCommand
     public Guid VehicleBrandId { get; set; }
 
     public IEnumerable<Guid> InsurerIds { get; set; } = [];
-    public IEnumerable<IFormFile> Attachments { get; set; } = [];
+    public IEnumerable<Guid> AttachmentIds { get; set; } = [];
 }

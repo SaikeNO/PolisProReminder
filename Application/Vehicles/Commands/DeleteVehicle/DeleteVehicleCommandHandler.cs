@@ -1,14 +1,11 @@
 ﻿using MediatR;
 using PolisProReminder.Application.Users;
-using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.Vehicles.Commands.DeleteVehicle;
 
-public class DeleteVehicleCommandHandler(IUserContext userContext,
-    IVehiclesRepository vehiclesRepository,
-    IAttachmentsRepository attachmentsRepository) : IRequestHandler<DeleteVehicleCommand>
+public class DeleteVehicleCommandHandler(IUserContext userContext, IVehiclesRepository vehiclesRepository) : IRequestHandler<DeleteVehicleCommand>
 {
     public async Task Handle(DeleteVehicleCommand request, CancellationToken cancellationToken)
     {
@@ -16,10 +13,6 @@ public class DeleteVehicleCommandHandler(IUserContext userContext,
         var vehicle = await vehiclesRepository.GetById(currentUser.AgentId, request.Id) ?? throw new NotFoundException("Pojazd o podanym numerze rejestracyjnym nie istnieje");
 
         vehiclesRepository.Delete(vehicle);
-
-        var attachments = (await attachmentsRepository.GetAll<Vehicle>(request.Id))!.ToList();
-
-        attachments.ForEach(attachment => attachmentsRepository.Delete(attachment));
 
         await vehiclesRepository.SaveChanges();
     }

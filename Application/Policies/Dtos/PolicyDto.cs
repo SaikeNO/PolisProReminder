@@ -1,4 +1,5 @@
-﻿using PolisProReminder.Application.InsuranceCompanies.Dtos;
+﻿using PolisProReminder.Application.Attachments.Dtos;
+using PolisProReminder.Application.InsuranceCompanies.Dtos;
 using PolisProReminder.Application.InsuranceTypes.Dtos;
 using PolisProReminder.Application.Insurers.Dtos;
 
@@ -18,4 +19,5 @@ public record PolicyDto
 
     public IEnumerable<InsurerBasicInfoDto> Insurers { get; set; } = null!;
     public IEnumerable<InsuranceTypeDto> InsuranceTypes { get; set; } = null!;
+    public IEnumerable<AttachmentDto> Attachments { get; set; } = null!;
 }

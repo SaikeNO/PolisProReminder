@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace PolisProReminder.Application.Policies.Commands.BasePolicy;
+﻿namespace PolisProReminder.Application.Policies.Commands.BasePolicy;
 
 public class BasePolicyCommand
 {
@@ -14,5 +12,5 @@ public class BasePolicyCommand
     public string? Note { get; set; }
     public IEnumerable<Guid> InsuranceTypeIds { get; set; } = [];
     public IEnumerable<Guid> InsurerIds { get; set; } = [];
-    public IEnumerable<IFormFile> Attachments { get; set; } = [];
+    public IEnumerable<Guid> AttachmentIds { get; set; } = [];
 }

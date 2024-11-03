@@ -26,6 +26,7 @@ public class CreatePolicyCommandHandler(IUserContext userContext,
 
         var types = await insuranceTypesRepository.GetManyByIds(currentUser.AgentId, request.InsuranceTypeIds);
         var insurers = await insurersRepository.GetManyByIds(currentUser.AgentId, request.InsurerIds);
+        var attachments = await attachmentsRepository.GetManyByIds(request.AttachmentIds);
 
         var createPolicy = new Policy
         {
@@ -41,20 +42,8 @@ public class CreatePolicyCommandHandler(IUserContext userContext,
             Note = request.Note,
             CreatedByAgentId = currentUser.AgentId,
             CreatedByUserId = currentUser.Id,
+            Attachments = attachments.ToList()
         };
-
-        var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerIds.First().ToString(), "Policies", createPolicy.Id.ToString());
-
-        var attachments = request.Attachments.Select(attachment => new Attachment(attachment.FileName, savePath)
-        {
-            CreatedByAgentId = currentUser.AgentId,
-            CreatedByUserId = currentUser.Id,
-        }).ToList();
-
-        var attachmentsFormFiles = request.Attachments.Select((attachment, i) => new AttachmentFormFile(attachment, attachments[i].FilePath));
-        await attachmentsRepository.UploadAttachmentsAsync(attachmentsFormFiles);
-
-        createPolicy.Attachments = attachments;
 
         var id = await policiesRepository.Create(createPolicy);
 

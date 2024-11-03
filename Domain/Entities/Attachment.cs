@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using PolisProReminder.Domain.Interfaces;
+﻿using PolisProReminder.Domain.Interfaces;
 
 namespace PolisProReminder.Domain.Entities;
 
@@ -22,16 +21,4 @@ public class Attachment: ISoftDeletable, ICreatedBy
         UniqueFileName = $"{DateTime.Now:yyyyMMddHHmmss}_{Id}_{fileName}";
         FilePath = Path.Combine(savePath, UniqueFileName);
     }
-}
-
-public abstract class AttachmentList
-{
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public List<Attachment> Attachments { get; set; } = [];
-}
-
-public class AttachmentFormFile(IFormFile file, string filePath)
-{
-    public IFormFile File { get; } = file;
-    public string FilePath { get; } = filePath;
 }

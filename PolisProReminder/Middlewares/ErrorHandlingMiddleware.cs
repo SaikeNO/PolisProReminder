@@ -42,6 +42,11 @@ public class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger) : 
             context.Response.StatusCode = 409;
             await context.Response.WriteAsync(e.Message);
         }
+        catch (FileUploadException e)
+        {
+            context.Response.StatusCode = 500;
+            await context.Response.WriteAsync(e.Message);
+        }
         catch (Exception ex)
         {
             logger.LogError(ex, ex.Message);

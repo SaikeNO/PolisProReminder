@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using PolisProReminder.Application.Users;
-using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Repositories;
 
@@ -26,6 +25,7 @@ public class UpdateVehicleCommandHandler(IUserContext userContext,
 
         var newInsurers = await insurersRepository.GetManyByIds(currentUser.AgentId, request.InsurerIds);
         var vehicleBrand = await vehicleBrandsRepository.GetById(request.VehicleBrandId) ?? throw new NotFoundException("Marka pojazdu o podanym ID nie istnieje");
+        var attachments = await attachmentsRepository.GetManyByIds(request.AttachmentIds);
 
         vehicle.FirstRegistrationDate = request.FirstRegistrationDate;
         vehicle.RegistrationNumber = request.RegistrationNumber.ToUpper();
@@ -41,20 +41,7 @@ public class UpdateVehicleCommandHandler(IUserContext userContext,
         vehicle.Insurers.Clear();
         vehicle.Insurers.AddRange(newInsurers);
 
-        var savePath = Path.Combine(currentUser.AgentId.ToString(), request.InsurerIds.First().ToString(), "Vehicles", request.Id.ToString());
-
-        var attachments = request.Attachments.Select(attachment => new Attachment(attachment.FileName, savePath)
-        {
-            CreatedByAgentId = currentUser.AgentId,
-            CreatedByUserId = currentUser.Id,
-        }).ToList();
-
-        var attachmentsFormFiles = request.Attachments.Select((attachment, i) => new AttachmentFormFile(attachment, attachments[i].FilePath));
-        await attachmentsRepository.UploadAttachmentsAsync(attachmentsFormFiles);
-
-        await attachmentsRepository.CreateAttachmentRangeAsync(attachments);
-        
-        vehicle.Attachments = [..vehicle.Attachments, ..attachments];
+        vehicle.Attachments = [.. vehicle.Attachments, .. attachments];
 
         await vehiclesRepository.SaveChanges();
     }

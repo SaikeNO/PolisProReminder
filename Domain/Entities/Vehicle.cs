@@ -2,17 +2,18 @@
 
 namespace PolisProReminder.Domain.Entities;
 
-public class Vehicle : AttachmentList, ISoftDeletable, ICreatedBy
+public class Vehicle : ISoftDeletable, ICreatedBy
 {
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string Name { get; set; } = null!;
     public string RegistrationNumber { get; set; } = null!;
     public DateOnly? FirstRegistrationDate { get; set; }
     public DateOnly? ProductionYear { get; set; }
-    public string? VIN {  get; set; }
+    public string? VIN { get; set; }
     public int? KW { get; set; }
     public int? KM { get; set; }
     public int? Capacity { get; set; }
-    public uint? Mileage { get; set; } 
+    public uint? Mileage { get; set; }
 
     public bool IsDeleted { get; set; } = false;
     public Guid CreatedByUserId { get; set; }
@@ -21,4 +22,5 @@ public class Vehicle : AttachmentList, ISoftDeletable, ICreatedBy
     public virtual IEnumerable<Policy> Policies { get; set; } = null!;
     public virtual List<BaseInsurer> Insurers { get; set; } = null!;
     public virtual VehicleBrand VehicleBrand { get; set; } = null!;
+    public virtual List<Attachment> Attachments { get; set; } = null!;
 }

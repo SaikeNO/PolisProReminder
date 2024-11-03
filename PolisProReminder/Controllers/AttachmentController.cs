@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Attachments.Commands.DeleteAttachment;
+using PolisProReminder.Application.Attachments.Commands.UploadAttachment;
 using PolisProReminder.Application.Attachments.Queries.GetAttachment;
 
 namespace PolisProReminder.API.Controllers;
@@ -10,6 +11,13 @@ namespace PolisProReminder.API.Controllers;
 [Route("api/[controller]")]
 public class AttachmentController(IMediator mediator) : ControllerBase
 {
+    [HttpPost]
+    public async Task<ActionResult> UploadAttachment([FromForm] IEnumerable<IFormFile> attachments)
+    {
+        var id = await mediator.Send(new UploadAttachmentCommand(attachments.First()));
+        return Ok(new {Id = id});
+    }
+
     [HttpGet("{attachmentId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

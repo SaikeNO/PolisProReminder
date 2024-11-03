@@ -9,6 +9,7 @@ using PolisProReminder.Infrastructure.Persistance;
 using PolisProReminder.Infrastructure.Repositories;
 using PolisProReminder.Infrastructure.Schedulers;
 using PolisProReminder.Infrastructure.Seeders;
+using PolisProReminder.Infrastructure.Settings;
 
 namespace PolisProReminder.Infrastructure.Extensions;
 
@@ -18,6 +19,9 @@ public static class ServiceCollectionExtension
     {
         var connectionString = configuration.GetConnectionString("PolisProReminderDB");
         services.AddDbContext<InsuranceDbContext>(options => options.UseSqlServer(connectionString).LogTo(Console.WriteLine, LogLevel.Information));
+        var attachmentsSettings = configuration.GetSection("StorageSettings").Get<AttachmentsSettings>() ?? throw new InvalidOperationException("AttachmentsSettings is required");
+        services.AddSingleton(attachmentsSettings);
+
         services.AddHostedService<ArchivePoliciesService>();
 
         services.AddIdentityApiEndpoints<User>()
