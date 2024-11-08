@@ -15,6 +15,7 @@ internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) 
     internal DbSet<Vehicle> Vehicles { get; set; } = null!;
     internal DbSet<VehicleBrand> VehicleBrands { get; set; } = null!;
     internal DbSet<Attachment> Attachments { get; set; } = null!;
+    internal DbSet<TodoTask> TodoTasks { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,6 +30,7 @@ internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) 
         modelBuilder.ApplyConfiguration(new VehicleConfiguration());
         modelBuilder.ApplyConfiguration(new VehicleBrandConfiguration());
         modelBuilder.ApplyConfiguration(new AttachmentConfiguration());
+        modelBuilder.ApplyConfiguration(new TodoTaskConfiguration());
 
         modelBuilder.Entity<BaseInsurer>()
             .HasDiscriminator<string>("InsurerType")
