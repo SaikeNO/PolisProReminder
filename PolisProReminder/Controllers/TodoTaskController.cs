@@ -31,7 +31,7 @@ public class TodoTaskController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete([FromRoute] Guid id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         await _mediator.Send(new DeleteTodoTaskCommand(id));
 
