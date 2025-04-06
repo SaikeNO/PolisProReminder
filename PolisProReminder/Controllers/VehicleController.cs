@@ -22,7 +22,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments)
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments, CancellationToken cancellationToken)
     {
         VehicleReq req = JsonConvert.DeserializeObject<VehicleReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
         var command = new UpdateVehicleCommand()
@@ -42,7 +42,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
             Attachments = attachments,
         };
 
-        await mediator.Send(command);
+        await mediator.Send(command, cancellationToken);
 
         return NoContent();
     }
@@ -50,14 +50,14 @@ public class VehicleController(IMediator mediator) : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeletePolicy([FromRoute] Guid id)
+    public async Task<IActionResult> DeletePolicy([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        await mediator.Send(new DeleteVehicleCommand(id));
+        await mediator.Send(new DeleteVehicleCommand(id), cancellationToken);
         return NoContent();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments)
+    public async Task<IActionResult> Create([FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments, CancellationToken cancellationToken)
     {
         VehicleReq req = JsonConvert.DeserializeObject<VehicleReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
 
@@ -77,13 +77,13 @@ public class VehicleController(IMediator mediator) : ControllerBase
             Attachments = attachments,
         };
 
-        var id = await mediator.Send(command);
+        var id = await mediator.Send(command, cancellationToken);
 
         return CreatedAtAction(nameof(GetById), new { id }, null);
     }
 
     [HttpGet]
-    public async Task<ActionResult<PageResult<VehicleDto>>> GetAll([FromQuery] GetAllVehiclesQuery query)
+    public async Task<ActionResult<PageResult<VehicleDto>>> GetAll([FromQuery] GetAllVehiclesQuery query, CancellationToken cancellationToken)
     {
         var vehicles = await mediator.Send(query);
         return Ok(vehicles);
@@ -92,18 +92,18 @@ public class VehicleController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<VehicleDto>> GetById([FromRoute] Guid id)
+    public async Task<ActionResult<VehicleDto>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var vehicle = await mediator.Send(new GetVehicleByIdQuery(id));
+        var vehicle = await mediator.Send(new GetVehicleByIdQuery(id), cancellationToken);
         return Ok(vehicle);
     }
 
     [HttpGet("{id}/attachments")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<IEnumerable<AttachmentDto>>> GetAttachments([FromRoute] Guid id)
+    public async Task<ActionResult<IEnumerable<AttachmentDto>>> GetAttachments([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var attachmantes = await mediator.Send(new GetAllAttachmentsQuery(id));
+        var attachmantes = await mediator.Send(new GetAllAttachmentsQuery(id), cancellationToken);
         return Ok(attachmantes);
     }
 }

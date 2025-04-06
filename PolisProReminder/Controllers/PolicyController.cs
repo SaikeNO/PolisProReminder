@@ -25,7 +25,7 @@ public class PolicyController(IMediator mediator) : ControllerBase
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments)
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments, CancellationToken cancellationToken)
     {
         PolicyReq req = JsonConvert.DeserializeObject<PolicyReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
 
@@ -45,7 +45,7 @@ public class PolicyController(IMediator mediator) : ControllerBase
             Note = req.Note,
         };
 
-        await mediator.Send(command);
+        await mediator.Send(command, cancellationToken);
 
         return NoContent();
     }
@@ -53,30 +53,30 @@ public class PolicyController(IMediator mediator) : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeletePolicy([FromRoute] Guid id)
+    public async Task<IActionResult> DeletePolicy([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        await mediator.Send(new DeletePolicyCommand(id));
+        await mediator.Send(new DeletePolicyCommand(id), cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("Batch")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> DeletePoliciesBatch([FromBody] DeletePolicyBatchCommand command)
+    public async Task<IActionResult> DeletePoliciesBatch([FromBody] DeletePolicyBatchCommand command, CancellationToken cancellationToken)
     {
-        await mediator.Send(command);
+        await mediator.Send(command, cancellationToken);
         return NoContent();
     }
 
     [HttpPatch("Paid")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> PaidPolicies([FromBody] PaidPoliciesCommand command)
+    public async Task<IActionResult> PaidPolicies([FromBody] PaidPoliciesCommand command, CancellationToken cancellationToken)
     {
-        await mediator.Send(command);
+        await mediator.Send(command, cancellationToken);
         return NoContent();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments)
+    public async Task<IActionResult> Create([FromForm] string jsonString, [FromForm] IEnumerable<IFormFile> attachments, CancellationToken cancellationToken)
     {
         PolicyReq req = JsonConvert.DeserializeObject<PolicyReq>(jsonString) ?? throw new BadHttpRequestException("Bad json");
 
@@ -95,40 +95,40 @@ public class PolicyController(IMediator mediator) : ControllerBase
             Note = req.Note,
         };
 
-        var id = await mediator.Send(command);
+        var id = await mediator.Send(command, cancellationToken);
 
         return CreatedAtAction(nameof(GetById), new { id }, null);
     }
 
     [HttpGet]
-    public async Task<ActionResult<PageResult<PolicyDto>>> GetAll([FromQuery] GetAllPoliciesQuery query)
+    public async Task<ActionResult<PageResult<PolicyDto>>> GetAll([FromQuery] GetAllPoliciesQuery query, CancellationToken cancellationToken)
     {
-        var policies = await mediator.Send(query);
+        var policies = await mediator.Send(query, cancellationToken);
         return Ok(policies);
     }
 
     [HttpGet("Latest")]
-    public async Task<ActionResult<IEnumerable<PolicyDto>>> GetLatest([FromQuery] int count)
+    public async Task<ActionResult<IEnumerable<PolicyDto>>> GetLatest([FromQuery] int count, CancellationToken cancellationToken)
     {
-        var policies = await mediator.Send(new GetLatestPoliciesQuery(count));
+        var policies = await mediator.Send(new GetLatestPoliciesQuery(count), cancellationToken);
         return Ok(policies);
     }
 
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<PolicyDto>> GetById([FromRoute] Guid id)
+    public async Task<ActionResult<PolicyDto>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var policy = await mediator.Send(new GetPolicyByIdQuery(id));
+        var policy = await mediator.Send(new GetPolicyByIdQuery(id), cancellationToken);
         return Ok(policy);
     }
 
     [HttpGet("{id}/attachments")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<IEnumerable<AttachmentDto>>> GetAttachments([FromRoute] Guid id)
+    public async Task<ActionResult<IEnumerable<AttachmentDto>>> GetAttachments([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var attachmantes = await mediator.Send(new GetAllAttachmentsQuery(id));
+        var attachmantes = await mediator.Send(new GetAllAttachmentsQuery(id), cancellationToken);
         return Ok(attachmantes);
     }
 }

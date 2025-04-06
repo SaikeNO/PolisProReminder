@@ -16,15 +16,15 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
         entity.IsDeleted = true;
     }
 
-    public async Task<Guid> Create(Vehicle entity)
+    public async Task<Guid> Create(Vehicle entity, CancellationToken cancellationToken = default)
     {
-        await dbContext.Vehicles.AddAsync(entity);
-        await SaveChanges();
+        await dbContext.Vehicles.AddAsync(entity, cancellationToken);
+        await SaveChanges(cancellationToken);
 
         return entity.Id;
     }
 
-    public async Task<IEnumerable<Vehicle>> GetAll(Guid agentId)
+    public async Task<IEnumerable<Vehicle>> GetAll(Guid agentId, CancellationToken cancellationToken = default)
     {
         var vehicles = await dbContext
             .Vehicles
@@ -33,12 +33,12 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
             .Include(v => v.Insurers)
             .Include(v => v.Policies)
             .Include(v => v.VehicleBrand)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return vehicles;
     }
 
-    public async Task<Vehicle?> GetById(Guid agentId, Guid id)
+    public async Task<Vehicle?> GetById(Guid agentId, Guid id, CancellationToken cancellationToken = default)
     {
         var vehicle = await dbContext
             .Vehicles
@@ -47,19 +47,19 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
             .Include(v => v.Insurers)
             .Include(v => v.Policies)
             .Include(v => v.VehicleBrand)
-            .FirstOrDefaultAsync(v => v.Id == id);
+            .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
 
         return vehicle;
     }
 
-    public async Task<Vehicle?> GetByRegistrationNumber(Guid agentId, string registrationNumber, Guid? vehicleId)
+    public async Task<Vehicle?> GetByRegistrationNumber(Guid agentId, string registrationNumber, Guid? vehicleId, CancellationToken cancellationToken = default)
     {
         var vehicle = await dbContext
             .Vehicles
             .AsNoTracking()
             .CreatedByAgent(agentId)
             .NotDeleted()
-            .FirstOrDefaultAsync(v => v.RegistrationNumber == registrationNumber && v.Id != vehicleId);
+            .FirstOrDefaultAsync(v => v.RegistrationNumber == registrationNumber && v.Id != vehicleId, cancellationToken);
 
         return vehicle;
     }
@@ -69,7 +69,8 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
         int pageSize,
         int pageNumber,
         string? sortBy,
-        SortDirection sortDirection)
+        SortDirection sortDirection,
+        CancellationToken cancellationToken = default)
     {
         var searchPhraseLower = searchPhrase?.ToLower();
 
@@ -93,7 +94,7 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
                     .FilterBySearchPhrase(searchPhraseLower)
                     .Any(b => v.Insurers.Select(insurer => insurer.Id).Contains(b.Id)));
 
-        var totalCount = await baseQuery.CountAsync();
+        var totalCount = await baseQuery.CountAsync(cancellationToken);
 
         if (sortBy != null && sortDirection != SortDirection.None)
         {
@@ -114,10 +115,10 @@ internal class VehiclesRepository(InsuranceDbContext dbContext) : IVehiclesRepos
         var vehicles = await baseQuery
             .Skip(pageSize * pageNumber)
             .Take(pageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return (vehicles, totalCount);
     }
 
-    public Task SaveChanges() => dbContext.SaveChangesAsync();
+    public Task SaveChanges(CancellationToken cancellationToken = default) => dbContext.SaveChangesAsync(cancellationToken);
 }

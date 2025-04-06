@@ -24,9 +24,9 @@ public class InsurerController(IMediator mediator) : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete([FromRoute] Guid id)
+    public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        await mediator.Send(new DeleteInsurerCommand(id));
+        await mediator.Send(new DeleteInsurerCommand(id), cancellationToken);
 
         return NoContent();
     }
@@ -34,17 +34,17 @@ public class InsurerController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<BaseInsurerDto?>> GetById([FromRoute] Guid id)
+    public async Task<ActionResult<BaseInsurerDto?>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var insurer = await mediator.Send(new GetInsurerByIdQuery(id));
+        var insurer = await mediator.Send(new GetInsurerByIdQuery(id), cancellationToken);
 
         return Ok(insurer);
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<InsurerBasicInfoDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<InsurerBasicInfoDto>>> GetAll(CancellationToken cancellationToken)
     {
-        var insurers = await mediator.Send(new GetAllInsurersQuery());
+        var insurers = await mediator.Send(new GetAllInsurersQuery(), cancellationToken);
 
         return Ok(insurers);
     }
@@ -52,67 +52,67 @@ public class InsurerController(IMediator mediator) : ControllerBase
     [HttpPut("Individual/{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateIndividual([FromRoute] Guid id, [FromBody] UpdateIndividualInsurerCommand command)
+    public async Task<IActionResult> UpdateIndividual([FromRoute] Guid id, [FromBody] UpdateIndividualInsurerCommand command, CancellationToken cancellationToken)
     {
         command.Id = id;
-        await mediator.Send(command);
+        await mediator.Send(command, cancellationToken);
 
         return NoContent();
     }
 
     [HttpPost("Individual")]
-    public async Task<IActionResult> CreateIndividual([FromBody] CreateIndividualInsurerCommand command)
+    public async Task<IActionResult> CreateIndividual([FromBody] CreateIndividualInsurerCommand command, CancellationToken cancellationToken)
     {
-        var id = await mediator.Send(command);
+        var id = await mediator.Send(command, cancellationToken);
 
         return CreatedAtAction(nameof(GetById), new { id }, null);
     }
 
     [HttpGet("Individual")]
-    public async Task<IActionResult> GetAllIndividual()
+    public async Task<IActionResult> GetAllIndividual(CancellationToken cancellationToken)
     {
-        var insurers = await mediator.Send(new GetAllIndividualInsurersQuery());
+        var insurers = await mediator.Send(new GetAllIndividualInsurersQuery(), cancellationToken);
 
         return Ok(insurers);
     }
 
     [HttpGet("Individual/Paginated")]
-    public async Task<ActionResult<PageResult<IndividualInsurerDto>>> GetIndividualPaginated([FromQuery] GetPaginatedIndividualInsurersQuery query)
+    public async Task<ActionResult<PageResult<IndividualInsurerDto>>> GetIndividualPaginated([FromQuery] GetPaginatedIndividualInsurersQuery query, CancellationToken cancellationToken)
     {
-        var insurers = await mediator.Send(query);
+        var insurers = await mediator.Send(query, cancellationToken);
         return Ok(insurers);
     }
 
     [HttpPut("Business/{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateBusiness([FromRoute] Guid id, [FromBody] UpdateBusinessInsurerCommand command)
+    public async Task<IActionResult> UpdateBusiness([FromRoute] Guid id, [FromBody] UpdateBusinessInsurerCommand command, CancellationToken cancellationToken)
     {
         command.Id = id;
-        await mediator.Send(command);
+        await mediator.Send(command, cancellationToken);
 
         return NoContent();
     }
 
     [HttpPost("Business")]
-    public async Task<IActionResult> CreateBusiness([FromBody] CreateBusinessInsurerCommand command)
+    public async Task<IActionResult> CreateBusiness([FromBody] CreateBusinessInsurerCommand command, CancellationToken cancellationToken)
     {
-        var id = await mediator.Send(command);
+        var id = await mediator.Send(command, cancellationToken);
 
         return CreatedAtAction(nameof(GetById), new { id }, null);
     }
 
     [HttpGet("Business")]
-    public async Task<ActionResult<IEnumerable<BusinessInsurerDto>>> GetAllBusiness([FromQuery] GetAllBusinessInsurersQuery query)
+    public async Task<ActionResult<IEnumerable<BusinessInsurerDto>>> GetAllBusiness([FromQuery] GetAllBusinessInsurersQuery query, CancellationToken cancellationToken)
     {
-        var insurers = await mediator.Send(query);
+        var insurers = await mediator.Send(query, cancellationToken);
         return Ok(insurers);
     }
 
     [HttpGet("Business/Paginated")]
-    public async Task<ActionResult<PageResult<BusinessInsurerDto>>> GetBusinessPaginated([FromQuery] GetPaginatedBusinessInsurersQuery query)
+    public async Task<ActionResult<PageResult<BusinessInsurerDto>>> GetBusinessPaginated([FromQuery] GetPaginatedBusinessInsurersQuery query, CancellationToken cancellationToken)
     {
-        var insurers = await mediator.Send(query);
+        var insurers = await mediator.Send(query, cancellationToken);
         return Ok(insurers);
     }
 }
