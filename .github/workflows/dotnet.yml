@@ -26,6 +26,10 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
+        install-dir: /tmp/dotnet
+
+    - name: Add dotnet to PATH
+      run: echo "/tmp/dotnet" >> $GITHUB_PATH
     
     - name: Install dotnet-ef tools
       run: |
