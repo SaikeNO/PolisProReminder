@@ -6,45 +6,53 @@ on:
       - main
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish -c Release -o build
+
+      - name: Archive build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy_dist
+          path: build
+
   deploy:
     runs-on: self-hosted
+    needs: build
 
     steps:
-    - name: Stop docker containers
-      run: |
-        sudo docker stop `sudo docker ps -a -q`
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: deploy_dist
 
-    - name: Install dotnet-ef tools
-      run: |
-        dotnet new tool-manifest
-        dotnet tool install dotnet-ef
-     
-    - name: Install dependencies
-      run: dotnet restore
+      - name: Publish
+        run: sudo cp -r * /var/www/be
 
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-
-    - name: Publish
-      run: dotnet publish -c Release -o /var/www/be
-
-    - name: Copy appsetting.Production.json
-      run: |
+      - name: Copy appsetting.Production.json
+        run: |
           sudo cp /var/www/settings/appsettings.Production.json /var/www/be/appsettings.Production.json
           sudo cp /var/www/settings/appsettings.Production.json ./PolisProReminder/appsettings.Production.json
 
-    - name: Start docker containers
-      run: |
-        sudo docker start `sudo docker ps -a -q`
-        sudo docker ps -a
-        
-    - name: Update database
-      run: dotnet ef database update -c InsuranceDbContext -p Infrastructure -s PolisProReminder
-      env:
-        ASPNETCORE_ENVIRONMENT: Production
-
-    - name: Restart the app
-      run: sudo systemctl restart polis-pro-be.service
+      - name: Restart the app
+        run: sudo systemctl restart polis-pro-be.service

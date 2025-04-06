@@ -36,6 +36,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
+    await app.Services.MigrateDatabaseAsync();
     await seeder.SeedDeployment();
 }
 
