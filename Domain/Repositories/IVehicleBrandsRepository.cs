@@ -4,9 +4,9 @@ namespace PolisProReminder.Domain.Repositories;
 
 public interface IVehicleBrandsRepository
 {
-    Task<Guid> Create(VehicleBrand entity);
-    Task Delete(VehicleBrand entity);
-    Task<IEnumerable<VehicleBrand>> GetAll();
-    Task<VehicleBrand?> GetById(Guid id);
-    Task SaveChanges();
+    Task<Guid> Create(VehicleBrand entity, CancellationToken cancellationToken = default);
+    Task Delete(VehicleBrand entity, CancellationToken cancellationToken = default);
+    Task<IEnumerable<VehicleBrand>> GetAll(CancellationToken cancellationToken = default);
+    Task<VehicleBrand?> GetById(Guid id, CancellationToken cancellationToken = default);
+    Task SaveChanges(CancellationToken cancellationToken = default);
 }

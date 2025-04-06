@@ -4,8 +4,8 @@ using PolisProReminder.Mailer.Extensions;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Infrastructure.Extensions;
 using PolisProReminder.Infrastructure.Seeders;
-using PolisProReminder.Middlewares;
 using Serilog;
+using PolisProReminder.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 

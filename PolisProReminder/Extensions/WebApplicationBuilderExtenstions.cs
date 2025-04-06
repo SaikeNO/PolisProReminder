@@ -1,5 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
-using PolisProReminder.Middlewares;
+using PolisProReminder.API.Middlewares;
 
 namespace PolisProReminder.API.Extensions;
 

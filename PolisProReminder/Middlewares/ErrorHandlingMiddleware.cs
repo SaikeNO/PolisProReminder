@@ -1,5 +1,5 @@
 ﻿using PolisProReminder.Domain.Exceptions;
-namespace PolisProReminder.Middlewares;
+namespace PolisProReminder.API.Middlewares;
 
 public class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger) : IMiddleware
 {
