@@ -17,16 +17,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up environment variables
-      run: |
-        echo "HOME=/tmp" >> $GITHUB_ENV
-        echo "DOTNET_CLI_HOME=/tmp" >> $GITHUB_ENV
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '8.0.x'
-    
     - name: Install dotnet-ef tools
       run: |
         dotnet new tool-manifest
