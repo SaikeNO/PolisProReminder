@@ -13,18 +13,18 @@ public class AttachmentController(IMediator mediator) : ControllerBase
     [HttpGet("{attachmentId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> GetAttachment([FromRoute] Guid attachmentId)
+    public async Task<ActionResult> GetAttachment([FromRoute] Guid attachmentId, CancellationToken cancellationToken)
     {
-        var attachment = await mediator.Send(new GetAttachmentQuery(attachmentId));
+        var attachment = await mediator.Send(new GetAttachmentQuery(attachmentId), cancellationToken);
         return File(attachment.Value.Item1, "application/octet-stream", attachment.Value.Item2);
     }
 
     [HttpDelete("{attachmentId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> DeleteAttachment([FromRoute] Guid attachmentId)
+    public async Task<ActionResult> DeleteAttachment([FromRoute] Guid attachmentId, CancellationToken cancellationToken)
     {
-        await mediator.Send(new DeleteAttachmentCommand(attachmentId));
+        await mediator.Send(new DeleteAttachmentCommand(attachmentId), cancellationToken);
         return NoContent();
     }
 }

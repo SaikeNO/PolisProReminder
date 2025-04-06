@@ -14,33 +14,32 @@ namespace PolisProReminder.API.Controllers;
 public class UserController(IMediator mediator) : ControllerBase
 {
     [HttpPatch("user")]
-    public async Task<IActionResult> UpdateUserDetails(UpdateUserDetailsCommand command)
+    public async Task<IActionResult> UpdateUserDetails(UpdateUserDetailsCommand command, CancellationToken cancellationToken)
     {
-        await mediator.Send(command);
+        await mediator.Send(command, cancellationToken);
         return NoContent();
     }
 
-
     [HttpPost("userRole")]
     [Authorize(Roles = UserRoles.Admin)]
-    public async Task<IActionResult> AssignUserRole(AssignUserRoleCommand command)
+    public async Task<IActionResult> AssignUserRole(AssignUserRoleCommand command, CancellationToken cancellationToken)
     {
-        await mediator.Send(command);
+        await mediator.Send(command, cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("userRole")]
     [Authorize(Roles = UserRoles.Admin)]
-    public async Task<IActionResult> UnassignUserRole(UnassignUserRoleCommand command)
+    public async Task<IActionResult> UnassignUserRole(UnassignUserRoleCommand command, CancellationToken cancellationToken)
     {
-        await mediator.Send(command);
+        await mediator.Send(command, cancellationToken);
         return NoContent();
     }
 
     [HttpPost("changePassword")]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command, CancellationToken cancellationToken)
     {
-        await mediator.Send(command);
+        await mediator.Send(command,cancellationToken);
 
         return NoContent();
     }
