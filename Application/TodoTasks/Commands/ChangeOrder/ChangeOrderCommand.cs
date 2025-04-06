@@ -5,5 +5,5 @@ namespace PolisProReminder.Application.TodoTasks.Commands.ChangeOrder;
 
 public class ChangeOrderCommand : IRequest
 {
-    public IEnumerable<TodoTaskDto> TodoTasks { get; set; }
+    public required IEnumerable<TodoTaskDto> TodoTasks { get; set; }
 }

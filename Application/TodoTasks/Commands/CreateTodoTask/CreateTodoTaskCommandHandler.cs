@@ -18,6 +18,7 @@ public class CreateTodoTaskCommandHandler(IUserContext userContext, ITodoTasksRe
         {
             Title = request.Title,
             CreatedByUserId = currentUser.Id,
+            Order = request.Order,
         };
 
         var id = await _todoTasksRepository.Create(task);

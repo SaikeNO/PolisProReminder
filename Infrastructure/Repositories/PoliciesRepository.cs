@@ -154,6 +154,7 @@ internal class PoliciesRepository(InsuranceDbContext dbContext) : IPoliciesRepos
             .Policies
             .CreatedByAgent(agentId)
             .NotDeleted()
+            .Where(p => p.IsArchived == false)
             .Include(p => p.InsuranceCompany)
             .Include(p => p.Insurers)
             .Include(p => p.InsuranceTypes)

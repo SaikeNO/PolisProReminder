@@ -41,5 +41,5 @@ internal class TodoTasksRepository(InsuranceDbContext dbContext) : ITodoTasksRep
         return entity.Id;
     }
 
-    public Task SaveChanges() => _dbContext.SaveChangesAsync();
+    public Task SaveChanges(CancellationToken cancellationToken = default) => _dbContext.SaveChangesAsync(cancellationToken);
 }

@@ -19,6 +19,9 @@ internal class ChangeOrderCommandHandler(IUserContext userContext, ITodoTasksRep
             if (task == null) continue;
 
             task.Order = requestTask.Order;
+            task.IsCompleted = requestTask.IsCompleted;
         }
+
+        await _todoTasksRepository.SaveChanges(cancellationToken);
     }
 }
