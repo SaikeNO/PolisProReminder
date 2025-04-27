@@ -17,7 +17,7 @@ namespace PolisProReminder.API.Controllers;
 [Route("api/[controller]")]
 public class UserController(IMediator mediator) : ControllerBase
 {
-    [HttpPatch("user")]
+    [HttpPatch("info")]
     public async Task<IActionResult> UpdateUserDetails(UpdateUserDetailsCommand command, CancellationToken cancellationToken)
     {
         await mediator.Send(command, cancellationToken);
