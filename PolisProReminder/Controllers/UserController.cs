@@ -7,6 +7,7 @@ using PolisProReminder.Application.Users.Commands.UnassignUserRole;
 using PolisProReminder.Application.Users.Commands.UpdateUserDetails;
 using PolisProReminder.Application.Users.Dtos;
 using PolisProReminder.Application.Users.Queries.GetAssistants;
+using PolisProReminder.Application.Users.Queries.Info;
 using PolisProReminder.Domain.Constants;
 
 namespace PolisProReminder.API.Controllers;
@@ -49,9 +50,17 @@ public class UserController(IMediator mediator) : ControllerBase
 
     [HttpGet("assistants")]
     [Authorize(Roles = UserRoles.Agent)]
-    public async Task<ActionResult<IEnumerable<AssistantDto>>> GetAssistants(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetAssistants(CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetAssistantsQuery(), cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpGet("info")]
+    public async Task<ActionResult<UserDto>> GetInfo(CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(new GetInfoQuery(), cancellationToken);
 
         return Ok(result);
     }
