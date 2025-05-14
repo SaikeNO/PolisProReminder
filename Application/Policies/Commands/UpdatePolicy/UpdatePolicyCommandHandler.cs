@@ -59,7 +59,7 @@ public class UpdatePolicyCommandHandler(IUserContext userContext,
         policy.Attachments = [.. policy.Attachments, .. attachments];
         await policiesRepository.SaveChanges();
 
-        var notification = new UpdatePolicyNotification(policy);
+        var notification = new PolicyUpdatedNotification(policy);
         await mediator.Publish(notification, cancellationToken);
     }
 }

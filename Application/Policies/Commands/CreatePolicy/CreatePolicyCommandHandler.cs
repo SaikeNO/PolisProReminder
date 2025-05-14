@@ -58,7 +58,7 @@ public class CreatePolicyCommandHandler(IUserContext userContext,
 
         var id = await policiesRepository.Create(createPolicy);
 
-        var notification = new CreatePolicyNotification(createPolicy);
+        var notification = new PolicyCreatedNotification(createPolicy);
         await mediator.Publish(notification, cancellationToken);
 
         return id;
