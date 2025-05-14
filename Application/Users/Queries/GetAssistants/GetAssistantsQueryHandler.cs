@@ -14,14 +14,23 @@ internal class GetAssistantsQueryHandler(UserManager<User> userManager, IUserCon
 
         var assistants = await userManager.Users
             .Where(x => x.AgentId == currentUser.Id && x.Id != currentUser.Id)
-            .Select(x => new UserDto
-            {
-                Id = x.Id,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Email = x.Email,
-            }).ToListAsync(cancellationToken);
+            .ToListAsync(cancellationToken);
 
-        return assistants;
+        var assistantDtos = new List<UserDto>();
+
+        foreach (var assistant in assistants)
+        {
+            var roles = await userManager.GetRolesAsync(assistant);
+            assistantDtos.Add(new UserDto
+            {
+                Id = assistant.Id,
+                FirstName = assistant.FirstName,
+                LastName = assistant.LastName,
+                Email = assistant.Email,
+                Roles = roles
+            });
+        }
+
+        return assistantDtos;
     }
 }
