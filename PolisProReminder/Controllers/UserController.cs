@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Users.Commands.AssignUserRole;
 using PolisProReminder.Application.Users.Commands.ChangePassword;
+using PolisProReminder.Application.Users.Commands.CreateAssistant;
 using PolisProReminder.Application.Users.Commands.UnassignUserRole;
 using PolisProReminder.Application.Users.Commands.UpdateUserDetails;
 using PolisProReminder.Application.Users.Dtos;
@@ -40,6 +41,14 @@ public class UserController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [HttpPost("assistant")]
+    [Authorize(Roles = UserRoles.Agent)]
+    public async Task<ActionResult<Guid>> CreateAssistant([FromBody] CreateAssistantCommand command, CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+
     [HttpPost("changePassword")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command, CancellationToken cancellationToken)
     {
@@ -48,7 +57,7 @@ public class UserController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("assistants")]
+    [HttpGet("assistant")]
     [Authorize(Roles = UserRoles.Agent)]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAssistants(CancellationToken cancellationToken)
     {
