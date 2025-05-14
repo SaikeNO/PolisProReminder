@@ -113,12 +113,12 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             },
             new()
             {
-                RoleId = roles.First(r => r.Name == UserRoles.User).Id,
+                RoleId = roles.First(r => r.Name == UserRoles.Assistant).Id,
                 UserId = users.First(u => u.Email == "user1@email.com").Id
             },
             new()
             {
-                RoleId = roles.First(r => r.Name == UserRoles.User).Id,
+                RoleId = roles.First(r => r.Name == UserRoles.Assistant).Id,
                 UserId = users.First(u => u.Email == "user2@email.com").Id
             }
             ];
@@ -209,10 +209,10 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
     private IEnumerable<UserRole> GetRoles()
     {
         List<UserRole> roles = [
-            new(UserRoles.User)
+            new(UserRoles.Assistant)
             {
                 Id = Guid.NewGuid(),
-                NormalizedName = UserRoles.User.ToUpper(),
+                NormalizedName = UserRoles.Assistant.ToUpper(),
             },
             new(UserRoles.Agent)
             {
