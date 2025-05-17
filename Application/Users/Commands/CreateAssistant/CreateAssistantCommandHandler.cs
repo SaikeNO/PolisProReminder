@@ -4,7 +4,6 @@ using PolisProReminder.Application.Users.Notifications;
 using PolisProReminder.Domain.Constants;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Exceptions;
-using PolisProReminder.Domain.Extensions;
 
 namespace PolisProReminder.Application.Users.Commands.CreateAssistant;
 
@@ -26,7 +25,7 @@ internal sealed class CreateAssistantCommandHandler(
 
         var newAssistant = new User
         {
-            UserName = request.FirstName.RemoveDiacritics().ToUpper().First() + request.LastName.RemoveDiacritics(),
+            UserName = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
             Email = request.Email,

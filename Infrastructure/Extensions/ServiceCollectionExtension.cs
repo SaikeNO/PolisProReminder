@@ -20,7 +20,10 @@ public static class ServiceCollectionExtension
         services.AddDbContext<InsuranceDbContext>(options => options.UseSqlServer(connectionString).LogTo(Console.WriteLine, LogLevel.Information));
         services.AddHostedService<ArchivePoliciesService>();
 
-        services.AddIdentityApiEndpoints<User>()
+        services.AddIdentityApiEndpoints<User>(options =>
+        {
+            options.SignIn.RequireConfirmedEmail = true;
+        })
             .AddRoles<UserRole>()
             .AddClaimsPrincipalFactory<InsuranceUserClaimsPrincipalFactory>()
             .AddEntityFrameworkStores<InsuranceDbContext>();
