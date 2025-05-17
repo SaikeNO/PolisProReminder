@@ -6,7 +6,7 @@ public static class MailMessages
     public static string PolicyUpdated => "Polisa nr {0} została edytowana przez użytkownika {1}";
     public static string AssistantCreated => "<p>Witaj {0},</p>" +
             "<p>Twoje konto zostało utworzone. Twój login do platformy PolisProReminder to: <b>{1}</b></p>" +
-            "<p>Aby aktywować konto, kliknij poniższy link:</p>" +
+            "<p>Aby aktywować konto i ustawić hasło, kliknij poniższy link:</p>" +
             "<a href='{2}'>Aktywuj konto</a>" +
             "<p>Jeśli nie utworzyłeś konta, zignoruj tę wiadomość.</p>";
 }
