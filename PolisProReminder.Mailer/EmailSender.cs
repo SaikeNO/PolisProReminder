@@ -16,13 +16,7 @@ public class EmailSender(IMediator mediator, IConfiguration configuration) : IEm
     public async Task SendConfirmationLinkAsync(User user, string email, string confirmationLink)
     {
         var uri = new Uri(confirmationLink);
-        var frontendUri = new Uri(_frontendUrl);
-        var newLink = new UriBuilder(uri)
-        {
-            Scheme = frontendUri.Scheme,
-            Host = frontendUri.Host,
-            Port = frontendUri.IsDefaultPort ? -1 : frontendUri.Port
-        }.Uri.ToString();
+        var newLink = $"{_frontendUrl}/auth/confirmEmail{uri.Query}";
 
         var text = string.Format(MailMessages.ConfirmEmailChanged, user.FirstName, newLink);
 
