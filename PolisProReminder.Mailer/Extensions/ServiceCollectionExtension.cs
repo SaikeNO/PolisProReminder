@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PolisProReminder.Domain.Entities;
 using PolisProReminder.Mailer.RabbitMQ;
 
 namespace PolisProReminder.Mailer.Extensions;
@@ -15,5 +17,7 @@ public static class ServiceCollectionExtension
         services.AddSingleton(rabbitMQSettings);
 
         services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();
+
+        services.AddTransient<IEmailSender<User>, EmailSender>();
     }
 }

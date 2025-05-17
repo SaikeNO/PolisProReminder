@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Users.Commands.AssignUserRole;
-using PolisProReminder.Application.Users.Commands.ChangePassword;
 using PolisProReminder.Application.Users.Commands.CreateAssistant;
 using PolisProReminder.Application.Users.Commands.UnassignUserRole;
 using PolisProReminder.Application.Users.Commands.UpdateUserDetails;
@@ -47,14 +46,6 @@ public class UserController(IMediator mediator) : ControllerBase
     {
         var result = await mediator.Send(command, cancellationToken);
         return Ok(result);
-    }
-
-    [HttpPost("changePassword")]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command, CancellationToken cancellationToken)
-    {
-        await mediator.Send(command, cancellationToken);
-
-        return NoContent();
     }
 
     [HttpGet("assistant")]
