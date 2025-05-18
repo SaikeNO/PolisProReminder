@@ -23,6 +23,7 @@ public static class ServiceCollectionExtension
         services.AddIdentityApiEndpoints<User>(options =>
         {
             options.SignIn.RequireConfirmedEmail = true;
+            options.Lockout.AllowedForNewUsers = true;
         })
             .AddRoles<UserRole>()
             .AddClaimsPrincipalFactory<InsuranceUserClaimsPrincipalFactory>()

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PolisProReminder.Domain.Entities;
+﻿using PolisProReminder.Domain.Entities;
 using PolisProReminder.Domain.Interfaces;
 
 namespace PolisProReminder.Infrastructure.Extensions;
@@ -10,7 +9,7 @@ public static class QueryableExtensions
     public static IQueryable<T> CreatedByAgent<T>(this IQueryable<T> query, Guid AgentId) where T : class, ICreatedBy => query.Where(q => q.CreatedByAgentId == AgentId);
     public static IQueryable<IndividualInsurer> FilterBySearchPhrase(this IQueryable<IndividualInsurer> query, string? searchPhraseLower)
     {
-        if(string.IsNullOrEmpty(searchPhraseLower))
+        if (string.IsNullOrEmpty(searchPhraseLower))
         {
             return query;
         }

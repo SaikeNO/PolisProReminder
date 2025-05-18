@@ -1,21 +1,22 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using PolisProReminder.Application.Users.Dtos;
 using PolisProReminder.Domain.Entities;
+using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.Users.Queries.Info;
 
-internal sealed class GetInfoQueryHandler(UserManager<User> userManager, IUserContext userContext) : IRequestHandler<GetInfoQuery, UserDto>
+internal sealed class GetInfoQueryHandler(UserManager<User> userManager, IUserContext userContext, IUsersRepository usersRepository) : IRequestHandler<GetInfoQuery, UserDto>
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly IUserContext _userContext = userContext;
+    private readonly IUsersRepository _usersRepository = usersRepository;
 
     public async Task<UserDto> Handle(GetInfoQuery request, CancellationToken cancellationToken)
     {
         var currentUser = _userContext.GetCurrentUser() ?? throw new InvalidOperationException("Current User is not present");
 
-        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == currentUser.Id, cancellationToken)
+        var user = await _usersRepository.GetUserAsync(currentUser.Id, cancellationToken)
             ?? throw new InvalidOperationException("User not found");
 
         var userDto = new UserDto

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.Users.Commands.AssignUserRole;
 using PolisProReminder.Application.Users.Commands.CreateAssistant;
+using PolisProReminder.Application.Users.Commands.DeleteAssistant;
+using PolisProReminder.Application.Users.Commands.LockoutAssistant;
 using PolisProReminder.Application.Users.Commands.UnassignUserRole;
 using PolisProReminder.Application.Users.Commands.UpdateUserDetails;
 using PolisProReminder.Application.Users.Dtos;
@@ -57,6 +59,24 @@ public class UserController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
+    [HttpDelete("assistant/{assistantId:guid}")]
+    [Authorize(Roles = UserRoles.Agent)]
+    public async Task<IActionResult> DeleteAssistant([FromRoute] Guid assistantId, CancellationToken cancellationToken)
+    {
+        await mediator.Send(new DeleteAssistantCommand { AssistantId = assistantId }, cancellationToken);
+
+        return NoContent();
+    }
+
+    [HttpPatch("assistant/{assistantId:guid}/lockout")]
+    [Authorize(Roles = UserRoles.Agent)]
+    public async Task<IActionResult> LockoutAssistant([FromRoute] Guid assistantId, CancellationToken cancellationToken)
+    {
+        await mediator.Send(new LockoutAssistantCommand { AssistantId = assistantId }, cancellationToken);
+
+        return NoContent();
+    }
+
     [HttpGet("info")]
     public async Task<ActionResult<UserDto>> GetInfo(CancellationToken cancellationToken)
     {
@@ -64,4 +84,5 @@ public class UserController(IMediator mediator) : ControllerBase
 
         return Ok(result);
     }
+
 }

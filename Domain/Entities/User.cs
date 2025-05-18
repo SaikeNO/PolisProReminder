@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using PolisProReminder.Domain.Interfaces;
 
 namespace PolisProReminder.Domain.Entities;
-public class User : IdentityUser<Guid>
+public class User : IdentityUser<Guid>, ISoftDeletable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -14,11 +15,12 @@ public class User : IdentityUser<Guid>
     }
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
+    public bool IsDeleted { get; set; } = false;
 
     public Guid? AgentId { get; set; }
     public virtual User? Agent { get; set; } = null!;
 
-    public ICollection<User> AssignedUsers { get; set; } = [];
+    public ICollection<User> Assistants { get; set; } = [];
 }
 
 public class UserRole : IdentityRole<Guid>

@@ -16,7 +16,9 @@ internal sealed class GetAssistantsQueryHandler(UserManager<User> userManager, I
         var currentUser = _userContext.GetCurrentUser() ?? throw new InvalidOperationException("Current User is not present");
 
         var assistants = await _userManager.Users
-            .Where(x => x.AgentId == currentUser.Id && x.Id != currentUser.Id)
+            .Where(x => x.AgentId == currentUser.Id
+                && x.Id != currentUser.Id
+                && !x.IsDeleted)
             .ToListAsync(cancellationToken);
 
         var assistantDtos = new List<UserDto>();
