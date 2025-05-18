@@ -6,13 +6,16 @@ using PolisProReminder.Domain.Entities;
 
 namespace PolisProReminder.Application.Users.Queries.GetAssistants;
 
-internal class GetAssistantsQueryHandler(UserManager<User> userManager, IUserContext userContext) : IRequestHandler<GetAssistantsQuery, IEnumerable<UserDto>>
+internal sealed class GetAssistantsQueryHandler(UserManager<User> userManager, IUserContext userContext) : IRequestHandler<GetAssistantsQuery, IEnumerable<UserDto>>
 {
+    private readonly UserManager<User> _userManager = userManager;
+    private readonly IUserContext _userContext = userContext;
+
     public async Task<IEnumerable<UserDto>> Handle(GetAssistantsQuery request, CancellationToken cancellationToken)
     {
-        var currentUser = userContext.GetCurrentUser() ?? throw new InvalidOperationException("Current User is not present");
+        var currentUser = _userContext.GetCurrentUser() ?? throw new InvalidOperationException("Current User is not present");
 
-        var assistants = await userManager.Users
+        var assistants = await _userManager.Users
             .Where(x => x.AgentId == currentUser.Id && x.Id != currentUser.Id)
             .ToListAsync(cancellationToken);
 
@@ -20,14 +23,14 @@ internal class GetAssistantsQueryHandler(UserManager<User> userManager, IUserCon
 
         foreach (var assistant in assistants)
         {
-            var roles = await userManager.GetRolesAsync(assistant);
             assistantDtos.Add(new UserDto
             {
                 Id = assistant.Id,
                 FirstName = assistant.FirstName,
                 LastName = assistant.LastName,
-                Email = assistant.Email,
-                Roles = roles
+                Email = await _userManager.GetEmailAsync(assistant) ?? throw new NotSupportedException("Users must have an email."),
+                IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(assistant),
+                Roles = await _userManager.GetRolesAsync(assistant)
             });
         }
 

@@ -1,10 +1,11 @@
 ﻿namespace PolisProReminder.Application.Users.Dtos;
 
-public class UserDto
+public record UserDto
 {
-    public Guid Id { get; set; }
-    public string FirstName { get; set; } = default!;
-    public string LastName { get; set; } = default!;
-    public string Email { get; set; } = default!;
-    public IEnumerable<string> Roles { get; set; } = default!;
+    public Guid Id { get; init; }
+    public string FirstName { get; init; } = default!;
+    public string LastName { get; init; } = default!;
+    public string Email { get; init; } = default!;
+    public bool IsEmailConfirmed { get; init; }
+    public IEnumerable<string> Roles { get; init; } = default!;
 }
