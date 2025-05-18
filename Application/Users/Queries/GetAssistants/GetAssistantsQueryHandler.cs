@@ -1,25 +1,22 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using PolisProReminder.Application.Users.Dtos;
 using PolisProReminder.Domain.Entities;
+using PolisProReminder.Domain.Repositories;
 
 namespace PolisProReminder.Application.Users.Queries.GetAssistants;
 
-internal sealed class GetAssistantsQueryHandler(UserManager<User> userManager, IUserContext userContext) : IRequestHandler<GetAssistantsQuery, IEnumerable<UserDto>>
+internal sealed class GetAssistantsQueryHandler(UserManager<User> userManager, IUsersRepository usersRepository, IUserContext userContext) : IRequestHandler<GetAssistantsQuery, IEnumerable<UserDto>>
 {
     private readonly UserManager<User> _userManager = userManager;
+    private readonly IUsersRepository _usersRepository = usersRepository;
     private readonly IUserContext _userContext = userContext;
 
     public async Task<IEnumerable<UserDto>> Handle(GetAssistantsQuery request, CancellationToken cancellationToken)
     {
         var currentUser = _userContext.GetCurrentUser() ?? throw new InvalidOperationException("Current User is not present");
 
-        var assistants = await _userManager.Users
-            .Where(x => x.AgentId == currentUser.Id
-                && x.Id != currentUser.Id
-                && !x.IsDeleted)
-            .ToListAsync(cancellationToken);
+        var assistants = await _usersRepository.GetAssistantsAsync(currentUser.Id, cancellationToken);
 
         var assistantDtos = new List<UserDto>();
 

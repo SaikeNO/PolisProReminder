@@ -6,6 +6,7 @@ using PolisProReminder.Application.Users.Commands.CreateAssistant;
 using PolisProReminder.Application.Users.Commands.DeleteAssistant;
 using PolisProReminder.Application.Users.Commands.LockoutAssistant;
 using PolisProReminder.Application.Users.Commands.UnassignUserRole;
+using PolisProReminder.Application.Users.Commands.UnlockAssistant;
 using PolisProReminder.Application.Users.Commands.UpdateUserDetails;
 using PolisProReminder.Application.Users.Dtos;
 using PolisProReminder.Application.Users.Queries.GetAssistants;
@@ -73,6 +74,15 @@ public class UserController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> LockoutAssistant([FromRoute] Guid assistantId, CancellationToken cancellationToken)
     {
         await mediator.Send(new LockoutAssistantCommand { AssistantId = assistantId }, cancellationToken);
+
+        return NoContent();
+    }
+
+    [HttpPatch("assistant/{assistantId:guid}/unlock")]
+    [Authorize(Roles = UserRoles.Agent)]
+    public async Task<IActionResult> UnlockAssistant([FromRoute] Guid assistantId, CancellationToken cancellationToken)
+    {
+        await mediator.Send(new UnlockAssistantCommand { AssistantId = assistantId }, cancellationToken);
 
         return NoContent();
     }
