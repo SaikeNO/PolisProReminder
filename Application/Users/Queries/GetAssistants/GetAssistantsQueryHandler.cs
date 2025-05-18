@@ -32,6 +32,7 @@ internal sealed class GetAssistantsQueryHandler(UserManager<User> userManager, I
                 LastName = assistant.LastName,
                 Email = await _userManager.GetEmailAsync(assistant) ?? throw new NotSupportedException("Users must have an email."),
                 IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(assistant),
+                IsLockedOut = await _userManager.IsLockedOutAsync(assistant),
                 Roles = await _userManager.GetRolesAsync(assistant)
             });
         }
