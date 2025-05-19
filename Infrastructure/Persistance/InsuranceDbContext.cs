@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PolisProReminder.Domain.Entities;
 using PolisProReminder.Infrastructure.Persistance.Configurations;
+using PolisProReminder.Infrastructure.Security;
 
 namespace PolisProReminder.Infrastructure.Persistance;
 
-internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) : IdentityDbContext<User, UserRole, Guid>(options)
+internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options, IPersonalDataProtector personalDataProtector) : IdentityDbContext<User, UserRole, Guid>(options)
 {
+    private readonly IPersonalDataProtector _personalDataProtector = personalDataProtector;
+
     internal DbSet<IndividualInsurer> IndividualInsurers { get; set; } = null!;
     internal DbSet<BusinessInsurer> BusinessInsurers { get; set; } = null!;
     internal DbSet<Policy> Policies { get; set; } = null!;
@@ -60,5 +64,29 @@ internal class InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) 
                {
                    j.HasKey("VehicleId", "InsurerId");
                });
+
+        var converter = new PersonalDataConverter(_personalDataProtector);
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            var clrType = entityType.ClrType;
+            if (clrType == null) continue;
+
+            var personalDataProps = clrType
+                .GetProperties()
+                .Where(p => Attribute.IsDefined(p, typeof(ProtectedPersonalDataAttribute)));
+
+            foreach (var prop in personalDataProps)
+            {
+                if (prop.PropertyType != typeof(string))
+                {
+                    throw new InvalidOperationException();
+                }
+
+                modelBuilder.Entity(clrType)
+                       .Property(typeof(string), prop.Name)
+                       .HasConversion(converter);
+            }
+        }
     }
 }

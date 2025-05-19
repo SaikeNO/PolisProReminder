@@ -13,14 +13,20 @@ public class User : IdentityUser<Guid>, ISoftDeletable
         get { return base.Id; }
         set { base.Id = value; }
     }
+
+    [ProtectedPersonalData]
     public string FirstName { get; set; } = null!;
+
+    [ProtectedPersonalData]
     public string LastName { get; set; } = null!;
+
     public bool IsDeleted { get; set; } = false;
 
     public Guid? AgentId { get; set; }
+
     public virtual User? Agent { get; set; } = null!;
 
-    public ICollection<User> Assistants { get; set; } = [];
+    public ICollection<User> Assistants { get; set; } = null!;
 }
 
 public class UserRole : IdentityRole<Guid>

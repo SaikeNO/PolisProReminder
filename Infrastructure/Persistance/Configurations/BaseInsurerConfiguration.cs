@@ -9,18 +9,18 @@ public abstract class BaseInsurerConfiguration<TBase> : IEntityTypeConfiguration
     public virtual void Configure(EntityTypeBuilder<TBase> builder)
     {
         builder.Property(i => i.Email)
-            .HasMaxLength(60);
+            .HasMaxLength(256);
 
         builder.Property(i => i.PhoneNumber)
-            .HasMaxLength(15);
+            .HasMaxLength(256);
 
         builder.Property(i => i.PostalCode)
-            .HasMaxLength(6);
+            .HasMaxLength(256);
 
         builder.Property(i => i.City)
-            .HasMaxLength(60);
+            .HasMaxLength(256);
 
         builder.Property(i => i.Street)
-            .HasMaxLength(60);
+            .HasMaxLength(256);
     }
 }

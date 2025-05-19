@@ -15,11 +15,11 @@ internal class VehicleConfiguration : IEntityTypeConfiguration<Vehicle>
             .HasMaxLength(60);
 
         builder.Property(v => v.VIN)
-            .HasMaxLength(17);
+            .HasMaxLength(256);
 
         builder.Property(v => v.RegistrationNumber)
             .IsRequired()
-            .HasMaxLength(7);
+            .HasMaxLength(256);
 
     }
 }

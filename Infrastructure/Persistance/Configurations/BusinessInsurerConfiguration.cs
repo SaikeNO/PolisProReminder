@@ -11,14 +11,14 @@ internal class BusinessInsurerConfiguration : BaseInsurerConfiguration<BusinessI
 
         builder.Property(i => i.Name)
             .IsRequired()
-            .HasMaxLength(120);
+            .HasMaxLength(256);
 
         builder.Property(i => i.Nip)
             .IsRequired()
-            .HasMaxLength(10);
+            .HasMaxLength(256);
 
         builder.Property(i => i.Regon)
             .IsRequired()
-            .HasMaxLength(9);
+            .HasMaxLength(256);
     }
 }

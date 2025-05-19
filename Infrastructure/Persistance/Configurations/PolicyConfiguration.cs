@@ -16,7 +16,7 @@ public class PolicyConfiguration : IEntityTypeConfiguration<Policy>
 
         builder.Property(p => p.PolicyNumber)
             .IsRequired()
-            .HasMaxLength(60);
+            .HasMaxLength(256);
 
         builder.HasOne(p => p.InsuranceCompany)
             .WithMany(c => c.Policies)

@@ -8,6 +8,7 @@ using PolisProReminder.Infrastructure.Authorization;
 using PolisProReminder.Infrastructure.Persistance;
 using PolisProReminder.Infrastructure.Repositories;
 using PolisProReminder.Infrastructure.Schedulers;
+using PolisProReminder.Infrastructure.Security;
 using PolisProReminder.Infrastructure.Seeders;
 
 namespace PolisProReminder.Infrastructure.Extensions;
@@ -24,8 +25,10 @@ public static class ServiceCollectionExtension
         {
             options.SignIn.RequireConfirmedEmail = true;
             options.Lockout.AllowedForNewUsers = true;
+            options.Stores.ProtectPersonalData = true;
         })
             .AddRoles<UserRole>()
+            .AddPersonalDataProtection<LookupProtector, LookupProtectorKeyRing>()
             .AddClaimsPrincipalFactory<InsuranceUserClaimsPrincipalFactory>()
             .AddEntityFrameworkStores<InsuranceDbContext>();
 

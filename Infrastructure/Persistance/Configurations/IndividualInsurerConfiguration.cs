@@ -11,13 +11,13 @@ internal class IndividualInsurerConfiguration : BaseInsurerConfiguration<Individ
 
         builder.Property(i => i.FirstName)
             .IsRequired()
-            .HasMaxLength(60);
+            .HasMaxLength(256);
 
         builder.Property(i => i.LastName)
-            .HasMaxLength(60);
+            .HasMaxLength(256);
 
         builder.Property(i => i.Pesel)
             .IsRequired()
-            .HasMaxLength(11);
+            .HasMaxLength(256);
     }
 }
