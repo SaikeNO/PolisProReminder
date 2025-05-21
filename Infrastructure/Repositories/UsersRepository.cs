@@ -46,7 +46,7 @@ internal class UsersRepository(InsuranceDbContext dbContext, UserManager<User> u
         await _userManager.UpdateAsync(user);
     }
 
-    public void UpdateUser(User user) => _userManager.UpdateAsync(user);
+    public async Task UpdateUser(User user) => await _userManager.UpdateAsync(user);
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default) => await dbContext.SaveChangesAsync(cancellationToken);
 }

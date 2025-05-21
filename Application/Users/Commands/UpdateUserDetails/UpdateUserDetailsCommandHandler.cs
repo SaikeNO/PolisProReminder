@@ -20,6 +20,7 @@ internal sealed class UpdateUserDetailsCommandHandler(IUserContext userContext, 
         dbUser.FirstName = request.FirstName;
         dbUser.LastName = request.LastName;
 
-        _usersRepository.UpdateUser(dbUser);
+        await _usersRepository.UpdateUser(dbUser);
+        await _usersRepository.SaveChangesAsync(cancellationToken);
     }
 }

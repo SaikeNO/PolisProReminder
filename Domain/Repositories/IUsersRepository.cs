@@ -9,6 +9,6 @@ public interface IUsersRepository
     Task UnlockUserAsync(User user, CancellationToken cancellationToken = default);
     Task LockoutUserAsync(User user, CancellationToken cancellationToken = default);
     Task DeleteUserAsync(User user, CancellationToken cancellationToken = default);
-    void UpdateUser(User user);
+    Task UpdateUser(User user);
     Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }
