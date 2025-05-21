@@ -16,7 +16,7 @@ public class DeleteInsurerCommandHandler(IBaseInsurersRepository insurersReposit
 
         _ = insurer ?? throw new NotFoundException("Klient o podanym ID nie istnieje");
 
-        if (insurer.Policies.ToList().Count != 0)
+        if (insurer.Policies.Where(p => !p.IsDeleted).ToList().Count != 0)
             throw new NotAllowedException("Klient posiada polisy");
 
         insurer.Delete();
