@@ -14,6 +14,7 @@ using PolisProReminder.Application.Insurers.Queries.GetAllInsurers;
 using PolisProReminder.Application.Insurers.Queries.GetInsurerById;
 using PolisProReminder.Application.Insurers.Queries.GetPaginatedBusinessInsurers;
 using PolisProReminder.Application.Insurers.Queries.GetPaginatedIndividualInsurers;
+using PolisProReminder.Domain.Constants;
 
 namespace PolisProReminder.API.Controllers;
 
@@ -24,6 +25,7 @@ public class InsurerController(IMediator mediator) : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Roles = UserRoles.Agent)]
     public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         await mediator.Send(new DeleteInsurerCommand(id), cancellationToken);

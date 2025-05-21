@@ -9,6 +9,7 @@ using PolisProReminder.Application.Users.Commands.UnassignUserRole;
 using PolisProReminder.Application.Users.Commands.UnlockAssistant;
 using PolisProReminder.Application.Users.Commands.UpdateUserDetails;
 using PolisProReminder.Application.Users.Dtos;
+using PolisProReminder.Application.Users.Queries.GetAgentInfo;
 using PolisProReminder.Application.Users.Queries.GetAssistants;
 using PolisProReminder.Application.Users.Queries.Info;
 using PolisProReminder.Domain.Constants;
@@ -87,6 +88,14 @@ public class UserController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("agent/info")]
+    public async Task<ActionResult<BaseUserDto>> GetAgentInfo(CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(new GetAgentInfoQuery(), cancellationToken);
+
+        return Ok(result);
+    }
+
     [HttpGet("info")]
     public async Task<ActionResult<UserDto>> GetInfo(CancellationToken cancellationToken)
     {
@@ -94,5 +103,4 @@ public class UserController(IMediator mediator) : ControllerBase
 
         return Ok(result);
     }
-
 }

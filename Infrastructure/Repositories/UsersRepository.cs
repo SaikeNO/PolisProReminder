@@ -11,9 +11,6 @@ internal class UsersRepository(InsuranceDbContext dbContext, UserManager<User> u
 {
     private readonly UserManager<User> _userManager = userManager;
 
-    public async Task<User> GetAgentAsync(Guid userId, CancellationToken cancellationToken = default)
-        => await dbContext.Users.NotDeleted().Where(u => u.AgentId == userId).FirstAsync(cancellationToken);
-
     public async Task<User?> GetUserAsync(Guid userId, CancellationToken cancellationToken = default)
         => await dbContext.Users.NotDeleted().FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
 

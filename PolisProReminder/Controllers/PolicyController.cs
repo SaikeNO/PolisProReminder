@@ -15,6 +15,7 @@ using PolisProReminder.Application.Policies.Queries.GetAllAttachments;
 using PolisProReminder.Application.Policies.Queries.GetAllPolicies;
 using PolisProReminder.Application.Policies.Queries.GetLatestPolicies;
 using PolisProReminder.Application.Policies.Queries.GetPolicyById;
+using PolisProReminder.Domain.Constants;
 
 namespace PolisProReminder.API.Controllers;
 
@@ -53,6 +54,7 @@ public class PolicyController(IMediator mediator) : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Roles = UserRoles.Agent)]
     public async Task<IActionResult> DeletePolicy([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         await mediator.Send(new DeletePolicyCommand(id), cancellationToken);
@@ -61,6 +63,7 @@ public class PolicyController(IMediator mediator) : ControllerBase
 
     [HttpDelete("Batch")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [Authorize(Roles = UserRoles.Agent)]
     public async Task<IActionResult> DeletePoliciesBatch([FromBody] DeletePolicyBatchCommand command, CancellationToken cancellationToken)
     {
         await mediator.Send(command, cancellationToken);

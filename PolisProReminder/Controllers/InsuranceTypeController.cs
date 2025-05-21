@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using PolisProReminder.Application.InsuranceTypes;
 using PolisProReminder.Application.InsuranceTypes.Dtos;
+using PolisProReminder.Domain.Constants;
+using PolisProReminder.Domain.Entities;
 
 namespace PolisProReminder.API.Controllers;
 
@@ -23,6 +25,7 @@ public class InsuranceTypeController(IInsuranceTypesService insuranceTypeService
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Roles = UserRoles.Agent)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         await insuranceTypeService.Delete(id);

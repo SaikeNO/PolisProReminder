@@ -12,6 +12,7 @@ using PolisProReminder.Application.Vehicles.Dtos;
 using PolisProReminder.Application.Vehicles.Queries.GetAllAttachments;
 using PolisProReminder.Application.Vehicles.Queries.GetAllVehicles;
 using PolisProReminder.Application.Vehicles.Queries.GetVehicleById;
+using PolisProReminder.Domain.Constants;
 
 namespace PolisProReminder.API.Controllers;
 
@@ -19,6 +20,8 @@ namespace PolisProReminder.API.Controllers;
 [Route("api/[controller]")]
 public class VehicleController(IMediator mediator) : ControllerBase
 {
+    private readonly IMediator _mediator = mediator;
+
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -42,7 +45,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
             Attachments = attachments,
         };
 
-        await mediator.Send(command, cancellationToken);
+        await _mediator.Send(command, cancellationToken);
 
         return NoContent();
     }
@@ -50,9 +53,10 @@ public class VehicleController(IMediator mediator) : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeletePolicy([FromRoute] Guid id, CancellationToken cancellationToken)
+    [Authorize(Roles = UserRoles.Agent)]
+    public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        await mediator.Send(new DeleteVehicleCommand(id), cancellationToken);
+        await _mediator.Send(new DeleteVehicleCommand(id), cancellationToken);
         return NoContent();
     }
 
@@ -77,7 +81,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
             Attachments = attachments,
         };
 
-        var id = await mediator.Send(command, cancellationToken);
+        var id = await _mediator.Send(command, cancellationToken);
 
         return CreatedAtAction(nameof(GetById), new { id }, null);
     }
@@ -85,7 +89,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<PageResult<VehicleDto>>> GetAll([FromQuery] GetAllVehiclesQuery query, CancellationToken cancellationToken)
     {
-        var vehicles = await mediator.Send(query);
+        var vehicles = await _mediator.Send(query, cancellationToken);
         return Ok(vehicles);
     }
 
@@ -94,7 +98,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<VehicleDto>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var vehicle = await mediator.Send(new GetVehicleByIdQuery(id), cancellationToken);
+        var vehicle = await _mediator.Send(new GetVehicleByIdQuery(id), cancellationToken);
         return Ok(vehicle);
     }
 
@@ -103,7 +107,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<AttachmentDto>>> GetAttachments([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var attachmantes = await mediator.Send(new GetAllAttachmentsQuery(id), cancellationToken);
+        var attachmantes = await _mediator.Send(new GetAllAttachmentsQuery(id), cancellationToken);
         return Ok(attachmantes);
     }
 }
