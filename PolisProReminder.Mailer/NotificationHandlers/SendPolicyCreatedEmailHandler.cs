@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using PolisProReminder.Application.Policies.Notifications;
 using PolisProReminder.Application.Users;
+using PolisProReminder.Domain.Exceptions;
 using PolisProReminder.Domain.Mail;
 using PolisProReminder.Domain.Repositories;
 using PolisProReminder.Mailer.SendEmail;
@@ -23,7 +24,8 @@ internal class SendPolicyCreatedEmailHandler(IUserContext userContext,
         var currentUser = _userContext.GetCurrentUser();
         _ = currentUser ?? throw new InvalidOperationException("Current User is not present");
 
-        var agent = await _usersRepository.GetAgentAsync(currentUser.Id, cancellationToken);
+        var agent = await _usersRepository.GetUserAsync(currentUser.AgentId, cancellationToken)
+            ?? throw new NotFoundException($"Assistant with ID {currentUser.AgentId} not found.");
 
         var email = agent.Email;
         if (email == null)
