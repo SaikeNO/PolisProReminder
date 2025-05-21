@@ -32,60 +32,71 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
     {
         if (dbContext.Database.CanConnect())
         {
-            if (!dbContext.Roles.Any())
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
+            try
             {
-                var roles = GetRoles();
-                dbContext.Roles.AddRange(roles);
-                await dbContext.SaveChangesAsync();
-            }
+                if (!dbContext.Roles.Any())
+                {
+                    var roles = GetRoles();
+                    dbContext.Roles.AddRange(roles);
+                    await dbContext.SaveChangesAsync();
+                }
 
-            if (!dbContext.Users.Any())
-            {
-                var users = GetUsers();
-                await dbContext.Users.AddRangeAsync(users);
-                await dbContext.SaveChangesAsync();
-            }
+                if (!dbContext.Users.Any())
+                {
+                    var users = GetUsers();
+                    await dbContext.Users.AddRangeAsync(users);
+                    await dbContext.SaveChangesAsync();
+                }
 
-            if (!dbContext.UserRoles.Any())
-            {
-                var userRoles = await GetUserRoles();
-                await dbContext.UserRoles.AddRangeAsync(userRoles);
-                await dbContext.SaveChangesAsync();
-            }
+                if (!dbContext.UserRoles.Any())
+                {
+                    var userRoles = await GetUserRoles();
+                    await dbContext.UserRoles.AddRangeAsync(userRoles);
+                    await dbContext.SaveChangesAsync();
+                }
 
-            if (!dbContext.InsuranceTypes.Any())
-            {
-                var types = await GetInsuranceTypes();
-                dbContext.InsuranceTypes.AddRange(types);
-                await dbContext.SaveChangesAsync();
-            }
+                if (!dbContext.InsuranceTypes.Any())
+                {
+                    var types = await GetInsuranceTypes();
+                    dbContext.InsuranceTypes.AddRange(types);
+                    await dbContext.SaveChangesAsync();
+                }
 
-            if (!dbContext.InsuranceCompanies.Any())
-            {
-                var companies = await GetInsuranceCompanies();
-                dbContext.InsuranceCompanies.AddRange(companies);
-                await dbContext.SaveChangesAsync();
-            }
+                if (!dbContext.InsuranceCompanies.Any())
+                {
+                    var companies = await GetInsuranceCompanies();
+                    dbContext.InsuranceCompanies.AddRange(companies);
+                    await dbContext.SaveChangesAsync();
+                }
 
-            if (!dbContext.IndividualInsurers.Any())
-            {
-                var insurers = await GetInsurers();
-                dbContext.IndividualInsurers.AddRange(insurers);
-                await dbContext.SaveChangesAsync();
-            }
+                if (!dbContext.IndividualInsurers.Any())
+                {
+                    var insurers = await GetInsurers();
+                    dbContext.IndividualInsurers.AddRange(insurers);
+                    await dbContext.SaveChangesAsync();
+                }
 
-            if (!dbContext.VehicleBrands.Any())
-            {
-                var vehiclesBrands = GetVehicleBrands();
-                dbContext.VehicleBrands.AddRange(vehiclesBrands);
-                await dbContext.SaveChangesAsync();
-            }
+                if (!dbContext.VehicleBrands.Any())
+                {
+                    var vehiclesBrands = GetVehicleBrands();
+                    dbContext.VehicleBrands.AddRange(vehiclesBrands);
+                    await dbContext.SaveChangesAsync();
+                }
 
-            if (!dbContext.Vehicles.Any())
+                if (!dbContext.Vehicles.Any())
+                {
+                    var vehicles = await GetVehicles();
+                    dbContext.Vehicles.AddRange(vehicles);
+                    await dbContext.SaveChangesAsync();
+                }
+
+                await transaction.CommitAsync();
+            }
+            catch
             {
-                var vehicles = await GetVehicles();
-                dbContext.Vehicles.AddRange(vehicles);
-                await dbContext.SaveChangesAsync();
+                await transaction.RollbackAsync();
+                throw;
             }
         }
     }
@@ -135,9 +146,10 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             LastName = "Lengiewicz",
             Email = "admin@email.com",
             NormalizedEmail = "admin@email.com".ToUpper(),
-            UserName = "admin",
+            UserName = "admin@email.com",
             SecurityStamp = Guid.NewGuid().ToString(),
-            NormalizedUserName = "admin".ToUpper(),
+            NormalizedUserName = "admin@email.com".ToUpper(),
+            EmailConfirmed = true
         };
 
         admin.AgentId = admin.Id;
@@ -150,9 +162,10 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             LastName = "Lengiewicz",
             Email = "agent1@email.com",
             NormalizedEmail = "agent1@email.com".ToUpper(),
-            UserName = "agent1",
+            UserName = "agent1@email.com",
             SecurityStamp = Guid.NewGuid().ToString(),
-            NormalizedUserName = "agent1".ToUpper(),
+            NormalizedUserName = "agent1@email.com".ToUpper(),
+            EmailConfirmed = true
         };
 
         agent.AgentId = agent.Id;
@@ -165,9 +178,10 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             LastName = "Lengiewicz",
             Email = "agent2@email.com",
             NormalizedEmail = "agent2@email.com".ToUpper(),
-            UserName = "agent2",
+            UserName = "agent2@email.com",
             SecurityStamp = Guid.NewGuid().ToString(),
-            NormalizedUserName = "agent2".ToUpper(),
+            NormalizedUserName = "agent2@email.com".ToUpper(),
+            EmailConfirmed = true
         };
 
         agent2.AgentId = agent2.Id;
@@ -181,9 +195,10 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             Email = "user1@email.com",
             NormalizedEmail = "user1@email.com".ToUpper(),
             AgentId = agent.Id,
-            UserName = "user1",
+            UserName = "user1@email.com",
             SecurityStamp = Guid.NewGuid().ToString(),
-            NormalizedUserName = "user1".ToUpper(),
+            NormalizedUserName = "user1@email.com".ToUpper(),
+            EmailConfirmed = true
         };
 
         user.PasswordHash = passwordHasher.HashPassword(user, "password");
@@ -196,9 +211,10 @@ internal class Seeder(InsuranceDbContext dbContext, IPasswordHasher<User> passwo
             Email = "user2@email.com",
             NormalizedEmail = "user2@email.com".ToUpper(),
             AgentId = agent2.Id,
-            UserName = "user2",
+            UserName = "user2@email.com",
             SecurityStamp = Guid.NewGuid().ToString(),
-            NormalizedUserName = "user2".ToUpper(),
+            NormalizedUserName = "user2@email.com".ToUpper(),
+            EmailConfirmed = true
         };
 
         user2.PasswordHash = passwordHasher.HashPassword(user2, "password");
